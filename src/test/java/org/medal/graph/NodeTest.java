@@ -16,6 +16,7 @@
 package org.medal.graph;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -196,17 +197,34 @@ public class NodeTest {
         assertTrue(linkedToTheRightNode.contains(middleNode) && linkedToTheRightNode.contains(leftNode));
     }
 
-    /*
     @Test
     public void testGetEdgesToNode() {
-        System.out.println("getEdgesToNode");
-        Node destination = null;
-        Node instance = null;
-        Set<Edge> expResult = null;
-        Set<Edge> result = instance.getEdgesToNode(destination);
-        assertEquals(expResult, result);
+        
+        List<Node> nodes = new ArrayList<>(graph.createNodes(3));
+        assertEquals(nodes.size(), 3);
+
+        Node nodeOne = nodes.get(0);
+        Node nodeTwo = nodes.get(1);
+        Node nodeThree = nodes.get(2);
+
+        //
+        //  [nodeOne] --(1)--- [nodeTwo]--(4)-\
+        //      \   \__(2)____/                \
+        //       \_____(3)________________ [nodeThree] 
+        //
+        Edge one2two1 = nodeOne.connect(nodeTwo);
+        Edge one2two2 = nodeOne.connect(nodeTwo);
+        Edge one2three1 = nodeOne.connect(nodeThree);
+        
+        assertNotSame(one2two1, one2two2);
+        
+        Set<Edge> one2twoX = nodeOne.getEdgesToNode(nodeTwo);
+        assertNotNull(one2twoX);
+        assertTrue(one2twoX.size() == 2);
+        
+        assertTrue(one2twoX.containsAll(Arrays.asList(one2two1, one2two2)));
+        assertFalse(one2twoX.containsAll(Arrays.asList(one2three1)));       
         
     }
 
-     */
 }

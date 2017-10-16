@@ -206,7 +206,7 @@ public class Node<P> extends DataObject<P> {
     @Override
     public int hashCode() {
         int hash = 5;
-        hash = 19 * hash + Objects.hashCode(this.payload);
+        hash = 19 * hash + Objects.hashCode(this.id);
         return hash;
     }
 
