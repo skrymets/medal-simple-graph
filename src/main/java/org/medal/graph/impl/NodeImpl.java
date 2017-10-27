@@ -13,16 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph;
+package org.medal.graph.impl;
 
-public interface DataObject<I, D> {
+import org.medal.graph.Graph;
 
-    I getId();
 
-    void setId(I id);
+class NodeImpl<I, D> extends AbstractNode<I, D> {
 
-    D getData();
-
-    void setData(D data);
-
+    NodeImpl(Graph<I, D> graph) {
+        super(graph);
+    }
+    
 }

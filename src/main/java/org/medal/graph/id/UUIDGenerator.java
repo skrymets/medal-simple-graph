@@ -13,16 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph;
+package org.medal.graph.id;
 
-public interface DataObject<I, D> {
+import java.util.UUID;
+import org.medal.graph.IDProvider;
 
-    I getId();
+public class UUIDGenerator implements IDProvider<String> {
 
-    void setId(I id);
+    @Override
+    public String createId() {
+        return UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
+    }
 
-    D getData();
-
-    void setData(D data);
+    @Override
+    public String createId(Object object) {
+        return createId();
+    }
 
 }

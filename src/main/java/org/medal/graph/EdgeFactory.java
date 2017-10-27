@@ -15,14 +15,9 @@
  */
 package org.medal.graph;
 
-public interface DataObject<I, D> {
+import org.medal.graph.Edge.Link;
 
-    I getId();
+public interface EdgeFactory<I, D> {
 
-    void setId(I id);
-
-    D getData();
-
-    void setData(D data);
-
+    Edge<I, D> createEdge(Node<I, D> left, Node<I, D> right, Link direction);
 }

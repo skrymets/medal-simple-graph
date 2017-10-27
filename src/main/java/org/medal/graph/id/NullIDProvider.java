@@ -13,16 +13,22 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph;
+package org.medal.graph.id;
 
-public interface DataObject<I, D> {
+import org.medal.graph.IDProvider;
 
-    I getId();
+public enum NullIDProvider implements IDProvider {
 
-    void setId(I id);
+    INSTANCE;
 
-    D getData();
+    @Override
+    public Object createId() {
+        return null;
+    }
 
-    void setData(D data);
+    @Override
+    public Object createId(Object object) {
+        return object;
+    }
 
 }

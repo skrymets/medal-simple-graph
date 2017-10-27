@@ -13,16 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph;
+package org.medal.graph.impl;
 
-public interface DataObject<I, D> {
+import org.medal.graph.Graph;
+import org.medal.graph.Node;
 
-    I getId();
 
-    void setId(I id);
+class EdgeImpl<I, D> extends AbstractEdge<I, D> {
 
-    D getData();
-
-    void setData(D data);
-
+    EdgeImpl(Graph<I, D> graph, Node<I, D> left, Node<I, D> right, Link link) {
+        super(graph, left, right, link);
+    }
+    
 }

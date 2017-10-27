@@ -15,177 +15,39 @@
  */
 package org.medal.graph;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 
-public class Edge extends DataObject {
-
-    public static final Edge UNDEFINED = new Edge(Node.UNDEFINED, Node.UNDEFINED, Direction.UNDIRECT);
-
-    public static class Split {
-
-        public static final Split UNDEFINED = new Split(Edge.UNDEFINED, Edge.UNDEFINED);
-
-        private final Edge leftEdge;
-        private final Edge rightEdge;
-
-        public Split(Edge leftEdge, Edge rightEdge) {
-            this.leftEdge = leftEdge;
-            this.rightEdge = rightEdge;
-        }
-
-        public Edge getLeftEdge() {
-            return leftEdge;
-        }
-
-        public Edge getRightEdge() {
-            return rightEdge;
-        }
-
-    }
+public interface Edge<I, D> extends DataObject<I, D> {
 
     /**
-     * "Direct" means that imaginary arrow points from LEFT to RIGHT node
+     * "Link" means that imaginary arrow points from LEFT to RIGHT node
      * (L) ----> (R)
      * According to this definition another definition emerges:
-     * 1) A DIRECT edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
-     * 2) A UNDIRECT edge is neither OUTGOING nor INCOMING for any node
+     * 1) A DIRECTED edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
+     * 2) A UNDIRECTED edge is neither OUTGOING nor INCOMING for any node
      */
-    public static enum Direction {
-        DIRECT,
-        UNDIRECT
+    public enum Link {
+        DIRECTED, UNDIRECTED
     }
 
-    private final Node left;
-    
-    private final Node right;
+    void collapse();
 
-    private Direction direction;
+    Link getDirected();
 
-    Edge(Node left, Node right, Direction direction) {
-        super();
-        
-        if (left == null || right == null) {
-            throw new IllegalArgumentException("Neither left or right note can be undefined.");
-        }
-        this.left = left;
-        this.right = right;
-        this.direction = (direction == null) ? Direction.UNDIRECT : direction;
-    }
+    Graph<I, D> getGraph();
 
-    public Node getLeft() {
-        return left;
-    }
+    Node<I, D> getOpposite(Node<I, D> node);
 
-    public Node getRight() {
-        return right;
-    }
+    Node<I, D> getRight();
 
-    public Direction getDirection() {
-        return direction;
-    }
+    Node<I, D> getLeft();
 
-    public Edge setDirection(Direction direction) {
-        this.direction = direction;
-        return this;
-    }
+    Edge<I, D> setDirected(Link direction);
 
-    public Node getOpposite(Node node) {
-        if (left.equals(node)) { //TODO: Equals or == ?
-            return right;
-        } else if (right.equals(node)) {
-            return left;
-        } else {
-            return Node.UNDEFINED;
-        }
-    }
+    Edge<I, D> selfCopy();
 
-    public void collapse() {
-    }
+    Collection<Edge<I, D>> selfCopy(int copies);
 
-    public Collection<Edge> selfCopy(int copies) {
-        if (copies < 1) {
-            return Collections.emptyList();
-        }
-
-        List<Edge> clones = new ArrayList<>(copies);
-        for (int i = 0; i < copies; i++) {
-            clones.add(selfCopy());
-        }
-        return clones;
-    }
-
-    public Edge selfCopy() {
-        Edge edge = Graph.connectNodes(left, right, direction);
-        edge.setPayload(payload);
-        return edge;
-    }
-
-    public Split insertMiddleNode(Node middleNode) {
-        if (middleNode == null || middleNode == Node.UNDEFINED) {
-            return Split.UNDEFINED;
-        }
-
-        Graph.composite(left.getGraph(), right.getGraph()).breakEdge(this);
-
-        Edge leftEdge = Graph.connectNodes(left, middleNode, direction);
-        leftEdge.setPayload(payload);
-        Edge rightEdge = Graph.connectNodes(middleNode, right, direction);
-        rightEdge.setPayload(payload);
-        
-        return new Split(leftEdge, rightEdge);
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.id);
-        hash = 47 * hash + Objects.hashCode(this.left);
-        hash = 47 * hash + Objects.hashCode(this.right);
-        hash = 47 * hash + Objects.hashCode(this.direction);
-        // Payload MUST NOT participate in the hash!
-        // hash = 47 * hash + Objects.hashCode(this.payload); 
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Edge other = (Edge) obj;
-        //TODO: Consider ID in equality (from business point of view)
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.left, other.left)) {
-            return false;
-        }
-        if (!Objects.equals(this.right, other.right)) {
-            return false;
-        }
-        if (this.direction != other.direction) {
-            return false;
-        }
-        // Payload MUST NOT participate in the eguals!
-//        if (!Objects.equals(this.payload, other.payload)) {
-//            return false;
-//        }
-        return true;
-    }
-
-    @Override
-    public String toString() {
-        return left.toString() + " -" + ((direction == Direction.DIRECT) ? '>' : '-') + ' ' + right.toString();
-    }
+    Split<I, D> insertMiddleNode(Node<I, D> middleNode);
 
 }

@@ -13,16 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph;
+package org.medal.graph.impl;
 
-public interface DataObject<I, D> {
+import org.medal.graph.DataObject;
 
-    I getId();
+public abstract class AbstractDataObject<I, D> implements DataObject<I, D> {
 
-    void setId(I id);
+    protected I id;
+    
+    protected D data;
 
-    D getData();
+    @Override
+    public I getId() {
+        return id;
+    }
 
-    void setData(D data);
+    @Override
+    public void setId(I id) {
+        this.id = id;
+    }
+
+    @Override
+    public D getData() {
+        return data;
+    }
+
+    @Override
+    public void setData(D data) {
+        this.data = data;
+    }
 
 }

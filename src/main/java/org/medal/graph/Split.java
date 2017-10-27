@@ -15,14 +15,27 @@
  */
 package org.medal.graph;
 
-public interface DataObject<I, D> {
+import org.medal.graph.empty.EmptyEdge;
 
-    I getId();
+public class Split<I, D> {
 
-    void setId(I id);
+    public static final Split UNDEFINED = new Split(EmptyEdge.INSTANCE, EmptyEdge.INSTANCE);
 
-    D getData();
+    private final Edge<I, D> leftEdge;
 
-    void setData(D data);
+    private final Edge<I, D> rightEdge;
+
+    public Split(Edge<I, D> leftEdge, Edge<I, D> rightEdge) {
+        this.leftEdge = leftEdge;
+        this.rightEdge = rightEdge;
+    }
+
+    public Edge<I, D> getLeftEdge() {
+        return leftEdge;
+    }
+
+    public Edge<I, D> getRightEdge() {
+        return rightEdge;
+    }
 
 }
