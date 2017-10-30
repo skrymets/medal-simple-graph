@@ -17,7 +17,7 @@ package org.medal.graph;
 
 import org.medal.graph.empty.EmptyEdge;
 
-public class Split<I, NP, EP, N extends Node<I, NP>, E extends Edge<I, ?, EP>> {
+public class Split<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
 
     public static final Split UNDEFINED = new Split(EmptyEdge.INSTANCE, EmptyEdge.INSTANCE);
 

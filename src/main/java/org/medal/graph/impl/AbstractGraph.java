@@ -26,12 +26,11 @@ import org.medal.graph.EdgeFactory;
 import org.medal.graph.Edge.Link;
 import org.medal.graph.IDProvider;
 import org.medal.graph.NodeFactory;
-import org.medal.graph.Node;
 import org.medal.graph.Graph;
 import org.medal.graph.Edge;
 
 // Graph<I, NP, EP, N extends Node<I, NP>, E extends Edge<I, N, EP>>
-public abstract class AbstractGraph<I, NP, EP, N extends Node<I, NP>, E extends Edge<I, N, EP>> implements Graph<I, NP, EP, N, E> {
+public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>> implements Graph<I, NP, EP, N, E> {
 
     private final Set<N> nodes = new HashSet<>();
 
@@ -39,7 +38,7 @@ public abstract class AbstractGraph<I, NP, EP, N extends Node<I, NP>, E extends 
 
     @Override
     public N createNode(NP payload) {
-        N node = (N) getNodeFactory().createNode();
+        N node = getNodeFactory().createNode();
         node.setId(getIdProvider().createId());
         node.setData(payload);
         nodes.add(node);
@@ -141,7 +140,7 @@ public abstract class AbstractGraph<I, NP, EP, N extends Node<I, NP>, E extends 
         return sb.toString();
     }
 
-    protected abstract NodeFactory<I, NP> getNodeFactory();
+    protected abstract NodeFactory<I, NP, EP, N, E> getNodeFactory();
 
     protected abstract EdgeFactory<I, NP, EP, N, E> getEdgeFactory();
 

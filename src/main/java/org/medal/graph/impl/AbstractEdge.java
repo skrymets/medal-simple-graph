@@ -27,7 +27,7 @@ import org.medal.graph.Node;
 import org.medal.graph.Graph;
 import org.medal.graph.Edge;
 
-public abstract class AbstractEdge<I, N extends Node<I, ?>, EP> extends AbstractDataObject<I, EP> implements Edge<I, N, EP> {
+public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, EP> implements Edge<I, NP, EP, N, E> {
 
     protected final N left;
 
@@ -35,10 +35,10 @@ public abstract class AbstractEdge<I, N extends Node<I, ?>, EP> extends Abstract
 
     protected Link link;
 
-    private final Graph<I, ?, EP, N, ? extends Edge<I, N, EP>> graph;
+    private final Graph<I, NP, EP, N, E> graph;
 
-    public <E extends Edge<I, N, EP>> AbstractEdge(
-            Graph<I, ?, EP, N, E> graph,
+    public AbstractEdge(
+            Graph<I, NP, EP, N, E> graph,
             N left,
             N right,
             Link link) {
@@ -70,12 +70,12 @@ public abstract class AbstractEdge<I, N extends Node<I, ?>, EP> extends Abstract
     }
 
     @Override
-    public Graph<I, ?, EP, N, ? extends Edge<I, N, EP>> getGraph() {
+    public Graph<I, NP, EP, N, E> getGraph() {
         return graph;
     }
 
     @Override
-    public <E extends Edge<I, N, EP>> E setDirected(Link direction) {
+    public E setDirected(Link direction) {
         this.link = direction;
         return (E) this;
     }
@@ -96,7 +96,7 @@ public abstract class AbstractEdge<I, N extends Node<I, ?>, EP> extends Abstract
     }
 
     @Override
-    public <E extends Edge<I, N, EP>> Collection<E> selfCopy(int copies) {
+    public Collection<E> selfCopy(int copies) {
         if (copies < 1) {
             return Collections.emptyList();
         }
@@ -109,14 +109,14 @@ public abstract class AbstractEdge<I, N extends Node<I, ?>, EP> extends Abstract
     }
 
     @Override
-    public <E extends Edge<I, N, EP>> E selfCopy() {
+    public E selfCopy() {
         E edge = (E) getGraph().connectNodes(left, right, link);
         edge.setData(this.getData());
         return edge;
     }
 
     @Override
-    public <E extends Edge<I, N, EP>> Split<I, ?, EP, N, E> insertMiddleNode(N middleNode) {
+    public Split<I, NP, EP, N, E> insertMiddleNode(N middleNode) {
         if (middleNode == null || middleNode == EmptyNode.INSTANCE) {
             return Split.UNDEFINED;
         }
@@ -125,10 +125,10 @@ public abstract class AbstractEdge<I, N extends Node<I, ?>, EP> extends Abstract
 
         //TODO: Should we preserve data? Does this make sense? If the data is a context-seisitive or unique?
         //E leftEdge = getGraph().connectNodes(left, middleNode, link);
-        Edge<I, N, EP> leftEdge = getGraph().connectNodes(left, middleNode, link);
+        E leftEdge = getGraph().connectNodes(left, middleNode, link);
         leftEdge.setData(this.getData());
 
-        Edge<I, N, EP> rightEdge = getGraph().connectNodes(middleNode, right, link);
+        E rightEdge = getGraph().connectNodes(middleNode, right, link);
         rightEdge.setData(this.getData());
 
         return new Split(leftEdge, rightEdge);

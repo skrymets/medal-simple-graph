@@ -17,7 +17,7 @@ package org.medal.graph;
 
 import java.util.Collection;
 
-public interface Edge<I, N extends Node<I, ?>, EP> extends DataObject<I, EP> {
+public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends DataObject<I, EP> {
 
     /**
      * "Link" means that imaginary arrow points from LEFT to RIGHT node
@@ -34,7 +34,7 @@ public interface Edge<I, N extends Node<I, ?>, EP> extends DataObject<I, EP> {
 
     Link getDirected();
 
-    <E extends Edge<I, N, EP>> Graph<I, ?, EP, N, E> getGraph();
+    Graph<I, ?, EP, N, E> getGraph();
 
     N getOpposite(N node);
 
@@ -42,12 +42,12 @@ public interface Edge<I, N extends Node<I, ?>, EP> extends DataObject<I, EP> {
 
     N getLeft();
 
-    <E extends Edge<I, N, EP>> E setDirected(Link direction);
+    E setDirected(Link direction);
 
-    <E extends Edge<I, N, EP>> E selfCopy();
+    E selfCopy();
 
-    <E extends Edge<I, N, EP>> Collection<E> selfCopy(int copies);
+    Collection<E> selfCopy(int copies);
 
-    <E extends Edge<I, N, EP>> Split<I, ?, EP, N, E> insertMiddleNode(N middleNode);
+    Split<I, ?, EP, N, E> insertMiddleNode(N middleNode);
 
 }
