@@ -27,11 +27,11 @@ import org.medal.graph.Edge;
 import org.medal.graph.Edge.Link;
 import org.medal.graph.Node;
 
-abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implements Node<I, D> {
+public abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implements Node<I, D> {
 
     private final Graph<I, D> graph;
 
-    AbstractNode(Graph<I, D> graph) {
+    public AbstractNode(Graph<I, D> graph) {
         Objects.requireNonNull(graph);
         this.graph = graph;
     }

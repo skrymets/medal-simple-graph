@@ -30,14 +30,11 @@ import org.medal.graph.Node;
 import org.medal.graph.Graph;
 import org.medal.graph.Edge;
 
-abstract class AbstractGraph<I, D> implements Graph<I, D> {
+public abstract class AbstractGraph<I, D> implements Graph<I, D> {
 
     private final Set<Node<I, D>> nodes = new HashSet<>();
 
     private final Set<Edge<I, D>> edges = new LinkedHashSet<>();
-
-    AbstractGraph() {
-    }
 
     @Override
     public Node<I, D> createNode(D payload) {

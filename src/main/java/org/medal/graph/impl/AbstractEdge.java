@@ -27,7 +27,7 @@ import org.medal.graph.Node;
 import org.medal.graph.Graph;
 import org.medal.graph.Edge;
 
-abstract class AbstractEdge<I, D> extends AbstractDataObject<I, D> implements Edge<I, D> {
+public abstract class AbstractEdge<I, D> extends AbstractDataObject<I, D> implements Edge<I, D> {
 
     protected final Node<I, D> left;
 
@@ -37,7 +37,7 @@ abstract class AbstractEdge<I, D> extends AbstractDataObject<I, D> implements Ed
 
     protected final Graph<I, D> graph;
 
-    AbstractEdge(Graph<I, D> graph, Node<I, D> left, Node<I, D> right, Link link) {
+    public AbstractEdge(Graph<I, D> graph, Node<I, D> left, Node<I, D> right, Link link) {
 
         Objects.requireNonNull(graph);
         if (left == null || right == null) {
