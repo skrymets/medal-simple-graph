@@ -22,12 +22,12 @@ import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Set;
-import org.medal.graph.EdgeFactory;
+import org.medal.graph.Edge;
 import org.medal.graph.Edge.Link;
+import org.medal.graph.EdgeFactory;
+import org.medal.graph.Graph;
 import org.medal.graph.IDProvider;
 import org.medal.graph.NodeFactory;
-import org.medal.graph.Graph;
-import org.medal.graph.Edge;
 
 // Graph<I, NP, EP, N extends Node<I, NP>, E extends Edge<I, N, EP>>
 public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>> implements Graph<I, NP, EP, N, E> {

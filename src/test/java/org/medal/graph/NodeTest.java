@@ -45,7 +45,7 @@ public class NodeTest {
         graph.getNodes();
     }
 
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testGetEdges() {
 
         List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
@@ -64,35 +64,60 @@ public class NodeTest {
         assertFalse(node2.getEdges().isEmpty());
 
         // EdgeImpl is connected to the nodes
-        assertEquals(connection, node1.getEdges().iterator().next());
-        assertEquals(node1.getEdges().iterator().next(), node2.getEdges().iterator().next());
+        assertSame(connection, node1.getEdges().iterator().next());
+        assertSame(node1.getEdges().iterator().next(), node2.getEdges().iterator().next());
 
+        node1.getEdges().add(connection);
     }
 
     @Test
-    public void testGetIncomingAndOutgoingEdges() {
+    public void testGetOutgoingEdges() {
 
         List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(3));
         assertEquals(nodes.size(), 3);
 
-        NodeImpl testNode = nodes.get(0);
-        NodeImpl leftNode = nodes.get(1);
-        NodeImpl rightNode = nodes.get(2);
+        NodeImpl node1 = nodes.get(0);
+        NodeImpl node2 = nodes.get(1);
+        NodeImpl node3 = nodes.get(2);
 
-        // Create new directed connections
-        EdgeImpl inEdge = testNode.connectNodeFromLeft(leftNode);
-        EdgeImpl outEdge = testNode.connectNodeFromRight(rightNode);
+        // [node2] ----- [node1] -------> [node3]
+        // Create new un/directed connections
+        node1.connect(node2);
+        EdgeImpl outEdge = node1.connectNodeFromRight(node3);
 
         // Now there are some new connections
-        Collection<EdgeImpl> incomingEdges = testNode.getIncomingEdges();
-        Collection<EdgeImpl> outgoingEdges = testNode.getOutgoingEdges();
+        Collection<EdgeImpl> outEdges = node1.getOutgoingEdges();
 
-        assertTrue(incomingEdges.size() == 1);
-        assertTrue(incomingEdges.contains(inEdge));
+        assertTrue(outEdges.size() == 1);
+        assertTrue(outEdges.contains(outEdge));
 
-        assertTrue(outgoingEdges.size() == 1);
-        assertTrue(outgoingEdges.contains(outEdge));
+        outEdges = node1.getOutgoingEdges(true);
+        assertTrue(outEdges.size() == 2);
+    }
 
+    @Test
+    public void testGetIncomingEdges() {
+
+        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(3));
+        assertEquals(nodes.size(), 3);
+
+        NodeImpl node1 = nodes.get(0);
+        NodeImpl node2 = nodes.get(1);
+        NodeImpl node3 = nodes.get(2);
+
+        // [node2] ------> [node1] ----- [node3]
+        // Create new un/directed connections
+        EdgeImpl inEdge = node1.connectNodeFromLeft(node2);
+        node1.connect(node3);
+
+        // Now there are some new connections
+        Collection<EdgeImpl> inEdges = node1.getIncomingEdges();
+
+        assertTrue(inEdges.size() == 1);
+        assertTrue(inEdges.contains(inEdge));
+
+        inEdges = node1.getIncomingEdges(true);
+        assertTrue(inEdges.size() == 2);
     }
 
     @Test
@@ -102,6 +127,39 @@ public class NodeTest {
         assertNotNull(node.getGraph());
         assertSame(node.getGraph(), graph);
 
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testConnectNodeFromLeft() {
+        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
+        assertEquals(nodes.size(), 2);
+
+        NodeImpl leftNode = nodes.get(0);
+        NodeImpl rightNode = nodes.get(1);
+
+        EdgeImpl edge = rightNode.connectNodeFromLeft(leftNode);
+        assertTrue(edge.getDirected() == Link.DIRECTED);
+        assertSame(edge.getLeft(), leftNode);
+        assertSame(edge.getRight(), rightNode);
+
+        rightNode.connectNodeFromLeft(null);
+
+    }
+
+    @Test(expected = NullPointerException.class)
+    public void testConnectNodeFromRight() {
+        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
+        assertEquals(nodes.size(), 2);
+
+        NodeImpl leftNode = nodes.get(0);
+        NodeImpl rightNode = nodes.get(1);
+
+        EdgeImpl edge = leftNode.connectNodeFromRight(rightNode);
+        assertTrue(edge.getDirected() == Link.DIRECTED);
+        assertSame(edge.getLeft(), leftNode);
+        assertSame(edge.getRight(), rightNode);
+
+        leftNode.connectNodeFromRight(null);
     }
 
     @Test
@@ -183,12 +241,12 @@ public class NodeTest {
         NodeImpl rightNode = nodes.get(2);
 
         //
-        //  [leftNode] --- [middleNode] --- [rightNode]
+        //  [leftNode] --> [middleNode] <-- [rightNode]
         //     \_______________________________/
         //
-        leftNode.connect(middleNode);
-        middleNode.connect(rightNode);
+        leftNode.connectNodeFromRight(middleNode);
         leftNode.connect(rightNode);
+        middleNode.connectNodeFromLeft(rightNode);
 
         final Set<NodeImpl> linkedToTheLeftNode = leftNode.getLinkedNodes();
         final Set<NodeImpl> linkedToTheRightNode = rightNode.getLinkedNodes();
@@ -202,7 +260,7 @@ public class NodeTest {
         assertTrue(linkedToTheRightNode.contains(middleNode) && linkedToTheRightNode.contains(leftNode));
     }
 
-    @Test
+    @Test(expected = UnsupportedOperationException.class)
     public void testGetEdgesToNode() {
 
         List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(3));
@@ -213,13 +271,13 @@ public class NodeTest {
         NodeImpl nodeThree = nodes.get(2);
 
         //
-        //  [nodeOne] --(1)--- [nodeTwo]--(4)-\
+        //  [nodeOne] --(1)--> [nodeTwo]--(4)-\
         //      \   \__(2)____/                \
         //       \_____(3)________________ [nodeThree] 
         //
-        EdgeImpl one2two1 = nodeOne.connect(nodeTwo);
-        EdgeImpl one2two2 = nodeOne.connect(nodeTwo);
-        EdgeImpl one2three1 = nodeOne.connect(nodeThree);
+        EdgeImpl one2two1 = nodeOne.connectNodeFromRight(nodeTwo); // Directed
+        EdgeImpl one2two2 = nodeOne.connect(nodeTwo); // Underected
+        EdgeImpl one2three1 = nodeOne.connect(nodeThree); // Underected
 
         assertNotSame(one2two1, one2two2);
 
@@ -229,6 +287,8 @@ public class NodeTest {
 
         assertTrue(one2twoX.containsAll(Arrays.asList(one2two1, one2two2)));
         assertFalse(one2twoX.containsAll(Arrays.asList(one2three1)));
+
+        one2twoX.add(one2three1);
 
     }
 

@@ -20,12 +20,12 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import org.medal.graph.Edge;
 import org.medal.graph.Edge.Link;
+import org.medal.graph.Graph;
+import org.medal.graph.Node;
 import org.medal.graph.Split;
 import org.medal.graph.empty.EmptyNode;
-import org.medal.graph.Node;
-import org.medal.graph.Graph;
-import org.medal.graph.Edge;
 
 public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, EP> implements Edge<I, NP, EP, N, E> {
 
@@ -82,9 +82,9 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
 
     @Override
     public N getOpposite(N node) {
-        if (left.equals(node)) { //TODO: Equals or == ?
+        if (left == node) {
             return right;
-        } else if (right.equals(node)) {
+        } else if (right == node) {
             return left;
         } else {
             return (N) EmptyNode.INSTANCE;

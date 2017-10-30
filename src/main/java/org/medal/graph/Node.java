@@ -24,7 +24,6 @@ import java.util.Set;
  */
 public interface Node<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends DataObject<I, NP> {
 
-    // <E extends Edge<I, ?>>
     /**
      * Connects another node to this node with new undirected edge. A node that is being
      * connected is placed to the right side. The node to which the new is attached is
@@ -38,13 +37,51 @@ public interface Node<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      */
     E connect(N otherNode);
 
+    /**
+     * Connects another node to this node with new directed edge. A node that is being
+     * connected is placed to the left side. The node to which the new is attached is
+     * placed on the right side.
+     *
+     * @param leftNode a node to be connected
+     *
+     * @return new undirected edge
+     *
+     * @throws NullPointerException if <code>otherNode</code> is undefined
+     */
     E connectNodeFromLeft(N leftNode);
 
+    /**
+     * Connects another node to this node with new directed edge. A node that is being
+     * connected is placed to the right side. The node to which the new is attached is
+     * placed on the left side.
+     *
+     * @param leftNode a node to be connected
+     *
+     * @return new undirected edge
+     *
+     * @throws NullPointerException if <code>otherNode</code> is undefined
+     */
     E connectNodeFromRight(N rightNode);
 
+    /**
+     * Returns a collection of the node's edges, including directed and undirected, if any
+     *
+     * @return an unmodifiable collection of edges. May be empty, but never
+     *         <code>null</code>.
+     */
     Collection<E> getEdges();
 
-    //TODO: Decide whether it should be a List instead of a Set. Should we consider completely identical edges as alternatives?
+    /**
+     * Returns a collection edges, directed and undirected, that flows from this node to a
+     * <code>destination</code> node, if any
+     * <p>
+     * TODO: Decide whether it should be a List instead of a Set. Should we consider
+     * completely identical edges as alternatives?
+     * </p>
+     *
+     * @return an unmodifiable collection of edges. May be empty, but never
+     *         <code>null</code>.
+     */
     Set<E> getEdgesToNode(N destination);
 
     Graph<I, NP, EP, N, E> getGraph();
@@ -72,6 +109,13 @@ public interface Node<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      */
     Collection<E> getIncomingEdges(boolean includeUndirected);
 
+    /**
+     * Returns a collection of nodes that are linked to this node by both: directed and
+     * undirected connections.
+     *
+     * @return an unmodifiable collection of edges. May be empty, but never
+     *         <code>null</code>.
+     */
     Set<N> getLinkedNodes();
 
     /**

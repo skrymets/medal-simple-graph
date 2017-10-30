@@ -17,14 +17,15 @@ package org.medal.graph.impl;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import static java.util.stream.Collectors.collectingAndThen;
 import org.medal.graph.Edge;
 import org.medal.graph.Edge.Link;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
+import org.medal.graph.empty.EmptyNode;
 
 public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, NP> implements Node<I, NP, EP, N, E> {
 
@@ -48,7 +49,10 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
                 .filter(e -> {
                     return e.getLeft() == this || e.getRight() == this;
                 })
-                .collect(Collectors.toSet());
+                .collect(collectingAndThen(
+                        Collectors.toSet(),
+                        Collections::unmodifiableSet
+                ));
     }
 
     /**
@@ -136,7 +140,10 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
                         return false;
                     }
                 })
-                .collect(Collectors.toSet());
+                .collect(collectingAndThen(
+                        Collectors.toSet(),
+                        Collections::unmodifiableSet
+                ));
         return resultSet;
     }
 
@@ -177,14 +184,13 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
             return Collections.emptySet();
         }
 
-        Set<N> oppositeNodes = new LinkedHashSet();
-
-        for (E edge : getEdges()) {
-            N opposite = edge.getOpposite((N) AbstractNode.this);
-            oppositeNodes.add(opposite);
-        }
-
-        return (Set<N>) oppositeNodes;
+        return getEdges().stream()
+                .map((edge) -> edge.getOpposite((N) AbstractNode.this))
+                .filter((oppositeNode) -> !(oppositeNode == EmptyNode.INSTANCE))
+                .collect(collectingAndThen(
+                        Collectors.toSet(),
+                        Collections::unmodifiableSet
+                ));
 
 //        return edges.stream()
 //                .map((Edge<I, D> edge) -> edge.getOpposite(Node.this))
@@ -193,14 +199,16 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
 //                .collect(Collectors.toSet());
     }
 
-    //TODO: Decide whether it should be a List instead of a Set. Should we consider completely identical edges as alternatives?
     @Override
     public Set<E> getEdgesToNode(N destination) {
         return getEdges()
                 .stream()
                 .map(edge -> (E) edge)
                 .filter(e -> (e.getOpposite((N) this).equals(destination)))
-                .collect(Collectors.toSet());
+                .collect(collectingAndThen(
+                        Collectors.toSet(),
+                        Collections::unmodifiableSet
+                ));
     }
 
     @Override
