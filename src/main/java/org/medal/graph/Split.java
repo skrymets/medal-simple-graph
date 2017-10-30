@@ -17,24 +17,24 @@ package org.medal.graph;
 
 import org.medal.graph.empty.EmptyEdge;
 
-public class Split<I, D> {
+public class Split<I, NP, EP, N extends Node<I, NP>, E extends Edge<I, ?, EP>> {
 
     public static final Split UNDEFINED = new Split(EmptyEdge.INSTANCE, EmptyEdge.INSTANCE);
 
-    private final Edge<I, D> leftEdge;
+    private final E leftEdge;
 
-    private final Edge<I, D> rightEdge;
+    private final E rightEdge;
 
-    public Split(Edge<I, D> leftEdge, Edge<I, D> rightEdge) {
+    public Split(E leftEdge, E rightEdge) {
         this.leftEdge = leftEdge;
         this.rightEdge = rightEdge;
     }
 
-    public Edge<I, D> getLeftEdge() {
+    public E getLeftEdge() {
         return leftEdge;
     }
 
-    public Edge<I, D> getRightEdge() {
+    public E getRightEdge() {
         return rightEdge;
     }
 

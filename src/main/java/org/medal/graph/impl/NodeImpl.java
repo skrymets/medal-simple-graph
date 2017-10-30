@@ -17,11 +17,10 @@ package org.medal.graph.impl;
 
 import org.medal.graph.Graph;
 
+class NodeImpl extends AbstractNode<Long, String> {
 
-class NodeImpl<I, D> extends AbstractNode<I, D> {
-
-    NodeImpl(Graph<I, D> graph) {
+    NodeImpl(Graph graph) {
         super(graph);
     }
-    
+
 }

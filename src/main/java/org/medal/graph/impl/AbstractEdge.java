@@ -27,17 +27,21 @@ import org.medal.graph.Node;
 import org.medal.graph.Graph;
 import org.medal.graph.Edge;
 
-public abstract class AbstractEdge<I, D> extends AbstractDataObject<I, D> implements Edge<I, D> {
+public abstract class AbstractEdge<I, N extends Node<I, ?>, EP> extends AbstractDataObject<I, EP> implements Edge<I, N, EP> {
 
-    protected final Node<I, D> left;
+    protected final N left;
 
-    protected final Node<I, D> right;
+    protected final N right;
 
     protected Link link;
 
-    protected final Graph<I, D> graph;
+    private final Graph<I, ?, EP, N, ? extends Edge<I, N, EP>> graph;
 
-    public AbstractEdge(Graph<I, D> graph, Node<I, D> left, Node<I, D> right, Link link) {
+    public <E extends Edge<I, N, EP>> AbstractEdge(
+            Graph<I, ?, EP, N, E> graph,
+            N left,
+            N right,
+            Link link) {
 
         Objects.requireNonNull(graph);
         if (left == null || right == null) {
@@ -51,12 +55,12 @@ public abstract class AbstractEdge<I, D> extends AbstractDataObject<I, D> implem
     }
 
     @Override
-    public Node<I, D> getLeft() {
+    public N getLeft() {
         return left;
     }
 
     @Override
-    public Node<I, D> getRight() {
+    public N getRight() {
         return right;
     }
 
@@ -66,24 +70,24 @@ public abstract class AbstractEdge<I, D> extends AbstractDataObject<I, D> implem
     }
 
     @Override
-    public Graph<I, D> getGraph() {
+    public Graph<I, ?, EP, N, ? extends Edge<I, N, EP>> getGraph() {
         return graph;
     }
 
     @Override
-    public Edge<I, D> setDirected(Link direction) {
+    public <E extends Edge<I, N, EP>> E setDirected(Link direction) {
         this.link = direction;
-        return this;
+        return (E) this;
     }
 
     @Override
-    public Node<I, D> getOpposite(Node<I, D> node) {
+    public N getOpposite(N node) {
         if (left.equals(node)) { //TODO: Equals or == ?
             return right;
         } else if (right.equals(node)) {
             return left;
         } else {
-            return EmptyNode.INSTANCE;
+            return (N) EmptyNode.INSTANCE;
         }
     }
 
@@ -92,12 +96,12 @@ public abstract class AbstractEdge<I, D> extends AbstractDataObject<I, D> implem
     }
 
     @Override
-    public Collection<Edge<I, D>> selfCopy(int copies) {
+    public <E extends Edge<I, N, EP>> Collection<E> selfCopy(int copies) {
         if (copies < 1) {
             return Collections.emptyList();
         }
 
-        List<Edge<I, D>> clones = new ArrayList<>(copies);
+        List<E> clones = new ArrayList<>(copies);
         for (int i = 0; i < copies; i++) {
             clones.add(selfCopy());
         }
@@ -105,14 +109,14 @@ public abstract class AbstractEdge<I, D> extends AbstractDataObject<I, D> implem
     }
 
     @Override
-    public Edge<I, D> selfCopy() {
-        Edge<I, D> edge = getGraph().connectNodes(left, right, link);
+    public <E extends Edge<I, N, EP>> E selfCopy() {
+        E edge = (E) getGraph().connectNodes(left, right, link);
         edge.setData(this.getData());
         return edge;
     }
 
     @Override
-    public Split<I, D> insertMiddleNode(Node<I, D> middleNode) {
+    public <E extends Edge<I, N, EP>> Split<I, ?, EP, N, E> insertMiddleNode(N middleNode) {
         if (middleNode == null || middleNode == EmptyNode.INSTANCE) {
             return Split.UNDEFINED;
         }
@@ -120,12 +124,14 @@ public abstract class AbstractEdge<I, D> extends AbstractDataObject<I, D> implem
         getGraph().breakEdge(this);
 
         //TODO: Should we preserve data? Does this make sense? If the data is a context-seisitive or unique?
-        Edge<I, D> leftEdge = getGraph().connectNodes(left, middleNode, link);
+        //E leftEdge = getGraph().connectNodes(left, middleNode, link);
+        Edge<I, N, EP> leftEdge = getGraph().connectNodes(left, middleNode, link);
         leftEdge.setData(this.getData());
-        Edge<I, D> rightEdge = getGraph().connectNodes(middleNode, right, link);
+
+        Edge<I, N, EP> rightEdge = getGraph().connectNodes(middleNode, right, link);
         rightEdge.setData(this.getData());
 
-        return new Split<>(leftEdge, rightEdge);
+        return new Split(leftEdge, rightEdge);
     }
 
     @Override

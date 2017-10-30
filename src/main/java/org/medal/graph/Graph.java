@@ -17,14 +17,13 @@ package org.medal.graph;
 
 import java.util.Collection;
 import java.util.Set;
+import org.medal.graph.Edge.Link;
 
-public interface Graph<I, D> {
+public interface Graph<I, NP, EP, N extends Node<I, NP>, E extends Edge<I, N, EP>> {
 
-    void breakEdge(Edge<I, D> edge);
+    N createNode(NP payload);
 
-    Node<I, D> createNode();
-
-    Node<I, D> createNode(D payload);
+    N createNode();
 
     /**
      * Creates several new nodes that are not connected at this moment.
@@ -34,14 +33,16 @@ public interface Graph<I, D> {
      * @return a list of nodes that were created or an empty list, if <code>count</code>
      *         is less or equal to zero.
      */
-    Collection<Node<I, D>> createNodes(int count);
+    Collection<N> createNodes(int count);
 
-    Edge<I, D> connectNodes(Node<I, D> left, Node<I, D> right, Edge.Link direction);
+    E connectNodes(N left, N right, Link direction);
 
-    Edge<I, D> connectNodes(Node<I, D> left, Node<I, D> right);
+    E connectNodes(N left, N right);
 
-    Set<Edge<I, D>> getEdges();
+    Set<E> getEdges();
 
-    Set<Node<I, D>> getNodes();
+    Set<N> getNodes();
+
+    void breakEdge(Edge edge);
 
 }

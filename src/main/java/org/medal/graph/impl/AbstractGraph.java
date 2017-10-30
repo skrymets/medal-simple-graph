@@ -30,19 +30,25 @@ import org.medal.graph.Node;
 import org.medal.graph.Graph;
 import org.medal.graph.Edge;
 
-public abstract class AbstractGraph<I, D> implements Graph<I, D> {
+// Graph<I, NP, EP, N extends Node<I, NP>, E extends Edge<I, N, EP>>
+public abstract class AbstractGraph<I, NP, EP, N extends Node<I, NP>, E extends Edge<I, N, EP>> implements Graph<I, NP, EP, N, E> {
 
-    private final Set<Node<I, D>> nodes = new HashSet<>();
+    private final Set<N> nodes = new HashSet<>();
 
-    private final Set<Edge<I, D>> edges = new LinkedHashSet<>();
+    private final Set<E> edges = new LinkedHashSet<>();
 
     @Override
-    public Node<I, D> createNode(D payload) {
-        Node<I, D> node = getNodeFactory().createNode();
+    public N createNode(NP payload) {
+        N node = (N) getNodeFactory().createNode();
         node.setId(getIdProvider().createId());
         node.setData(payload);
         nodes.add(node);
         return node;
+    }
+
+    @Override
+    public N createNode() {
+        return this.createNode(null);
     }
 
     /**
@@ -54,8 +60,8 @@ public abstract class AbstractGraph<I, D> implements Graph<I, D> {
      *         is less or equal to zero.
      */
     @Override
-    public Collection<Node<I, D>> createNodes(int count) {
-        Collection<Node<I, D>> newNodes = new LinkedList<>();
+    public Collection<N> createNodes(int count) {
+        Collection<N> newNodes = new LinkedList<>();
         if (count > 0) {
             for (int i = 0; i < count; i++) {
                 newNodes.add(createNode());
@@ -65,17 +71,12 @@ public abstract class AbstractGraph<I, D> implements Graph<I, D> {
     }
 
     @Override
-    public Node<I, D> createNode() {
-        return this.createNode(null);
-    }
-
-    @Override
-    public Set<Node<I, D>> getNodes() {
+    public Set<N> getNodes() {
         return Collections.unmodifiableSet(nodes);
     }
 
     @Override
-    public Set<Edge<I, D>> getEdges() {
+    public Set<E> getEdges() {
         return Collections.unmodifiableSet(edges);
     }
 
@@ -89,7 +90,7 @@ public abstract class AbstractGraph<I, D> implements Graph<I, D> {
      *         right node (or both) is <code>null</code>
      */
     @Override
-    public Edge<I, D> connectNodes(Node<I, D> left, Node<I, D> right, Link direction) {
+    public E connectNodes(N left, N right, Link direction) {
 
         Objects.requireNonNull(left);
         Objects.requireNonNull(right);
@@ -98,7 +99,7 @@ public abstract class AbstractGraph<I, D> implements Graph<I, D> {
             throw new IllegalArgumentException("Nodes can not belong to different graphs");
         }
 
-        Edge<I, D> edge = getEdgeFactory().createEdge(left, right, (direction == null) ? Link.UNDIRECTED : direction);
+        E edge = getEdgeFactory().createEdge(left, right, (direction == null) ? Link.UNDIRECTED : direction);
         edge.setId(getIdProvider().createId());
 
         registerEdge(edge);
@@ -107,21 +108,21 @@ public abstract class AbstractGraph<I, D> implements Graph<I, D> {
     }
 
     @Override
-    public Edge<I, D> connectNodes(Node<I, D> left, Node<I, D> right) {
+    public E connectNodes(N left, N right) {
         return connectNodes(left, right, Link.UNDIRECTED);
     }
 
     @Override
-    public void breakEdge(Edge<I, D> edge) {
-        if (edge == null || !edges.contains(edge)) {
+    public void breakEdge(Edge edge) {
+        if (edge == null || !edges.contains((E) edge)) {
             return;
         }
 
-        edges.remove(edge);
+        edges.remove((E) edge);
     }
 
-    boolean registerEdge(Edge<I, D> e) {
-        return edges.add(e);
+    boolean registerEdge(E edge) {
+        return edges.add(edge);
     }
 
     @Override
@@ -140,9 +141,9 @@ public abstract class AbstractGraph<I, D> implements Graph<I, D> {
         return sb.toString();
     }
 
-    protected abstract NodeFactory<I, D> getNodeFactory();
+    protected abstract NodeFactory<I, NP> getNodeFactory();
 
-    protected abstract EdgeFactory<I, D> getEdgeFactory();
+    protected abstract EdgeFactory<I, NP, EP, N, E> getEdgeFactory();
 
     protected abstract IDProvider<I> getIdProvider();
 }

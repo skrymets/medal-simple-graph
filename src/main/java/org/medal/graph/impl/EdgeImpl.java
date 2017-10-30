@@ -15,13 +15,14 @@
  */
 package org.medal.graph.impl;
 
+import org.medal.graph.Edge.Link;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
 
 
-class EdgeImpl<I, D> extends AbstractEdge<I, D> {
+class EdgeImpl extends AbstractEdge<Long, NodeImpl, String> {
 
-    EdgeImpl(Graph<I, D> graph, Node<I, D> left, Node<I, D> right, Link link) {
+    EdgeImpl(Graph graph, NodeImpl left, NodeImpl right, Link link) {
         super(graph, left, right, link);
     }
     

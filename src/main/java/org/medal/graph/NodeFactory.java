@@ -15,8 +15,8 @@
  */
 package org.medal.graph;
 
-public interface NodeFactory<I, D> {
+public interface NodeFactory<I, NP> {
 
-    Node<I, D> createNode();
+    Node<I, NP> createNode();
 
 }
