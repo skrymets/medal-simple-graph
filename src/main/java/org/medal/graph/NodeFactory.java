@@ -15,8 +15,8 @@
  */
 package org.medal.graph;
 
-public interface NodeFactory<I, D> {
+public interface NodeFactory<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
 
-    Node<I, D> createNode();
+    N createNode();
 
 }

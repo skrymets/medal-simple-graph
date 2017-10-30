@@ -20,18 +20,17 @@ import java.util.Collections;
 import java.util.LinkedHashSet;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
-import org.medal.graph.Graph;
 import org.medal.graph.Edge;
 import org.medal.graph.Edge.Link;
+import org.medal.graph.Graph;
 import org.medal.graph.Node;
 
-public abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implements Node<I, D> {
+public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, NP> implements Node<I, NP, EP, N, E> {
 
-    private final Graph<I, D> graph;
+    private final Graph<I, NP, EP, N, E> graph;
 
-    public AbstractNode(Graph<I, D> graph) {
+    public AbstractNode(Graph<I, NP, EP, N, E> graph) {
         Objects.requireNonNull(graph);
         this.graph = graph;
     }
@@ -41,10 +40,11 @@ public abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implem
     };
 
     @Override
-    public Collection<Edge<I, D>> getEdges() {
+    public Collection<E> getEdges() {
         return getGraph()
                 .getEdges()
                 .stream()
+                .map(edge -> (E) edge)
                 .filter(e -> {
                     return e.getLeft() == this || e.getRight() == this;
                 })
@@ -60,7 +60,7 @@ public abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implem
      * @see org.medal.graph.Edge.Link
      */
     @Override
-    public Collection<Edge<I, D>> getIncomingEdges() {
+    public Collection<E> getIncomingEdges() {
         return getIncomingEdges(false);
     }
 
@@ -73,7 +73,7 @@ public abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implem
      * @see org.medal.graph.Edge.Link
      */
     @Override
-    public Collection<Edge<I, D>> getOutgoingEdges() {
+    public Collection<E> getOutgoingEdges() {
         return getOutgoingEdges(false);
     }
 
@@ -89,7 +89,7 @@ public abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implem
      * @see org.medal.graph.Edge.Link
      */
     @Override
-    public Collection<Edge<I, D>> getIncomingEdges(boolean includeUndirected) {
+    public Collection<E> getIncomingEdges(boolean includeUndirected) {
         return getEdges(InOut.IN, includeUndirected);
     }
 
@@ -105,7 +105,7 @@ public abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implem
      * @see org.medal.graph.Edge.Link
      */
     @Override
-    public Collection<Edge<I, D>> getOutgoingEdges(boolean includeUndirected) {
+    public Collection<E> getOutgoingEdges(boolean includeUndirected) {
         return getEdges(InOut.OUT, includeUndirected);
     }
 
@@ -118,10 +118,10 @@ public abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implem
      *
      * @return an unmodifiable collection of edges.
      */
-    private Collection<Edge<I, D>> getEdges(InOut inOut, boolean includeUndirected) {
+    private Collection<E> getEdges(InOut inOut, boolean includeUndirected) {
 
-        Collection<Edge<I, D>> edges = getEdges();
-        Set<Edge<I, D>> resultSet = edges.stream()
+        Collection<E> edges = getEdges();
+        Set<E> resultSet = edges.stream()
                 .filter(edge -> {
                     if (edge.getDirected() == Link.UNDIRECTED && includeUndirected) {
                         return true;
@@ -136,26 +136,23 @@ public abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implem
                         return false;
                     }
                 })
-                .collect(Collector.of(LinkedHashSet<Edge<I, D>>::new, Set::add, (left, right) -> {
-                    left.addAll(right);
-                    return left;
-                }, Collections::unmodifiableSet));
+                .collect(Collectors.toSet());
         return resultSet;
     }
 
     @Override
-    public Graph<I, D> getGraph() {
+    public Graph<I, NP, EP, N, E> getGraph() {
         return graph;
     }
 
     @Override
-    public Edge<I, D> connectNodeFromRight(Node<I, D> rightNode) {
-        return getGraph().connectNodes(this, rightNode, Link.DIRECTED);
+    public E connectNodeFromRight(N rightNode) {
+        return (E) getGraph().connectNodes((N) this, rightNode, Link.DIRECTED);
     }
 
     @Override
-    public Edge<I, D> connectNodeFromLeft(Node<I, D> leftNode) {
-        return getGraph().connectNodes(leftNode, this, Link.DIRECTED);
+    public E connectNodeFromLeft(N leftNode) {
+        return (E) getGraph().connectNodes(leftNode, (N) this, Link.DIRECTED);
     }
 
     /**
@@ -170,23 +167,24 @@ public abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implem
      * @throws NullPointerException if <code>otherNode</code> is undefined
      */
     @Override
-    public Edge<I, D> connect(Node<I, D> otherNode) {
-        return getGraph().connectNodes(this, otherNode, Link.UNDIRECTED);
+    public E connect(N otherNode) {
+        return (E) getGraph().connectNodes((N) this, otherNode, Link.UNDIRECTED);
     }
 
     @Override
-    public Set<Node<I, D>> getLinkedNodes() {
+    public Set<N> getLinkedNodes() {
         if (getEdges().isEmpty()) {
             return Collections.emptySet();
         }
 
-        Set<Node<I, D>> oppositeNodes = new LinkedHashSet();
-        for (Edge<I, D> edge : getEdges()) {
-            Node<I, D> opposite = edge.getOpposite(AbstractNode.this);
+        Set<N> oppositeNodes = new LinkedHashSet();
+
+        for (E edge : getEdges()) {
+            N opposite = edge.getOpposite((N) AbstractNode.this);
             oppositeNodes.add(opposite);
         }
 
-        return oppositeNodes;
+        return (Set<N>) oppositeNodes;
 
 //        return edges.stream()
 //                .map((Edge<I, D> edge) -> edge.getOpposite(Node.this))
@@ -197,10 +195,11 @@ public abstract class AbstractNode<I, D> extends AbstractDataObject<I, D> implem
 
     //TODO: Decide whether it should be a List instead of a Set. Should we consider completely identical edges as alternatives?
     @Override
-    public Set<Edge<I, D>> getEdgesToNode(Node<I, D> destination) {
+    public Set<E> getEdgesToNode(N destination) {
         return getEdges()
                 .stream()
-                .filter(e -> (e.getOpposite(AbstractNode.this).equals(destination)))
+                .map(edge -> (E) edge)
+                .filter(e -> (e.getOpposite((N) this).equals(destination)))
                 .collect(Collectors.toSet());
     }
 

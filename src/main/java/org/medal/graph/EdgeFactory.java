@@ -17,7 +17,7 @@ package org.medal.graph;
 
 import org.medal.graph.Edge.Link;
 
-public interface EdgeFactory<I, D> {
+public interface EdgeFactory<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
 
-    Edge<I, D> createEdge(Node<I, D> left, Node<I, D> right, Link direction);
+    E createEdge(N left, N right, Link direction);
 }

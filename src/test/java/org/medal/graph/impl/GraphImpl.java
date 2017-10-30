@@ -18,27 +18,27 @@ package org.medal.graph.impl;
 import org.medal.graph.Edge;
 import org.medal.graph.EdgeFactory;
 import org.medal.graph.IDProvider;
-import org.medal.graph.Node;
 import org.medal.graph.NodeFactory;
-import org.medal.graph.id.UUIDGenerator;
+import org.medal.graph.id.NumberIDProvider;
+import org.medal.graph.impl.AbstractGraph;
 
-public class GraphImpl extends AbstractGraph<String, String> {
-    
-    protected final UUIDGenerator uuidGenerator = new UUIDGenerator();
+public class GraphImpl extends AbstractGraph<Long, String, String, NodeImpl, EdgeImpl> {
+
+    protected final NumberIDProvider nidp = new NumberIDProvider();
 
     @Override
-    protected NodeFactory<String, String> getNodeFactory() {
+    protected NodeFactory<Long, String, String, NodeImpl, EdgeImpl> getNodeFactory() {
         return () -> new NodeImpl(GraphImpl.this);
     }
 
     @Override
-    protected EdgeFactory<String, String> getEdgeFactory() {
-        return (Node<String, String> left, Node<String, String> right, Edge.Link dir) -> new EdgeImpl(GraphImpl.this, left, right, dir);
+    protected EdgeFactory<Long, String, String, NodeImpl, EdgeImpl> getEdgeFactory() {
+        return (NodeImpl left, NodeImpl right, Edge.Link direction) -> new EdgeImpl(GraphImpl.this, left, right, direction);
     }
 
     @Override
-    protected IDProvider<String> getIdProvider() {
-        return uuidGenerator;
+    protected IDProvider<Long> getIdProvider() {
+        return nidp;
     }
 
 }
