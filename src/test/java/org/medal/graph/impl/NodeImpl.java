@@ -17,7 +17,7 @@ package org.medal.graph.impl;
 
 import org.medal.graph.Graph;
 
-class NodeImpl extends AbstractNode<Long, String> {
+public class NodeImpl extends AbstractNode<Long, String, String, NodeImpl, EdgeImpl> {
 
     NodeImpl(Graph graph) {
         super(graph);

@@ -22,7 +22,7 @@ import java.util.Set;
  *
  * @author skrymets
  */
-public interface Node<I, NP> extends DataObject<I, NP> {
+public interface Node<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends DataObject<I, NP> {
 
     // <E extends Edge<I, ?>>
     /**
@@ -36,18 +36,18 @@ public interface Node<I, NP> extends DataObject<I, NP> {
      *
      * @throws NullPointerException if <code>otherNode</code> is undefined
      */
-    <N extends Node<I, NP>, E extends Edge<I, N, ?>> E connect(N otherNode);
+    E connect(N otherNode);
 
-    <N extends Node<I, NP>, E extends Edge<I, N, ?>> E connectNodeFromLeft(N leftNode);
+    E connectNodeFromLeft(N leftNode);
 
-    <N extends Node<I, NP>, E extends Edge<I, N, ?>> E connectNodeFromRight(N rightNode);
+    E connectNodeFromRight(N rightNode);
 
-    <N extends Node<I, NP>, E extends Edge<I, N, ?>> Collection<E> getEdges();
+    Collection<E> getEdges();
 
     //TODO: Decide whether it should be a List instead of a Set. Should we consider completely identical edges as alternatives?
-    <N extends Node<I, NP>, E extends Edge<I, N, ?>> Set<E> getEdgesToNode(N destination);
+    Set<E> getEdgesToNode(N destination);
 
-    <N extends Node<I, NP>, E extends Edge<I, N, ?>> Graph<I, NP, ?, N, E> getGraph();
+    Graph<I, NP, EP, N, E> getGraph();
 
     /**
      * Returns a collection of the node's incoming edges, NOT including undirected, if any
@@ -57,7 +57,7 @@ public interface Node<I, NP> extends DataObject<I, NP> {
      *
      * @see org.medal.graph.Edge.Direction
      */
-    <N extends Node<I, NP>, E extends Edge<I, N, ?>> Collection<E> getIncomingEdges();
+    Collection<E> getIncomingEdges();
 
     /**
      * Returns a collection of the node's incoming edges.
@@ -70,9 +70,9 @@ public interface Node<I, NP> extends DataObject<I, NP> {
      *
      * @see org.medal.graph.Edge.Direction
      */
-    <N extends Node<I, NP>, E extends Edge<I, N, ?>> Collection<E> getIncomingEdges(boolean includeUndirected);
+    Collection<E> getIncomingEdges(boolean includeUndirected);
 
-    <N extends Node<I, NP>> Set<N> getLinkedNodes();
+    Set<N> getLinkedNodes();
 
     /**
      * Returns a collection of the node's outgoing edges, NOT including undirected, if any
@@ -82,7 +82,7 @@ public interface Node<I, NP> extends DataObject<I, NP> {
      *
      * @see org.medal.graph.Edge.Direction
      */
-    <N extends Node<I, NP>, E extends Edge<I, N, ?>> Collection<E> getOutgoingEdges();
+    Collection<E> getOutgoingEdges();
 
     /**
      * Returns a collection of the node's outgoing edges.
@@ -95,6 +95,6 @@ public interface Node<I, NP> extends DataObject<I, NP> {
      *
      * @see org.medal.graph.Edge.Direction
      */
-    <N extends Node<I, NP>, E extends Edge<I, N, ?>> Collection<E> getOutgoingEdges(boolean includeUndirected);
+    Collection<E> getOutgoingEdges(boolean includeUndirected);
 
 }

@@ -26,11 +26,11 @@ import org.medal.graph.Edge.Link;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
 
-public abstract class AbstractNode<I, NP> extends AbstractDataObject<I, NP> implements Node<I, NP> {
+public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, NP> implements Node<I, NP, EP, N, E> {
 
-    private final Graph<I, NP, ?, Node<I, NP>, Edge<I, Node<I, NP>, ?>> graph;
+    private final Graph<I, NP, EP, N, E> graph;
 
-    public AbstractNode(Graph<I, NP, ?, Node<I, NP>, Edge<I, Node<I, NP>, ?>> graph) {
+    public AbstractNode(Graph<I, NP, EP, N, E> graph) {
         Objects.requireNonNull(graph);
         this.graph = graph;
     }
@@ -40,7 +40,7 @@ public abstract class AbstractNode<I, NP> extends AbstractDataObject<I, NP> impl
     };
 
     @Override
-    public <N extends Node<I, NP>, E extends Edge<I, N, ?>> Collection<E> getEdges() {
+    public Collection<E> getEdges() {
         return getGraph()
                 .getEdges()
                 .stream()
@@ -60,7 +60,7 @@ public abstract class AbstractNode<I, NP> extends AbstractDataObject<I, NP> impl
      * @see org.medal.graph.Edge.Link
      */
     @Override
-    public <N extends Node<I, NP>, E extends Edge<I, N, ?>> Collection<E> getIncomingEdges() {
+    public Collection<E> getIncomingEdges() {
         return getIncomingEdges(false);
     }
 
@@ -73,7 +73,7 @@ public abstract class AbstractNode<I, NP> extends AbstractDataObject<I, NP> impl
      * @see org.medal.graph.Edge.Link
      */
     @Override
-    public <N extends Node<I, NP>, E extends Edge<I, N, ?>> Collection<E> getOutgoingEdges() {
+    public Collection<E> getOutgoingEdges() {
         return getOutgoingEdges(false);
     }
 
@@ -89,7 +89,7 @@ public abstract class AbstractNode<I, NP> extends AbstractDataObject<I, NP> impl
      * @see org.medal.graph.Edge.Link
      */
     @Override
-    public <N extends Node<I, NP>, E extends Edge<I, N, ?>> Collection<E> getIncomingEdges(boolean includeUndirected) {
+    public Collection<E> getIncomingEdges(boolean includeUndirected) {
         return getEdges(InOut.IN, includeUndirected);
     }
 
@@ -105,7 +105,7 @@ public abstract class AbstractNode<I, NP> extends AbstractDataObject<I, NP> impl
      * @see org.medal.graph.Edge.Link
      */
     @Override
-    public <N extends Node<I, NP>, E extends Edge<I, N, ?>> Collection<E> getOutgoingEdges(boolean includeUndirected) {
+    public Collection<E> getOutgoingEdges(boolean includeUndirected) {
         return getEdges(InOut.OUT, includeUndirected);
     }
 
@@ -118,7 +118,7 @@ public abstract class AbstractNode<I, NP> extends AbstractDataObject<I, NP> impl
      *
      * @return an unmodifiable collection of edges.
      */
-    private <N extends Node<I, NP>, E extends Edge<I, N, ?>> Collection<E> getEdges(InOut inOut, boolean includeUndirected) {
+    private Collection<E> getEdges(InOut inOut, boolean includeUndirected) {
 
         Collection<E> edges = getEdges();
         Set<E> resultSet = edges.stream()
@@ -141,18 +141,18 @@ public abstract class AbstractNode<I, NP> extends AbstractDataObject<I, NP> impl
     }
 
     @Override
-    public Graph<I, NP, ?, Node<I, NP>, Edge<I, Node<I, NP>, ?>> getGraph() {
+    public Graph<I, NP, EP, N, E> getGraph() {
         return graph;
     }
 
     @Override
-    public <N extends Node<I, NP>, E extends Edge<I, N, ?>> E connectNodeFromRight(N rightNode) {
-        return (E) getGraph().connectNodes(this, rightNode, Link.DIRECTED);
+    public E connectNodeFromRight(N rightNode) {
+        return (E) getGraph().connectNodes((N) this, rightNode, Link.DIRECTED);
     }
 
     @Override
-    public <N extends Node<I, NP>, E extends Edge<I, N, ?>> E connectNodeFromLeft(N leftNode) {
-        return (E) getGraph().connectNodes(leftNode, this, Link.DIRECTED);
+    public E connectNodeFromLeft(N leftNode) {
+        return (E) getGraph().connectNodes(leftNode, (N) this, Link.DIRECTED);
     }
 
     /**
@@ -167,20 +167,20 @@ public abstract class AbstractNode<I, NP> extends AbstractDataObject<I, NP> impl
      * @throws NullPointerException if <code>otherNode</code> is undefined
      */
     @Override
-    public <N extends Node<I, NP>, E extends Edge<I, N, ?>> E connect(N otherNode) {
-        return (E) getGraph().connectNodes(this, otherNode, Link.UNDIRECTED);
+    public E connect(N otherNode) {
+        return (E) getGraph().connectNodes((N) this, otherNode, Link.UNDIRECTED);
     }
 
     @Override
-    public <N extends Node<I, NP>> Set<N> getLinkedNodes() {
+    public Set<N> getLinkedNodes() {
         if (getEdges().isEmpty()) {
             return Collections.emptySet();
         }
 
-        Set<Node<I, NP>> oppositeNodes = new LinkedHashSet();
+        Set<N> oppositeNodes = new LinkedHashSet();
 
-        for (Edge<I, Node<I, NP>, ?> edge : getEdges()) {
-            Node<I, NP> opposite = edge.getOpposite(AbstractNode.this);
+        for (E edge : getEdges()) {
+            N opposite = edge.getOpposite((N) AbstractNode.this);
             oppositeNodes.add(opposite);
         }
 
@@ -195,7 +195,7 @@ public abstract class AbstractNode<I, NP> extends AbstractDataObject<I, NP> impl
 
     //TODO: Decide whether it should be a List instead of a Set. Should we consider completely identical edges as alternatives?
     @Override
-    public <N extends Node<I, NP>, E extends Edge<I, N, ?>> Set<E> getEdgesToNode(N destination) {
+    public Set<E> getEdgesToNode(N destination) {
         return getEdges()
                 .stream()
                 .map(edge -> (E) edge)

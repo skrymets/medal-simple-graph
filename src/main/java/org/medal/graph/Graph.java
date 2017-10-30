@@ -19,7 +19,7 @@ import java.util.Collection;
 import java.util.Set;
 import org.medal.graph.Edge.Link;
 
-public interface Graph<I, NP, EP, N extends Node<I, NP>, E extends Edge<I, N, EP>> {
+public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
 
     N createNode(NP payload);
 
