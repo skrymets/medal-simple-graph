@@ -30,11 +30,16 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
         DIRECTED, UNDIRECTED
     }
 
+    /**
+     * Returns a graph instance which this edge belongs to
+     *
+     * @return a graph instance, never <code>null</code>
+     */
+    Graph<I, ?, EP, N, E> getGraph();
+
     void collapse();
 
     Link getDirected();
-
-    Graph<I, ?, EP, N, E> getGraph();
 
     N getOpposite(N node);
 

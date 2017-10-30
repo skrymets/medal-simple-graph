@@ -25,6 +25,13 @@ import java.util.Set;
 public interface Node<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends DataObject<I, NP> {
 
     /**
+     * Returns a graph instance which this node belongs to
+     *
+     * @return a graph instance, never <code>null</code>
+     */
+    Graph<I, NP, EP, N, E> getGraph();
+
+    /**
      * Connects another node to this node with new undirected edge. A node that is being
      * connected is placed to the right side. The node to which the new is attached is
      * placed on the left side.
@@ -83,8 +90,6 @@ public interface Node<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      *         <code>null</code>.
      */
     Set<E> getEdgesToNode(N destination);
-
-    Graph<I, NP, EP, N, E> getGraph();
 
     /**
      * Returns a collection of the node's incoming edges, NOT including undirected, if any
