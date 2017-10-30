@@ -15,15 +15,24 @@
  */
 package org.medal.graph.id;
 
+import java.util.concurrent.atomic.AtomicLong;
 import org.medal.graph.IDProvider;
 
-public enum NullIDProvider implements IDProvider {
+/**
+ *
+ * @author skrymets
+ */
+public class NumberIDProvider implements IDProvider<Long> {
 
-    INSTANCE;
+    private final AtomicLong id = new AtomicLong(0L);
+
+    public NumberIDProvider() {
+    }
 
     @Override
-    public Object createId() {
-        return null;
+    public Long createId() {
+        return id.getAndIncrement();
+
     }
 
 }

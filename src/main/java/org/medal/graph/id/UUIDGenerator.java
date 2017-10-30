@@ -25,9 +25,4 @@ public class UUIDGenerator implements IDProvider<String> {
         return UUID.randomUUID().toString().replaceAll("-", "").toUpperCase();
     }
 
-    @Override
-    public String createId(Object object) {
-        return createId();
-    }
-
 }

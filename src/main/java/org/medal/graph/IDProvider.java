@@ -19,5 +19,4 @@ public interface IDProvider<I> {
 
     I createId();
 
-    I createId(Object object);
 }
