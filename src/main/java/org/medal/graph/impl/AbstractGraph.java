@@ -18,23 +18,20 @@ package org.medal.graph.impl;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.Objects;
 import java.util.Set;
-import org.medal.graph.Edge;
 import org.medal.graph.Edge.Link;
 import org.medal.graph.EdgeFactory;
 import org.medal.graph.Graph;
 import org.medal.graph.IDProvider;
 import org.medal.graph.NodeFactory;
 
-// Graph<I, NP, EP, N extends Node<I, NP>, E extends Edge<I, N, EP>>
 public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>> implements Graph<I, NP, EP, N, E> {
 
     private final Set<N> nodes = new HashSet<>();
 
-    private final Set<E> edges = new LinkedHashSet<>();
+    private final Set<E> edges = new HashSet<>();
 
     @Override
     public N createNode(NP payload) {
@@ -112,12 +109,12 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
     }
 
     @Override
-    public void breakEdge(Edge edge) {
-        if (edge == null || !edges.contains((E) edge)) {
+    public void breakEdge(E edge) {
+        if (edge == null || !edges.contains(edge)) {
             return;
         }
 
-        edges.remove((E) edge);
+        edges.remove(edge);
     }
 
     boolean registerEdge(E edge) {

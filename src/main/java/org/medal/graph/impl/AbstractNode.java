@@ -54,60 +54,22 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
                         Collections::unmodifiableSet
                 ));
     }
-
-    /**
-     * Returns a collection of the node's incoming edges, NOT including undirected, if any
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Link
-     */
+    
     @Override
     public Collection<E> getIncomingEdges() {
         return getIncomingEdges(false);
     }
 
-    /**
-     * Returns a collection of the node's outgoing edges, NOT including undirected, if any
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Link
-     */
     @Override
     public Collection<E> getOutgoingEdges() {
         return getOutgoingEdges(false);
     }
 
-    /**
-     * Returns a collection of the node's incoming edges.
-     *
-     * @param includeUndirected Should the undirected edges be considered as incoming
-     *                          either?
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Link
-     */
     @Override
     public Collection<E> getIncomingEdges(boolean includeUndirected) {
         return getEdges(InOut.IN, includeUndirected);
     }
 
-    /**
-     * Returns a collection of the node's outgoing edges.
-     *
-     * @param includeUndirected Should the undirected edges be considered as outgoing
-     *                          either?
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Link
-     */
     @Override
     public Collection<E> getOutgoingEdges(boolean includeUndirected) {
         return getEdges(InOut.OUT, includeUndirected);

@@ -37,22 +37,51 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      */
     Graph<I, ?, EP, N, E> getGraph();
 
-    void collapse();
-
+    /**
+     * Return this edge's direction attribute.
+     *
+     * @return direction attribute, never <code>null</code>
+     */
     Link getDirected();
 
-    N getOpposite(N node);
-
-    N getRight();
-
-    N getLeft();
-
+    /**
+     * Set this edge's direction attribute. If the <code>direction</code> value is
+     * <code>null</code>, then actual value will be set to <code>UNDIRECTED</code>
+     *
+     * @param direction attribute value
+     *
+     * @return this edge reference
+     */
     E setDirected(Link direction);
+
+    /**
+     * Returns a node that is linked to the specified <code>node</code> by this edge.
+     *
+     * @return a <code>Node</code> instance on the other side of this edge if the
+     *         specified <code>node</code> belongs to this edge, otherwise - <code>null</code>
+     */
+    N getOpposite(N node);
+    
+    /**
+     * Return a node that resides in left position of this edge.
+     *
+     * @return left node, never not <code>null</code>
+     */
+    N getLeft();
+    
+    /**
+     * Return a node that resides in right position of this edge.
+     *
+     * @return right node, never not <code>null</code>
+     */
+    N getRight();
+    
+    void collapse();
 
     E selfCopy();
 
     Collection<E> selfCopy(int copies);
 
-    Split<I, ?, EP, N, E> insertMiddleNode(N middleNode);
+    Split<I, NP, EP, N, E> insertMiddleNode(N middleNode);
 
 }

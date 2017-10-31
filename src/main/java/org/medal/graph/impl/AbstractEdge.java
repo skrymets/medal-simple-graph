@@ -25,7 +25,6 @@ import org.medal.graph.Edge.Link;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
 import org.medal.graph.Split;
-import org.medal.graph.empty.EmptyNode;
 
 public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, EP> implements Edge<I, NP, EP, N, E> {
 
@@ -76,7 +75,7 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
 
     @Override
     public E setDirected(Link direction) {
-        this.link = direction;
+        this.link = (direction == null) ? Link.UNDIRECTED : direction;
         return (E) this;
     }
 
@@ -87,7 +86,7 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
         } else if (right == node) {
             return left;
         } else {
-            return (N) EmptyNode.INSTANCE;
+            return null;
         }
     }
 
@@ -117,11 +116,11 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
 
     @Override
     public Split<I, NP, EP, N, E> insertMiddleNode(N middleNode) {
-        if (middleNode == null || middleNode == EmptyNode.INSTANCE) {
+        if (middleNode == null) {
             return Split.UNDEFINED;
         }
 
-        getGraph().breakEdge(this);
+        getGraph().breakEdge((E) this);
 
         //TODO: Should we preserve data? Does this make sense? If the data is a context-seisitive or unique?
         //E leftEdge = getGraph().connectNodes(left, middleNode, link);

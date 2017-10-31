@@ -68,6 +68,7 @@ public class NodeTest {
         assertSame(node1.getEdges().iterator().next(), node2.getEdges().iterator().next());
 
         node1.getEdges().add(connection);
+        fail("Should throw UnsupportedOperationException");
     }
 
     @Test
@@ -143,6 +144,7 @@ public class NodeTest {
         assertSame(edge.getRight(), rightNode);
 
         rightNode.connectNodeFromLeft(null);
+        fail("Should throw NullPointerException");
 
     }
 
@@ -160,6 +162,7 @@ public class NodeTest {
         assertSame(edge.getRight(), rightNode);
 
         leftNode.connectNodeFromRight(null);
+        fail("Should throw NullPointerException");
     }
 
     @Test
@@ -289,6 +292,7 @@ public class NodeTest {
         assertFalse(one2twoX.containsAll(Arrays.asList(one2three1)));
 
         one2twoX.add(one2three1);
+        fail("Should throw UnsupportedOperationException");
 
     }
 

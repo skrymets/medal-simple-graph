@@ -35,14 +35,14 @@ public interface Node<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      * Connects another node to this node with new undirected edge. A node that is being
      * connected is placed to the right side. The node to which the new is attached is
      * placed on the left side.
-     *
-     * @param otherNode a node to be connected
+     * 
+     * @param node a node to be connected
      *
      * @return new undirected edge
      *
      * @throws NullPointerException if <code>otherNode</code> is undefined
      */
-    E connect(N otherNode);
+    E connect(N node);
 
     /**
      * Connects another node to this node with new directed edge. A node that is being

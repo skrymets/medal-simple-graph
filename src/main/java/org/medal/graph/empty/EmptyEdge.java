@@ -26,8 +26,6 @@ public enum EmptyEdge implements Edge {
 
     INSTANCE;
 
-    public final static Split EMPTY_SPLIT = new Split(INSTANCE, INSTANCE);
-
     private final static Object EMPTY = new Object();
 
     @Override
@@ -66,7 +64,7 @@ public enum EmptyEdge implements Edge {
 
     @Override
     public Split insertMiddleNode(Node middleNode) {
-        return EMPTY_SPLIT;
+        return Split.UNDEFINED;
     }
 
     @Override

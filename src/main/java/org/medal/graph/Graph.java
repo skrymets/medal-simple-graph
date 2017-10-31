@@ -43,6 +43,6 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
 
     Set<N> getNodes();
 
-    void breakEdge(Edge edge);
+    void breakEdge(E edge);
 
 }

@@ -15,17 +15,25 @@
  */
 package org.medal.graph;
 
-import org.medal.graph.empty.EmptyEdge;
+import java.util.Objects;
 
 public class Split<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
 
-    public static final Split UNDEFINED = new Split(EmptyEdge.INSTANCE, EmptyEdge.INSTANCE);
+    public static final Split UNDEFINED = new Split();
 
     private final E leftEdge;
 
     private final E rightEdge;
 
+    private Split() {
+        this.leftEdge = null;
+        this.rightEdge = null;
+    }
+
     public Split(E leftEdge, E rightEdge) {
+        Objects.requireNonNull(leftEdge);
+        Objects.requireNonNull(rightEdge);
+
         this.leftEdge = leftEdge;
         this.rightEdge = rightEdge;
     }
