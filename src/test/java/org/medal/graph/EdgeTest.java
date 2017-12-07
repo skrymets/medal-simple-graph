@@ -87,7 +87,7 @@ public class EdgeTest {
         assertEquals(edge.getDirected(), Link.UNDIRECTED);
 
         assertSame(edge, retEdge);
-        
+
     }
 
     @Test
@@ -133,5 +133,53 @@ public class EdgeTest {
 
         assertNotNull(edge1to2.getRight());
         assertSame(edge1to2.getRight(), node2);
+    }
+
+    @Test
+    public void testInsertMiddleNode() {
+
+        final String testPayload = "0123456789";
+
+        NodeImpl node1 = nodes.get(0);
+        NodeImpl node3 = nodes.get(1);
+
+        EdgeImpl edge1to3 = node1.connect(node3);
+        edge1to3.setData(testPayload);
+        //
+        // [node1] -----(edge1to3:""0123456789"")----- [node3]
+        //
+
+        NodeImpl node2 = nodes.get(2);
+        Split split = edge1to3.insertMiddleNode(node2);
+
+        //
+        // [node1] -----(leftEdge)----- [node2] -----(rightEdge)----- [node3]
+        //
+        assertNotNull(split);
+        
+        /**
+         * The payload is presefved
+         */
+        assertEquals(split.getEdgePayload(), testPayload);
+
+        Edge leftEdge = split.getLeftEdge();
+        Edge rightEdge = split.getRightEdge();
+
+        assertNotNull(leftEdge);
+        assertNotNull(rightEdge);
+
+        assertSame(leftEdge.getLeft(), node1);
+        assertSame(leftEdge.getRight(), node2);
+
+        assertSame(rightEdge.getLeft(), node2);
+        assertSame(rightEdge.getRight(), node3);
+
+        /**
+         * The original edge is deattached from all it's parties.
+         */
+        assertFalse(graph.getEdges().contains(edge1to3));
+        assertFalse(node1.getEdges().contains(edge1to3));
+        assertFalse(node3.getEdges().contains(edge1to3));
+
     }
 }
