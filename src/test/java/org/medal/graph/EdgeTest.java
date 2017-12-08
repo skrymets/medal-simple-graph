@@ -135,7 +135,7 @@ public class EdgeTest {
         assertSame(edge1to2.getRight(), node2);
     }
 
-    @Test
+    @Test(expected = NullPointerException.class)
     public void testInsertMiddleNode() {
 
         final String testPayload = "0123456789";
@@ -180,6 +180,12 @@ public class EdgeTest {
         assertFalse(graph.getEdges().contains(edge1to3));
         assertFalse(node1.getEdges().contains(edge1to3));
         assertFalse(node3.getEdges().contains(edge1to3));
+        
+        /**
+         * Do not accept an undefined node
+         */
+        leftEdge.insertMiddleNode(null);
+        fail("Should throw a NullPointerException");
 
     }
 }
