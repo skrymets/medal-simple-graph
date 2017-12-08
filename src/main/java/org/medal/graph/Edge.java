@@ -61,27 +61,40 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      *         specified <code>node</code> belongs to this edge, otherwise - <code>null</code>
      */
     N getOpposite(N node);
-    
+
     /**
      * Return a node that resides in left position of this edge.
      *
      * @return left node, never not <code>null</code>
      */
     N getLeft();
-    
+
     /**
      * Return a node that resides in right position of this edge.
      *
      * @return right node, never not <code>null</code>
      */
     N getRight();
-    
+
     void collapse();
 
     E selfCopy();
 
     Collection<E> selfCopy(int copies);
 
+    /**
+     * "Cuts" this edge onto two parts and inserts a given node in-between. After this
+     * operation the edge's left and right nodes are not not linked to it anymore, while
+     * the edge still references them. The edge is not referenced by a graph object as
+     * well.
+     *
+     * @param middleNode a node to be inserted in-between
+     *
+     * @return <code>Split</code> object that holds references to both parts of the
+     *         divided edge, and a payload of the original edge, if any.
+     *
+     * @throws NullPointerException if <code>middleNode</code> is <code>null</code>.
+     */
     Split<I, NP, EP, N, E> insertMiddleNode(N middleNode);
 
 }

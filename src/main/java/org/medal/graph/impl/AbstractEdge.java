@@ -117,7 +117,7 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     @Override
     public Split<I, NP, EP, N, E> insertMiddleNode(N middleNode) {
         if (middleNode == null) {
-            return Split.UNDEFINED;
+            throw new NullPointerException("Can not insert an undefined node.");
         }
 
         getGraph().breakEdge((E) this);

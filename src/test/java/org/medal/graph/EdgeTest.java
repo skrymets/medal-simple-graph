@@ -146,7 +146,7 @@ public class EdgeTest {
         EdgeImpl edge1to3 = node1.connect(node3);
         edge1to3.setData(testPayload);
         //
-        // [node1] -----(edge1to3:""0123456789"")----- [node3]
+        // [node1] -----(edge1to3:"0123456789")----- [node3]
         //
 
         NodeImpl node2 = nodes.get(2);
@@ -156,9 +156,9 @@ public class EdgeTest {
         // [node1] -----(leftEdge)----- [node2] -----(rightEdge)----- [node3]
         //
         assertNotNull(split);
-        
+
         /**
-         * The payload is presefved
+         * The payload is preserved
          */
         assertEquals(split.getEdgePayload(), testPayload);
 
@@ -175,7 +175,7 @@ public class EdgeTest {
         assertSame(rightEdge.getRight(), node3);
 
         /**
-         * The original edge is deattached from all it's parties.
+         * The original edge is detached from all it's parties.
          */
         assertFalse(graph.getEdges().contains(edge1to3));
         assertFalse(node1.getEdges().contains(edge1to3));
