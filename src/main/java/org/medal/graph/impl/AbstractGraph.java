@@ -33,6 +33,9 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
 
     private final Set<E> edges = new HashSet<>();
 
+    public AbstractGraph() {
+    }
+    
     @Override
     public N createNode(NP payload) {
         N node = getNodeFactory().createNode();
