@@ -29,9 +29,9 @@ import org.medal.graph.NodeFactory;
 
 public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>> implements Graph<I, NP, EP, N, E> {
 
-    private final Set<N> nodes = new HashSet<>();
+    protected final Set<N> nodes = new HashSet<>();
 
-    private final Set<E> edges = new HashSet<>();
+    protected final Set<E> edges = new HashSet<>();
 
     public AbstractGraph() {
     }

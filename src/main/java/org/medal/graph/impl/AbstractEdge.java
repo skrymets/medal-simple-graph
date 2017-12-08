@@ -130,7 +130,10 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
         E rightEdge = getGraph().connectNodes(middleNode, right, link);
         rightEdge.setData(this.getData());
 
-        return new Split(leftEdge, rightEdge);
+        Split split = new Split(leftEdge, rightEdge);
+        split.setEdgePayload(getData()); // Preserve the payload
+
+        return split;
     }
 
     @Override

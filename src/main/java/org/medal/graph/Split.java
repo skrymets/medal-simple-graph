@@ -24,6 +24,8 @@ public class Split<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I,
     private final E leftEdge;
 
     private final E rightEdge;
+    
+    private EP edgePayload;
 
     private Split() {
         this.leftEdge = null;
@@ -44,6 +46,15 @@ public class Split<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I,
 
     public E getRightEdge() {
         return rightEdge;
+    }
+
+    public EP getEdgePayload() {
+        return edgePayload;
+    }
+
+    public Split<I, NP, EP, N, E> setEdgePayload(EP edgePayload) {
+        this.edgePayload = edgePayload;
+        return this;
     }
 
 }
