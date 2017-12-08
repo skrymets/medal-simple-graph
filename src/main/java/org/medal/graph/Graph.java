@@ -15,34 +15,96 @@
  */
 package org.medal.graph;
 
-import java.util.Collection;
 import java.util.Set;
 import org.medal.graph.Edge.Link;
 
 public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
 
+    /**
+     * Create a new graph node with a unique ID.
+     *
+     * @param payload node's payload. May be <code>null</code>
+     *
+     * @see org.medal.graph.IDProvider
+     * @return a new node.
+     */
     N createNode(NP payload);
 
+    /**
+     * Create a new graph node with a unique ID.
+     *
+     * @see org.medal.graph.IDProvider
+     * @return a new node.
+     */
     N createNode();
 
     /**
-     * Creates several new nodes that are not connected at this moment.
+     * Creates several new nodes that are not connected among each other at this moment.
      *
      * @param count a number of nodes to create
      *
      * @return a list of nodes that were created or an empty list, if <code>count</code>
      *         is less or equal to zero.
      */
-    Collection<N> createNodes(int count);
+    Set<N> createNodes(int count);
 
+    /**
+     * Creates a new link between two nodes.<br/>
+     * Connects <code>left</code> and <code>right</code> nodes with a new
+     * <code>Edge</code> with a unique ID.
+     *
+     * @param left      node to be placed at the left side of the relation
+     * @param right     node to be placed at the right side of the relation
+     * @param direction sets new edge to be whether <code>DIRECTED</code> or
+     *                  <code>UNDIRECTED</code>.
+     *
+     * @return a new <code>Edge</code> instance.
+     *
+     * @throws NullPointerException if <code>left</code> or <code>right</code> node is
+     *                              undefined - <code>null</code>.
+     * @see org.medal.graph.IDProvider
+     * @see org.medal.graph.Edge.Link#UNDIRECTED
+     */
     E connectNodes(N left, N right, Link direction);
 
+    /**
+     * Creates an <code>UNDIRECTED</code> link between two nodes.<br/>
+     * Connects <code>left</code> and <code>right</code> nodes with a new
+     * <code>Edge</code> with a unique ID.
+     *
+     * @param left  node to be placed at the left side of the relation
+     * @param right node to be placed at the right side of the relation
+     *
+     * @return a new <code>Edge</code> instance.
+     *
+     * @throws NullPointerException if <code>left</code> or <code>right</code> node is
+     *                              undefined - <code>null</code>.
+     * @see org.medal.graph.IDProvider
+     * @see org.medal.graph.Edge.Link#UNDIRECTED
+     */
     E connectNodes(N left, N right);
 
+    /**
+     * Returns an unmodifiable set of edges in this graph.
+     *
+     * @return a set of edges. Never <code>null</code>
+     */
     Set<E> getEdges();
 
+    /**
+     * Returns an unmodifiable set of nodes in this graph.
+     *
+     * @return a set of nodes. Never <code>null</code>
+     */
     Set<N> getNodes();
 
+    /**
+     * Removes edge from this graph. Both left and right nodes do not refer this edge
+     * anymore. <br/>
+     * If <code>edge</code> is <code>null</code> - does nothing.
+     *
+     * @param edge edge to be removed.
+     */
     void breakEdge(E edge);
 
 }

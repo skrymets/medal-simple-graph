@@ -15,11 +15,9 @@
  */
 package org.medal.graph.impl;
 
-import java.util.Collection;
-import java.util.Collections;
+import static java.util.Collections.unmodifiableSet;
 import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 import java.util.Set;
 import org.medal.graph.Edge.Link;
 import org.medal.graph.EdgeFactory;
@@ -35,7 +33,7 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
 
     public AbstractGraph() {
     }
-    
+
     @Override
     public N createNode(NP payload) {
         N node = getNodeFactory().createNode();
@@ -59,8 +57,8 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
      *         is less or equal to zero.
      */
     @Override
-    public Collection<N> createNodes(int count) {
-        Collection<N> newNodes = new LinkedList<>();
+    public Set<N> createNodes(int count) {
+        Set<N> newNodes = new HashSet<>();
         if (count > 0) {
             for (int i = 0; i < count; i++) {
                 newNodes.add(createNode());
@@ -71,12 +69,12 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
 
     @Override
     public Set<N> getNodes() {
-        return Collections.unmodifiableSet(nodes);
+        return unmodifiableSet(nodes);
     }
 
     @Override
     public Set<E> getEdges() {
-        return Collections.unmodifiableSet(edges);
+        return unmodifiableSet(edges);
     }
 
     /**
@@ -91,8 +89,8 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
     @Override
     public E connectNodes(N left, N right, Link direction) {
 
-        Objects.requireNonNull(left);
-        Objects.requireNonNull(right);
+        requireNonNull(left);
+        requireNonNull(right);
 
         if (left.getGraph() != right.getGraph()) {
             throw new IllegalArgumentException("Nodes can not belong to different graphs");

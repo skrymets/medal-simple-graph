@@ -65,8 +65,11 @@ public class EdgeTest {
 
         NodeImpl node1 = nodes.get(0);
         NodeImpl node2 = nodes.get(1);
+        
         EdgeImpl edge = node1.connect(node2);
-
+        //
+        // [node1] -----(edge)----- [node2]
+        //
         assertNotNull(edge.getDirected());
         assertEquals(edge.getDirected(), Link.UNDIRECTED);
 
@@ -77,12 +80,20 @@ public class EdgeTest {
 
         NodeImpl node1 = nodes.get(0);
         NodeImpl node2 = nodes.get(1);
+        
         EdgeImpl edge = node1.connectNodeFromRight(node2);
 
+        //
+        // [node1] -----(edge)----> [node2]
+        //       
         assertNotNull(edge.getDirected());
         assertEquals(edge.getDirected(), Link.DIRECTED);
 
         EdgeImpl retEdge = edge.setDirected(null);
+
+        //
+        // [node1] -----(edge)----- [node2]
+        //
         assertNotNull(edge.getDirected());
         assertEquals(edge.getDirected(), Link.UNDIRECTED);
 
@@ -97,8 +108,8 @@ public class EdgeTest {
         NodeImpl node2 = nodes.get(1);
 
         //
-        // [node1] ---------- [node2]       [node3]
-        //    ^_________________/
+        // [node1] -----(edge1to2)----- [node2]       [node3]
+        //    ^________(edge2to1)_________/
         //
         EdgeImpl edge1to2 = node1.connect(node2);
         EdgeImpl edge2to1 = node2.connectNodeFromRight(node1);
