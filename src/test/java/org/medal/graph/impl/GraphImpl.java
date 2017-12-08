@@ -20,7 +20,6 @@ import org.medal.graph.EdgeFactory;
 import org.medal.graph.IDProvider;
 import org.medal.graph.NodeFactory;
 import org.medal.graph.id.NumberIDProvider;
-import org.medal.graph.impl.AbstractGraph;
 
 public class GraphImpl extends AbstractGraph<Long, String, String, NodeImpl, EdgeImpl> {
 

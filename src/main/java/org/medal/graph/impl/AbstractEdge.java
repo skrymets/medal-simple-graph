@@ -20,12 +20,11 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.medal.graph.Edge.Link;
-import org.medal.graph.Split;
-import org.medal.graph.empty.EmptyNode;
-import org.medal.graph.Node;
-import org.medal.graph.Graph;
 import org.medal.graph.Edge;
+import org.medal.graph.Edge.Link;
+import org.medal.graph.Graph;
+import org.medal.graph.Node;
+import org.medal.graph.Split;
 
 public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, EP> implements Edge<I, NP, EP, N, E> {
 
@@ -76,18 +75,18 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
 
     @Override
     public E setDirected(Link direction) {
-        this.link = direction;
+        this.link = (direction == null) ? Link.UNDIRECTED : direction;
         return (E) this;
     }
 
     @Override
     public N getOpposite(N node) {
-        if (left.equals(node)) { //TODO: Equals or == ?
+        if (left == node) {
             return right;
-        } else if (right.equals(node)) {
+        } else if (right == node) {
             return left;
         } else {
-            return (N) EmptyNode.INSTANCE;
+            return null;
         }
     }
 
@@ -117,11 +116,11 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
 
     @Override
     public Split<I, NP, EP, N, E> insertMiddleNode(N middleNode) {
-        if (middleNode == null || middleNode == EmptyNode.INSTANCE) {
-            return Split.UNDEFINED;
+        if (middleNode == null) {
+            throw new NullPointerException("Can not insert an undefined node.");
         }
 
-        getGraph().breakEdge(this);
+        getGraph().breakEdge((E) this);
 
         //TODO: Should we preserve data? Does this make sense? If the data is a context-seisitive or unique?
         //E leftEdge = getGraph().connectNodes(left, middleNode, link);
@@ -131,7 +130,10 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
         E rightEdge = getGraph().connectNodes(middleNode, right, link);
         rightEdge.setData(this.getData());
 
-        return new Split(leftEdge, rightEdge);
+        Split split = new Split(leftEdge, rightEdge);
+        split.setEdgePayload(getData()); // Preserve the payload
+
+        return split;
     }
 
     @Override

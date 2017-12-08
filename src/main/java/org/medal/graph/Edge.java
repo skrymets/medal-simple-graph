@@ -30,24 +30,71 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
         DIRECTED, UNDIRECTED
     }
 
-    void collapse();
-
-    Link getDirected();
-
+    /**
+     * Returns a graph instance which this edge belongs to
+     *
+     * @return a graph instance, never <code>null</code>
+     */
     Graph<I, ?, EP, N, E> getGraph();
 
+    /**
+     * Return this edge's direction attribute.
+     *
+     * @return direction attribute, never <code>null</code>
+     */
+    Link getDirected();
+
+    /**
+     * Set this edge's direction attribute. If the <code>direction</code> value is
+     * <code>null</code>, then actual value will be set to <code>UNDIRECTED</code>
+     *
+     * @param direction attribute value
+     *
+     * @return this edge reference
+     */
+    E setDirected(Link direction);
+
+    /**
+     * Returns a node that is linked to the specified <code>node</code> by this edge.
+     *
+     * @return a <code>Node</code> instance on the other side of this edge if the
+     *         specified <code>node</code> belongs to this edge, otherwise - <code>null</code>
+     */
     N getOpposite(N node);
 
-    N getRight();
-
+    /**
+     * Return a node that resides in left position of this edge.
+     *
+     * @return left node, never not <code>null</code>
+     */
     N getLeft();
 
-    E setDirected(Link direction);
+    /**
+     * Return a node that resides in right position of this edge.
+     *
+     * @return right node, never not <code>null</code>
+     */
+    N getRight();
+
+    void collapse();
 
     E selfCopy();
 
     Collection<E> selfCopy(int copies);
 
-    Split<I, ?, EP, N, E> insertMiddleNode(N middleNode);
+    /**
+     * "Cuts" this edge onto two parts and inserts a given node in-between. After this
+     * operation the edge's left and right nodes are not not linked to it anymore, while
+     * the edge still references them. The edge is not referenced by a graph object as
+     * well.
+     *
+     * @param middleNode a node to be inserted in-between
+     *
+     * @return <code>Split</code> object that holds references to both parts of the
+     *         divided edge, and a payload of the original edge, if any.
+     *
+     * @throws NullPointerException if <code>middleNode</code> is <code>null</code>.
+     */
+    Split<I, NP, EP, N, E> insertMiddleNode(N middleNode);
 
 }
