@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph.impl;
+package org.medal.graph.api;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -21,17 +21,15 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 import static java.util.stream.Collectors.collectingAndThen;
-import org.medal.graph.Edge;
-import org.medal.graph.Edge.Link;
-import org.medal.graph.Graph;
-import org.medal.graph.Node;
-import org.medal.graph.empty.EmptyNode;
+import org.medal.graph.api.IEdge.Link;
 
-public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, NP> implements Node<I, NP, EP, N, E> {
+public abstract class AbstractNode<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>>
+        extends AbstractDataObject<I, NP>
+        implements INode<I, NP, EP, N, E> {
 
-    private final Graph<I, NP, EP, N, E> graph;
+    private final IGraph<I, NP, EP, N, E> graph;
 
-    public AbstractNode(Graph<I, NP, EP, N, E> graph) {
+    public AbstractNode(IGraph<I, NP, EP, N, E> graph) {
         Objects.requireNonNull(graph);
         this.graph = graph;
     }
@@ -54,7 +52,7 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
                         Collections::unmodifiableSet
                 ));
     }
-    
+
     @Override
     public Collection<E> getIncomingEdges() {
         return getIncomingEdges(false);
@@ -110,7 +108,7 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     }
 
     @Override
-    public Graph<I, NP, EP, N, E> getGraph() {
+    public IGraph<I, NP, EP, N, E> getGraph() {
         return graph;
     }
 
@@ -148,7 +146,6 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
 
         return getEdges().stream()
                 .map((edge) -> edge.getOpposite((N) AbstractNode.this))
-                .filter((oppositeNode) -> !(oppositeNode == EmptyNode.INSTANCE))
                 .collect(collectingAndThen(
                         Collectors.toSet(),
                         Collections::unmodifiableSet
@@ -191,7 +188,7 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
         if (getClass() != obj.getClass()) {
             return false;
         }
-        final Node other = (Node) obj;
+        final INode other = (INode) obj;
         //TODO: Consider nodes equality in the comparison, but avoid endless recursion!
         if (!Objects.equals(this.getId(), other.getId())) {
             return false;

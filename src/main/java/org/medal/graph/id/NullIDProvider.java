@@ -15,7 +15,7 @@
  */
 package org.medal.graph.id;
 
-import org.medal.graph.IDProvider;
+import org.medal.graph.api.IDProvider;
 
 public enum NullIDProvider implements IDProvider {
 

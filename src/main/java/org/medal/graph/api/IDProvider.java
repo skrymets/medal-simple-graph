@@ -13,11 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph;
+package org.medal.graph.api;
 
-import org.medal.graph.Edge.Link;
+public interface IDProvider<I> {
 
-public interface EdgeFactory<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
+    I createId();
 
-    E createEdge(N left, N right, Link direction);
 }

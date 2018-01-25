@@ -13,16 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph.impl;
+package org.medal.graph.api;
 
-import org.medal.graph.Edge.Link;
-import org.medal.graph.Graph;
+public interface NodeFactory<I, NP, EP, N extends INode<I, NP, EP, N, E>, E extends IEdge<I, NP, EP, N, E>> {
 
+    N createNode();
 
-public class EdgeImpl extends AbstractEdge<Long, String, String, NodeImpl, EdgeImpl> {
-
-    EdgeImpl(Graph graph, NodeImpl left, NodeImpl right, Link link) {
-        super(graph, left, right, link);
-    }
-    
 }

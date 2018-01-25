@@ -17,50 +17,50 @@ package org.medal.graph.empty;
 
 import java.util.Collections;
 import java.util.Set;
-import org.medal.graph.Edge;
-import org.medal.graph.Graph;
-import org.medal.graph.Node;
+import org.medal.graph.api.IGraph;
+import org.medal.graph.api.INode;
+import org.medal.graph.api.IEdge;
 
-public enum EmptyGraph implements Graph {
+public enum EmptyGraph implements IGraph {
 
     INSTANCE;
 
     @Override
-    public void breakEdge(Edge edge) {
+    public void breakEdge(IEdge edge) {
     }
 
     @Override
-    public Node createNode(Object payload) {
+    public INode createNode(Object payload) {
         return EmptyNode.INSTANCE;
     }
 
     @Override
-    public Node createNode() {
+    public INode createNode() {
         return EmptyNode.INSTANCE;
     }
 
     @Override
-    public Set<Node> createNodes(int count) {
+    public Set<INode> createNodes(int count) {
         return Collections.emptySet();
     }
 
     @Override
-    public Edge connectNodes(Node left, Node right, Edge.Link direction) {
+    public IEdge connectNodes(INode left, INode right, IEdge.Link direction) {
         return EmptyEdge.INSTANCE;
     }
 
     @Override
-    public Edge connectNodes(Node left, Node right) {
+    public IEdge connectNodes(INode left, INode right) {
         return EmptyEdge.INSTANCE;
     }
 
     @Override
-    public Set<Edge> getEdges() {
+    public Set<IEdge> getEdges() {
         return Collections.emptySet();
     }
 
     @Override
-    public Set<Node> getNodes() {
+    public Set<INode> getNodes() {
         return Collections.emptySet();
     }
 

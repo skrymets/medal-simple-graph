@@ -17,12 +17,12 @@ package org.medal.graph.empty;
 
 import java.util.Collection;
 import java.util.Collections;
-import org.medal.graph.Edge;
-import org.medal.graph.Graph;
-import org.medal.graph.Node;
-import org.medal.graph.Split;
+import org.medal.graph.api.Split;
+import org.medal.graph.api.IGraph;
+import org.medal.graph.api.INode;
+import org.medal.graph.api.IEdge;
 
-public enum EmptyEdge implements Edge {
+public enum EmptyEdge implements IEdge {
 
     INSTANCE;
 
@@ -33,7 +33,7 @@ public enum EmptyEdge implements Edge {
     }
 
     @Override
-    public Graph getGraph() {
+    public IGraph getGraph() {
         return EmptyGraph.INSTANCE;
     }
 
@@ -43,37 +43,37 @@ public enum EmptyEdge implements Edge {
     }
 
     @Override
-    public Edge setDirected(Link direction) {
+    public IEdge setDirected(Link direction) {
         return EmptyEdge.INSTANCE;
     }
 
     @Override
-    public Node getLeft() {
+    public INode getLeft() {
         return EmptyNode.INSTANCE;
     }
 
     @Override
-    public Node getOpposite(Node node) {
+    public INode getOpposite(INode node) {
         return EmptyNode.INSTANCE;
     }
 
     @Override
-    public Node getRight() {
+    public INode getRight() {
         return EmptyNode.INSTANCE;
     }
 
     @Override
-    public Split insertMiddleNode(Node middleNode) {
+    public Split insertMiddleNode(INode middleNode) {
         return Split.UNDEFINED;
     }
 
     @Override
-    public Collection<Edge> selfCopy(int copies) {
+    public Collection<IEdge> selfCopy(int copies) {
         return Collections.emptySet();
     }
 
     @Override
-    public Edge selfCopy() {
+    public IEdge selfCopy() {
         return INSTANCE;
     }
 

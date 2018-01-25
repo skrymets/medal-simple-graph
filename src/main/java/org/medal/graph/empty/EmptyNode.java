@@ -18,68 +18,68 @@ package org.medal.graph.empty;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
-import org.medal.graph.Edge;
-import org.medal.graph.Graph;
-import org.medal.graph.Node;
+import org.medal.graph.api.IGraph;
+import org.medal.graph.api.INode;
+import org.medal.graph.api.IEdge;
 
-public enum EmptyNode implements Node {
+public enum EmptyNode implements INode {
 
     INSTANCE;
 
     private final static Object EMPTY = new Object();
 
     @Override
-    public Edge connect(Node otherNode) {
+    public IEdge connect(INode otherNode) {
         return EmptyEdge.INSTANCE;
     }
 
     @Override
-    public Edge connectNodeFromLeft(Node leftNode) {
+    public IEdge connectNodeFromLeft(INode leftNode) {
         return EmptyEdge.INSTANCE;
     }
 
     @Override
-    public Edge connectNodeFromRight(Node rightNode) {
+    public IEdge connectNodeFromRight(INode rightNode) {
         return EmptyEdge.INSTANCE;
     }
 
     @Override
-    public Collection<Edge> getEdges() {
+    public Collection<IEdge> getEdges() {
         return Collections.emptySet();
     }
 
     @Override
-    public Set<Edge> getEdgesToNode(Node destination) {
+    public Set<IEdge> getEdgesToNode(INode destination) {
         return Collections.emptySet();
     }
 
     @Override
-    public Graph getGraph() {
+    public IGraph getGraph() {
         return EmptyGraph.INSTANCE;
     }
 
     @Override
-    public Collection<Edge> getIncomingEdges() {
+    public Collection<IEdge> getIncomingEdges() {
         return Collections.emptySet();
     }
 
     @Override
-    public Collection<Edge> getIncomingEdges(boolean includeUndirected) {
+    public Collection<IEdge> getIncomingEdges(boolean includeUndirected) {
         return Collections.emptySet();
     }
 
     @Override
-    public Set<Node> getLinkedNodes() {
+    public Set<INode> getLinkedNodes() {
         return Collections.emptySet();
     }
 
     @Override
-    public Collection<Edge> getOutgoingEdges() {
+    public Collection<IEdge> getOutgoingEdges() {
         return Collections.emptySet();
     }
 
     @Override
-    public Collection<Edge> getOutgoingEdges(boolean includeUndirected) {
+    public Collection<IEdge> getOutgoingEdges(boolean includeUndirected) {
         return Collections.emptySet();
     }
 

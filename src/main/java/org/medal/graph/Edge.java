@@ -16,85 +16,75 @@
 package org.medal.graph;
 
 import java.util.Collection;
+import org.medal.graph.api.AbstractEdge;
+import org.medal.graph.api.IEdge.Link;
+import org.medal.graph.api.IGraph;
+import org.medal.graph.api.Split;
 
-public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends DataObject<I, EP> {
+public class Edge<N, E> extends AbstractEdge<Long, N, E, Node<N, E>, Edge<N, E>> {
 
-    /**
-     * "Link" means that imaginary arrow points from LEFT to RIGHT node
-     * (L) ----> (R)
-     * According to this definition another definition emerges:
-     * 1) A DIRECTED edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
-     * 2) A UNDIRECTED edge is neither OUTGOING nor INCOMING for any node
-     */
-    public enum Link {
-        DIRECTED, UNDIRECTED
+    Edge(Graph<N, E> graph, Node<N, E> left, Node<N, E> right, Link link) {
+        super(graph, left, right, link);
     }
 
-    /**
-     * Returns a graph instance which this edge belongs to
-     *
-     * @return a graph instance, never <code>null</code>
-     */
-    Graph<I, ?, EP, N, E> getGraph();
+    @Override
+    public Split<Long, N, E, Node<N, E>, Edge<N, E>> insertMiddleNode(Node<N, E> middleNode) {
+        return super.insertMiddleNode(middleNode);
+    }
 
-    /**
-     * Return this edge's direction attribute.
-     *
-     * @return direction attribute, never <code>null</code>
-     */
-    Link getDirected();
+    @Override
+    public Edge<N, E> selfCopy() {
+        return super.selfCopy();
+    }
 
-    /**
-     * Set this edge's direction attribute. If the <code>direction</code> value is
-     * <code>null</code>, then actual value will be set to <code>UNDIRECTED</code>
-     *
-     * @param direction attribute value
-     *
-     * @return this edge reference
-     */
-    E setDirected(Link direction);
+    @Override
+    public Collection<Edge<N, E>> selfCopy(int copies) {
+        return super.selfCopy(copies);
+    }
 
-    /**
-     * Returns a node that is linked to the specified <code>node</code> by this edge.
-     *
-     * @return a <code>Node</code> instance on the other side of this edge if the
-     *         specified <code>node</code> belongs to this edge, otherwise - <code>null</code>
-     */
-    N getOpposite(N node);
+    @Override
+    public Node<N, E> getOpposite(Node<N, E> node) {
+        return super.getOpposite(node);
+    }
 
-    /**
-     * Return a node that resides in left position of this edge.
-     *
-     * @return left node, never not <code>null</code>
-     */
-    N getLeft();
+    @Override
+    public Edge<N, E> setDirected(Link direction) {
+        return super.setDirected(direction);
+    }
 
-    /**
-     * Return a node that resides in right position of this edge.
-     *
-     * @return right node, never not <code>null</code>
-     */
-    N getRight();
+    @Override
+    public IGraph<Long, N, E, Node<N, E>, Edge<N, E>> getGraph() {
+        return super.getGraph();
+    }
 
-    void collapse();
+    @Override
+    public Node<N, E> getRight() {
+        return super.getRight();
+    }
 
-    E selfCopy();
+    @Override
+    public Node<N, E> getLeft() {
+        return super.getLeft();
+    }
 
-    Collection<E> selfCopy(int copies);
+    @Override
+    public void setData(E data) {
+        super.setData(data);
+    }
 
-    /**
-     * "Cuts" this edge onto two parts and inserts a given node in-between. After this
-     * operation the edge's left and right nodes are not not linked to it anymore, while
-     * the edge still references them. The edge is not referenced by a graph object as
-     * well.
-     *
-     * @param middleNode a node to be inserted in-between
-     *
-     * @return <code>Split</code> object that holds references to both parts of the
-     *         divided edge, and a payload of the original edge, if any.
-     *
-     * @throws NullPointerException if <code>middleNode</code> is <code>null</code>.
-     */
-    Split<I, NP, EP, N, E> insertMiddleNode(N middleNode);
+    @Override
+    public E getData() {
+        return super.getData();
+    }
+
+    @Override
+    public void setId(Long id) {
+        super.setId(id);
+    }
+
+    @Override
+    public Long getId() {
+        return super.getId();
+    }
 
 }

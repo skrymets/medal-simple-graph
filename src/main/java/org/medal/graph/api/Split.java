@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph;
+package org.medal.graph.api;
 
 import java.util.Objects;
 
-public class Split<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
+public class Split<I, NP, EP, N extends INode<I, NP, EP, N, E>, E extends IEdge<I, NP, EP, N, E>> {
 
     public static final Split UNDEFINED = new Split();
 

@@ -13,34 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph.impl;
+package org.medal.graph.api;
 
-import org.medal.graph.DataObject;
+import org.medal.graph.api.IEdge.Link;
 
-public abstract class AbstractDataObject<I, D> implements DataObject<I, D> {
+public interface EdgeFactory<I, NP, EP, N extends INode<I, NP, EP, N, E>, E extends IEdge<I, NP, EP, N, E>> {
 
-    protected I id;
-    
-    protected D data;
-
-    @Override
-    public I getId() {
-        return id;
-    }
-
-    @Override
-    public void setId(I id) {
-        this.id = id;
-    }
-
-    @Override
-    public D getData() {
-        return data;
-    }
-
-    @Override
-    public void setData(D data) {
-        this.data = data;
-    }
-
+    E createEdge(N left, N right, Link direction);
 }

@@ -13,19 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph.impl;
+package org.medal.graph.api;
 
 import static java.util.Collections.unmodifiableSet;
 import java.util.HashSet;
 import static java.util.Objects.requireNonNull;
 import java.util.Set;
-import org.medal.graph.Edge.Link;
-import org.medal.graph.EdgeFactory;
-import org.medal.graph.Graph;
-import org.medal.graph.IDProvider;
-import org.medal.graph.NodeFactory;
+import org.medal.graph.api.IEdge.Link;
 
-public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>> implements Graph<I, NP, EP, N, E> {
+public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>>
+        implements IGraph<I, NP, EP, N, E> {
 
     protected final Set<N> nodes = new HashSet<>();
 

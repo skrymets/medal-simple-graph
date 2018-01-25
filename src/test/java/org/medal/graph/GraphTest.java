@@ -15,6 +15,9 @@
  */
 package org.medal.graph;
 
+import org.medal.graph.api.INode;
+import org.medal.graph.api.IEdge;
+import org.medal.graph.api.IGraph;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -24,9 +27,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import static org.junit.Assert.*;
 import org.junit.Test;
-import org.medal.graph.impl.EdgeImpl;
-import org.medal.graph.impl.GraphImpl;
-import org.medal.graph.impl.NodeImpl;
 
 /**
  *
@@ -34,21 +34,21 @@ import org.medal.graph.impl.NodeImpl;
  */
 public class GraphTest {
 
-    Comparator<NodeImpl> nodesComparator;
-    Comparator<EdgeImpl> edgesComparator;
+    Comparator<Node> nodesComparator;
+    Comparator<Edge> edgesComparator;
 
     public GraphTest() {
-        nodesComparator = (NodeImpl o1, NodeImpl o2) -> {
+        nodesComparator = (Node o1, Node o2) -> {
             return o1.getId().compareTo(o2.getId());
         };
-        edgesComparator = (EdgeImpl o1, EdgeImpl o2) -> {
+        edgesComparator = (Edge o1, Edge o2) -> {
             return o1.getId().compareTo(o2.getId());
         };
     }
 
     @Test
     public void testCreateNode() {
-        Graph graph = new GraphImpl();
+        Graph graph = new Graph();
         Node node1 = graph.createNode();
 
         assertNotNull(node1);
@@ -68,23 +68,22 @@ public class GraphTest {
 
     @Test
     public void testCreateNodes() {
-        GraphImpl graph = new GraphImpl();
+        Graph graph = new Graph();
 
-        Set<NodeImpl> twoNodes = graph.createNodes(2);
+        Set<Node> twoNodes = graph.createNodes(2);
         assertNotNull(twoNodes);
         assertEquals(twoNodes.size(), 2);
 
         assertNotNull(graph.getNodes());
         assertEquals(graph.getNodes().size(), 2);
 
-        Collection<NodeImpl> anotherTwoNodes = graph.createNodes(2);
+        Collection<Node> anotherTwoNodes = graph.createNodes(2);
         assertEquals(anotherTwoNodes.size(), 2);
         assertEquals(graph.getNodes().size(), 4);
 
         // No edges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        long generatedEdgesCount = graph.getNodes().stream()
-                .flatMap((Node t) -> t.getEdges().stream())
-                .count();
+        
+        long generatedEdgesCount = graph.getEdges().size();
         assertEquals(generatedEdgesCount, 0L);
 
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -96,8 +95,8 @@ public class GraphTest {
         assertNotEquals(firstTwo, secondTwo);
 
         // Silently process non-positive values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        GraphImpl graph2 = new GraphImpl();
-        Set<NodeImpl> nodes = graph2.createNodes(-1000);
+        Graph graph2 = new Graph();
+        Set<Node> nodes = graph2.createNodes(-1000);
         assertNotNull(nodes);
         assertEquals(nodes.size(), 0);
 
@@ -108,20 +107,20 @@ public class GraphTest {
 
     @Test(expected = NullPointerException.class)
     public void testConnectNodes() {
-        GraphImpl graph = new GraphImpl();
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
-        final NodeImpl node1 = nodes.get(0);
-        final NodeImpl node2 = nodes.get(1);
+        Graph graph = new Graph();
+        List<Node> nodes = new ArrayList<>(graph.createNodes(2));
+        final Node node1 = nodes.get(0);
+        final Node node2 = nodes.get(1);
 
-        EdgeImpl undirectedConnection1 = graph.connectNodes(node1, node2);
+        Edge undirectedConnection1 = graph.connectNodes(node1, node2);
         assertNotNull(undirectedConnection1);
-        assertEquals(undirectedConnection1.getDirected(), Edge.Link.UNDIRECTED);
+        assertEquals(undirectedConnection1.getDirected(), IEdge.Link.UNDIRECTED);
 
-        EdgeImpl undirectedConnection2 = graph.connectNodes(node1, node2, Edge.Link.UNDIRECTED);
-        assertEquals(undirectedConnection2.getDirected(), Edge.Link.UNDIRECTED);
+        Edge undirectedConnection2 = graph.connectNodes(node1, node2, IEdge.Link.UNDIRECTED);
+        assertEquals(undirectedConnection2.getDirected(), IEdge.Link.UNDIRECTED);
 
-        EdgeImpl directedConnection1 = graph.connectNodes(node1, node2, Edge.Link.DIRECTED);
-        assertEquals(directedConnection1.getDirected(), Edge.Link.DIRECTED);
+        Edge directedConnection1 = graph.connectNodes(node1, node2, IEdge.Link.DIRECTED);
+        assertEquals(directedConnection1.getDirected(), IEdge.Link.DIRECTED);
 
         assertNotEquals(undirectedConnection1, undirectedConnection2);
         assertNotEquals(undirectedConnection2, directedConnection1);
@@ -135,19 +134,19 @@ public class GraphTest {
 
     @Test
     public void testGetEdges() {
-        GraphImpl graph = new GraphImpl();
-        Set<EdgeImpl> edges = graph.getEdges();
+        Graph graph = new Graph();
+        Set<Edge> edges = graph.getEdges();
 
         assertNotNull(edges);
 
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
-        final NodeImpl node1 = nodes.get(0);
-        final NodeImpl node2 = nodes.get(1);
+        List<Node> nodes = new ArrayList<>(graph.createNodes(2));
+        final Node node1 = nodes.get(0);
+        final Node node2 = nodes.get(1);
 
-        EdgeImpl edge1 = node1.connect(node2);
+        Edge edge1 = node1.connect(node2);
         assertEquals(graph.getEdges().size(), 1);
 
-        EdgeImpl edge2 = node1.connect(node2);
+        Edge edge2 = node1.connect(node2);
         assertEquals(graph.getEdges().size(), 2);
 
         assertNotEquals(edge1, edge2);
@@ -156,8 +155,8 @@ public class GraphTest {
 
     @Test
     public void testGetNodes() {
-        Graph graph = new GraphImpl();
-        Collection<NodeImpl> newNodes = graph.createNodes(2);
+        IGraph graph = new Graph();
+        Collection<Node> newNodes = graph.createNodes(2);
 
         assertNotNull(graph.getNodes());
         assertFalse(graph.getNodes().isEmpty());
@@ -172,13 +171,13 @@ public class GraphTest {
 
     @Test
     public void testBreakEdge() {
-        GraphImpl graph = new GraphImpl();
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
+        Graph graph = new Graph();
+        List<Node> nodes = new ArrayList<>(graph.createNodes(2));
 
-        final NodeImpl node1 = nodes.get(0);
-        final NodeImpl node2 = nodes.get(1);
+        final Node node1 = nodes.get(0);
+        final Node node2 = nodes.get(1);
 
-        EdgeImpl edge = node1.connect(node2);
+        Edge edge = node1.connect(node2);
         assertNotNull(edge);
 
         // NOT fails on null

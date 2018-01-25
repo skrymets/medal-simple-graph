@@ -15,15 +15,14 @@
  */
 package org.medal.graph;
 
+import org.medal.graph.api.IEdge;
+import org.medal.graph.api.Split;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
-import org.medal.graph.Edge.Link;
-import org.medal.graph.impl.EdgeImpl;
-import org.medal.graph.impl.GraphImpl;
-import org.medal.graph.impl.NodeImpl;
+import org.medal.graph.api.IEdge.Link;
 
 /**
  *
@@ -31,9 +30,9 @@ import org.medal.graph.impl.NodeImpl;
  */
 public class EdgeTest {
 
-    protected GraphImpl graph;
+    protected Graph graph;
 
-    protected List<NodeImpl> nodes;
+    protected List<Node<Object,Object>> nodes;
 
     protected static final int INITIAL_NODES_COUNT = 10;
 
@@ -42,7 +41,7 @@ public class EdgeTest {
 
     @Before
     public void prepareData() {
-        graph = new GraphImpl();
+        graph = new Graph();
         nodes = new ArrayList<>(graph.createNodes(INITIAL_NODES_COUNT));
     }
 
@@ -51,10 +50,10 @@ public class EdgeTest {
 
         assertEquals(nodes.size(), INITIAL_NODES_COUNT);
 
-        NodeImpl node1 = nodes.get(0);
-        NodeImpl node2 = nodes.get(1);
+        Node node1 = nodes.get(0);
+        Node node2 = nodes.get(1);
 
-        EdgeImpl edge = node1.connect(node2);
+        Edge edge = node1.connect(node2);
         assertNotNull(edge.getGraph());
         assertSame(edge.getGraph(), graph);
 
@@ -63,10 +62,10 @@ public class EdgeTest {
     @Test
     public void testGetDirected() {
 
-        NodeImpl node1 = nodes.get(0);
-        NodeImpl node2 = nodes.get(1);
+        Node node1 = nodes.get(0);
+        Node node2 = nodes.get(1);
         
-        EdgeImpl edge = node1.connect(node2);
+        Edge edge = node1.connect(node2);
         //
         // [node1] -----(edge)----- [node2]
         //
@@ -78,10 +77,10 @@ public class EdgeTest {
     @Test
     public void testSetDirected() {
 
-        NodeImpl node1 = nodes.get(0);
-        NodeImpl node2 = nodes.get(1);
+        Node node1 = nodes.get(0);
+        Node node2 = nodes.get(1);
         
-        EdgeImpl edge = node1.connectNodeFromRight(node2);
+        Edge edge = node1.connectNodeFromRight(node2);
 
         //
         // [node1] -----(edge)----> [node2]
@@ -89,7 +88,7 @@ public class EdgeTest {
         assertNotNull(edge.getDirected());
         assertEquals(edge.getDirected(), Link.DIRECTED);
 
-        EdgeImpl retEdge = edge.setDirected(null);
+        Edge retEdge = edge.setDirected(null);
 
         //
         // [node1] -----(edge)----- [node2]
@@ -104,33 +103,33 @@ public class EdgeTest {
     @Test
     public void testGetOpposite() {
 
-        NodeImpl node1 = nodes.get(0);
-        NodeImpl node2 = nodes.get(1);
+        Node node1 = nodes.get(0);
+        Node node2 = nodes.get(1);
 
         //
         // [node1] -----(edge1to2)----- [node2]       [node3]
         //    ^________(edge2to1)_________/
         //
-        EdgeImpl edge1to2 = node1.connect(node2);
-        EdgeImpl edge2to1 = node2.connectNodeFromRight(node1);
+        Edge edge1to2 = node1.connect(node2);
+        Edge edge2to1 = node2.connectNodeFromRight(node1);
         assertEquals(node1.getEdges().size(), 2);
 
-        NodeImpl oppositeToNode2 = edge1to2.getOpposite(node2);
+        Node oppositeToNode2 = edge1to2.getOpposite(node2);
         assertSame(oppositeToNode2, node1);
 
-        NodeImpl oppositeToNode1 = edge2to1.getOpposite(node1);
+        Node oppositeToNode1 = edge2to1.getOpposite(node1);
         assertSame(oppositeToNode1, node2);
 
-        NodeImpl node3 = nodes.get(3);
-        NodeImpl oppositeToNode3 = edge1to2.getOpposite(node3);
+        Node node3 = nodes.get(3);
+        Node oppositeToNode3 = edge1to2.getOpposite(node3);
         assertNull(oppositeToNode3);
     }
 
     @Test
     public void testGetLeft() {
-        NodeImpl node1 = nodes.get(0);
-        NodeImpl node2 = nodes.get(1);
-        EdgeImpl edge1to2 = node1.connect(node2);
+        Node node1 = nodes.get(0);
+        Node node2 = nodes.get(1);
+        Edge edge1to2 = node1.connect(node2);
 
         assertNotNull(edge1to2.getLeft());
         assertSame(edge1to2.getLeft(), node1);
@@ -138,9 +137,9 @@ public class EdgeTest {
 
     @Test
     public void testGetRight() {
-        NodeImpl node1 = nodes.get(0);
-        NodeImpl node2 = nodes.get(1);
-        EdgeImpl edge1to2 = node1.connect(node2);
+        Node node1 = nodes.get(0);
+        Node node2 = nodes.get(1);
+        Edge edge1to2 = node1.connect(node2);
 
         assertNotNull(edge1to2.getRight());
         assertSame(edge1to2.getRight(), node2);
@@ -151,16 +150,16 @@ public class EdgeTest {
 
         final String testPayload = "0123456789";
 
-        NodeImpl node1 = nodes.get(0);
-        NodeImpl node3 = nodes.get(1);
+        Node node1 = nodes.get(0);
+        Node node3 = nodes.get(1);
 
-        EdgeImpl edge1to3 = node1.connect(node3);
+        Edge edge1to3 = node1.connect(node3);
         edge1to3.setData(testPayload);
         //
         // [node1] -----(edge1to3:"0123456789")----- [node3]
         //
 
-        NodeImpl node2 = nodes.get(2);
+        Node node2 = nodes.get(2);
         Split split = edge1to3.insertMiddleNode(node2);
 
         //
@@ -173,8 +172,8 @@ public class EdgeTest {
          */
         assertEquals(split.getEdgePayload(), testPayload);
 
-        Edge leftEdge = split.getLeftEdge();
-        Edge rightEdge = split.getRightEdge();
+        IEdge leftEdge = split.getLeftEdge();
+        IEdge rightEdge = split.getRightEdge();
 
         assertNotNull(leftEdge);
         assertNotNull(rightEdge);

@@ -17,133 +17,90 @@ package org.medal.graph;
 
 import java.util.Collection;
 import java.util.Set;
+import org.medal.graph.api.AbstractNode;
+import org.medal.graph.api.IGraph;
 
-/**
- *
- * @author skrymets
- */
-public interface Node<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends DataObject<I, NP> {
+public class Node<N, E> extends AbstractNode<Long, N, E, Node<N, E>, Edge<N, E>> {
 
-    /**
-     * Returns a graph instance which this node belongs to
-     *
-     * @return a graph instance, never <code>null</code>
-     */
-    Graph<I, NP, EP, N, E> getGraph();
+    Node(Graph<N, E> graph) {
+        super(graph);
+    }
 
-    /**
-     * Connects another node to this node with new undirected edge. A node that is being
-     * connected is placed to the right side. The node to which the new is attached is
-     * placed on the left side.
-     * 
-     * @param node a node to be connected
-     *
-     * @return new undirected edge
-     *
-     * @throws NullPointerException if <code>otherNode</code> is undefined
-     */
-    E connect(N node);
+    @Override
+    public Set<Edge<N, E>> getEdgesToNode(Node<N, E> destination) {
+        return super.getEdgesToNode(destination); 
+    }
 
-    /**
-     * Connects another node to this node with new directed edge. A node that is being
-     * connected is placed to the left side. The node to which the new is attached is
-     * placed on the right side.
-     *
-     * @param leftNode a node to be connected
-     *
-     * @return new undirected edge
-     *
-     * @throws NullPointerException if <code>otherNode</code> is undefined
-     */
-    E connectNodeFromLeft(N leftNode);
+    @Override
+    public Set<Node<N, E>> getLinkedNodes() {
+        return super.getLinkedNodes(); 
+    }
 
-    /**
-     * Connects another node to this node with new directed edge. A node that is being
-     * connected is placed to the right side. The node to which the new is attached is
-     * placed on the left side.
-     *
-     * @param leftNode a node to be connected
-     *
-     * @return new undirected edge
-     *
-     * @throws NullPointerException if <code>otherNode</code> is undefined
-     */
-    E connectNodeFromRight(N rightNode);
+    @Override
+    public Edge<N, E> connect(Node<N, E> otherNode) {
+        return super.connect(otherNode); 
+    }
 
-    /**
-     * Returns a collection of the node's edges, including directed and undirected, if any
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     */
-    Collection<E> getEdges();
+    @Override
+    public Edge<N, E> connectNodeFromLeft(Node<N, E> leftNode) {
+        return super.connectNodeFromLeft(leftNode); 
+    }
 
-    /**
-     * Returns a collection edges, directed and undirected, that flows from this node to a
-     * <code>destination</code> node, if any
-     * <p>
-     * TODO: Decide whether it should be a List instead of a Set. Should we consider
-     * completely identical edges as alternatives?
-     * </p>
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     */
-    Set<E> getEdgesToNode(N destination);
+    @Override
+    public Edge<N, E> connectNodeFromRight(Node<N, E> rightNode) {
+        return super.connectNodeFromRight(rightNode); 
+    }
 
-    /**
-     * Returns a collection of the node's incoming edges, NOT including undirected, if any
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Direction
-     */
-    Collection<E> getIncomingEdges();
+    @Override
+    public IGraph<Long, N, E, Node<N, E>, Edge<N, E>> getGraph() {
+        return super.getGraph(); 
+    }
 
-    /**
-     * Returns a collection of the node's incoming edges.
-     *
-     * @param includeUndirected Should the undirected edges be considered as incoming
-     *                          either?
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Direction
-     */
-    Collection<E> getIncomingEdges(boolean includeUndirected);
+    @Override
+    public Collection<Edge<N, E>> getOutgoingEdges(boolean includeUndirected) {
+        return super.getOutgoingEdges(includeUndirected); 
+    }
 
-    /**
-     * Returns a collection of nodes that are linked to this node by both: directed and
-     * undirected connections.
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     */
-    Set<N> getLinkedNodes();
+    @Override
+    public Collection<Edge<N, E>> getIncomingEdges(boolean includeUndirected) {
+        return super.getIncomingEdges(includeUndirected); 
+    }
 
-    /**
-     * Returns a collection of the node's outgoing edges, NOT including undirected, if any
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Direction
-     */
-    Collection<E> getOutgoingEdges();
+    @Override
+    public Collection<Edge<N, E>> getOutgoingEdges() {
+        return super.getOutgoingEdges(); 
+    }
 
-    /**
-     * Returns a collection of the node's outgoing edges.
-     *
-     * @param includeUndirected Should the undirected edges be considered as outgoing
-     *                          either?
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Direction
-     */
-    Collection<E> getOutgoingEdges(boolean includeUndirected);
+    @Override
+    public Collection<Edge<N, E>> getIncomingEdges() {
+        return super.getIncomingEdges(); 
+    }
 
+    @Override
+    public Collection<Edge<N, E>> getEdges() {
+        return super.getEdges(); 
+    }
+
+    @Override
+    public void setData(N data) {
+        super.setData(data); 
+    }
+
+    @Override
+    public N getData() {
+        return super.getData(); 
+    }
+
+    @Override
+    public void setId(Long id) {
+        super.setId(id); 
+    }
+
+    @Override
+    public Long getId() {
+        return super.getId(); 
+    }
+    
+    
+    
 }

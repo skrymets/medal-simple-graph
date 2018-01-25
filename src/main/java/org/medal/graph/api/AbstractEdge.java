@@ -13,20 +13,17 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph.impl;
+package org.medal.graph.api;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-import org.medal.graph.Edge;
-import org.medal.graph.Edge.Link;
-import org.medal.graph.Graph;
-import org.medal.graph.Node;
-import org.medal.graph.Split;
+import org.medal.graph.api.IEdge.Link;
 
-public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, EP> implements Edge<I, NP, EP, N, E> {
+public abstract class AbstractEdge<ID, NP, EP, N extends AbstractNode<ID, NP, EP, N, E>, E extends AbstractEdge<ID, NP, EP, N, E>> 
+        extends AbstractDataObject<ID, EP> implements IEdge<ID, NP, EP, N, E> {
 
     protected final N left;
 
@@ -34,10 +31,10 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
 
     protected Link link;
 
-    private final Graph<I, NP, EP, N, E> graph;
+    private final IGraph<ID, NP, EP, N, E> graph;
 
     public AbstractEdge(
-            Graph<I, NP, EP, N, E> graph,
+            IGraph<ID, NP, EP, N, E> graph,
             N left,
             N right,
             Link link) {
@@ -69,7 +66,7 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     }
 
     @Override
-    public Graph<I, NP, EP, N, E> getGraph() {
+    public IGraph<ID, NP, EP, N, E> getGraph() {
         return graph;
     }
 
@@ -115,7 +112,7 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     }
 
     @Override
-    public Split<I, NP, EP, N, E> insertMiddleNode(N middleNode) {
+    public Split<ID, NP, EP, N, E> insertMiddleNode(N middleNode) {
         if (middleNode == null) {
             throw new NullPointerException("Can not insert an undefined node.");
         }

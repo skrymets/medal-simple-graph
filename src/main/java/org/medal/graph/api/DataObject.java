@@ -13,10 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package org.medal.graph;
+package org.medal.graph.api;
 
-public interface IDProvider<I> {
+public interface DataObject<I, D> {
 
-    I createId();
+    I getId();
+
+    void setId(I id);
+
+    D getData();
+
+    void setData(D data);
 
 }
