@@ -42,7 +42,6 @@ public class Graph<N, E> extends AbstractGraph<Long, N, E, Node<N, E>, Edge<N, E
         return nidp;
     }
 
-    // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
     @Override
     public Edge<N, E> connectNodes(Node<N, E> left, Node<N, E> right) {
         return super.connectNodes(left, right);
