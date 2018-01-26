@@ -82,7 +82,6 @@ public class GraphTest {
         assertEquals(graph.getNodes().size(), 4);
 
         // No edges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        
         long generatedEdgesCount = graph.getEdges().size();
         assertEquals(generatedEdgesCount, 0L);
 
@@ -192,6 +191,36 @@ public class GraphTest {
         assertFalse(graph.getEdges().contains(edge));
         assertFalse(node1.getEdges().contains(edge));
         assertFalse(node2.getEdges().contains(edge));
+    }
+
+    @Test
+    public void testDeleteNode() {
+        Graph graph = new Graph();
+        
+        final int NODES = 4;
+        
+        List<Node> nodes = new ArrayList<>(graph.createNodes(NODES));
+
+        final Node node1 = nodes.get(0);
+        final Node node2 = nodes.get(1);
+        final Node node3 = nodes.get(2);
+        final Node node4 = nodes.get(3);
+
+        //
+        // [node1] --(edge)-- [node2] --(edge)-- [node3] --(edge)-- [node4]
+        //       
+        node1.connect(node2).getRight().connect(node3).getRight().connect(node4);
+
+        assertEquals(graph.getNodes().size(), NODES);
+        assertEquals(graph.getEdges().size(), NODES - 1);
+        
+        //
+        // [node1]         [node3] --(edge)-- [node4]
+        //       
+        graph.deleteNode(node2);
+        assertEquals(graph.getNodes().size(), NODES - 1);
+        assertEquals(graph.getEdges().size(), NODES - 3);
+
     }
 
 }

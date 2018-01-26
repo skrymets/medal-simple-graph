@@ -82,4 +82,9 @@ public class Graph<N, E> extends AbstractGraph<Long, N, E, Node<N, E>, Edge<N, E
         super.breakEdge(edge);
     }
 
+    @Override
+    public void deleteNode(Node<N, E> node) {
+        super.deleteNode(node); 
+    }
+
 }
