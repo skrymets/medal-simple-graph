@@ -193,7 +193,7 @@ public class GraphTest {
         assertFalse(node2.getEdges().contains(edge));
     }
 
-    @Test
+    @Test(expected = IllegalArgumentException.class)
     public void testDeleteNode() {
         Graph graph = new Graph();
         
@@ -220,6 +220,12 @@ public class GraphTest {
         graph.deleteNode(node2);
         assertEquals(graph.getNodes().size(), NODES - 1);
         assertEquals(graph.getEdges().size(), NODES - 3);
+        
+        Graph otherGraph = new Graph();
+        Node externalNode = otherGraph.createNode();
+        
+        graph.deleteNode(externalNode);
+        fail("Should fail if graph removes a node that does not belong to it");
 
     }
 

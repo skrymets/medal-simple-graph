@@ -22,7 +22,7 @@ import java.util.List;
 import java.util.Objects;
 import org.medal.graph.api.IEdge.Link;
 
-public abstract class AbstractEdge<ID, NP, EP, N extends AbstractNode<ID, NP, EP, N, E>, E extends AbstractEdge<ID, NP, EP, N, E>> 
+public abstract class AbstractEdge<ID, NP, EP, N extends AbstractNode<ID, NP, EP, N, E>, E extends AbstractEdge<ID, NP, EP, N, E>>
         extends AbstractDataObject<ID, EP> implements IEdge<ID, NP, EP, N, E> {
 
     protected final N left;
@@ -133,50 +133,9 @@ public abstract class AbstractEdge<ID, NP, EP, N extends AbstractNode<ID, NP, EP
         return split;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.id);
-        hash = 47 * hash + Objects.hashCode(this.left);
-        hash = 47 * hash + Objects.hashCode(this.right);
-        hash = 47 * hash + Objects.hashCode(this.link);
-        // Payload MUST NOT participate in the hash!
-        // hash = 47 * hash + Objects.hashCode(this.payload); 
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final AbstractEdge other = (AbstractEdge) obj;
-        //TODO: Consider ID in equality (from business point of view)
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.left, other.left)) {
-            return false;
-        }
-        if (!Objects.equals(this.right, other.right)) {
-            return false;
-        }
-        if (this.link != other.link) {
-            return false;
-        }
-        // Payload MUST NOT participate in the eguals!
-//        if (!Objects.equals(this.payload, other.payload)) {
-//            return false;
-//        }
-        return true;
-    }
-
+    // Payload MUST NOT participate in the hash!
+    // Payload MUST NOT participate in the eguals!
+    
     @Override
     public String toString() {
         return left.toString() + " -" + ((link == Link.DIRECTED) ? '>' : '-') + ' ' + right.toString();
