@@ -83,7 +83,8 @@ public enum EmptyEdge implements IEdge {
     }
 
     @Override
-    public void setId(Object id) {
+    public EmptyEdge setId(Object id) {
+        return this;
     }
 
     @Override
@@ -92,7 +93,8 @@ public enum EmptyEdge implements IEdge {
     }
 
     @Override
-    public void setData(Object data) {
+    public EmptyEdge setData(Object data) {
+        return this;
     }
 
 }

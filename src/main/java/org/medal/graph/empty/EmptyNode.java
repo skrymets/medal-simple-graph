@@ -18,9 +18,9 @@ package org.medal.graph.empty;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
+import org.medal.graph.api.IEdge;
 import org.medal.graph.api.IGraph;
 import org.medal.graph.api.INode;
-import org.medal.graph.api.IEdge;
 
 public enum EmptyNode implements INode {
 
@@ -94,11 +94,13 @@ public enum EmptyNode implements INode {
     }
 
     @Override
-    public void setId(Object id) {
+    public EmptyNode setId(Object id) {
+        return this;
     }
 
     @Override
-    public void setData(Object data) {
+    public EmptyNode setData(Object data) {
+        return this;
     }
 
 }

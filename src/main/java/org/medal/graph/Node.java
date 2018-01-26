@@ -82,8 +82,9 @@ public class Node<N, E> extends AbstractNode<Long, N, E, Node<N, E>, Edge<N, E>>
     }
 
     @Override
-    public void setData(N data) {
+    public Node<N, E> setData(N data) {
         super.setData(data); 
+        return this;
     }
 
     @Override
@@ -92,8 +93,9 @@ public class Node<N, E> extends AbstractNode<Long, N, E, Node<N, E>, Edge<N, E>>
     }
 
     @Override
-    public void setId(Long id) {
+    public Node<N, E> setId(Long id) {
         super.setId(id); 
+        return this;
     }
 
     @Override

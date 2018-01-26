@@ -68,8 +68,9 @@ public class Edge<N, E> extends AbstractEdge<Long, N, E, Node<N, E>, Edge<N, E>>
     }
 
     @Override
-    public void setData(E data) {
+    public Edge<N, E> setData(E data) {
         super.setData(data);
+        return this;
     }
 
     @Override
@@ -78,13 +79,21 @@ public class Edge<N, E> extends AbstractEdge<Long, N, E, Node<N, E>, Edge<N, E>>
     }
 
     @Override
-    public void setId(Long id) {
+    public Edge<N, E> setId(Long id) {
         super.setId(id);
+        return this;
     }
 
     @Override
     public Long getId() {
         return super.getId();
+    }
+
+    @Override
+    public String toString() {
+        return left.toString() + " ---" 
+                + (getData() == null ? "" : getData().toString())
+                + ((link == Link.DIRECTED) ? "-->" : "---") + ' ' + right.toString();
     }
 
 }

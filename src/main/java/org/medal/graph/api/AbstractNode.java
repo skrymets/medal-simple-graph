@@ -201,7 +201,7 @@ public abstract class AbstractNode<I, NP, EP, N extends AbstractNode<I, NP, EP, 
 
     @Override
     public String toString() {
-        return (getData() == null) ? "node_" + hashCode() : getData().toString();
+        return (getData() == null) ? "node_" + hashCode() : getId().toString() + ":" + getData().toString();
     }
 
 }

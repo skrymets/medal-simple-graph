@@ -19,10 +19,10 @@ public interface DataObject<I, D> {
 
     I getId();
 
-    void setId(I id);
+    Object setId(I id);
 
     D getData();
 
-    void setData(D data);
+    Object setData(D data);
 
 }

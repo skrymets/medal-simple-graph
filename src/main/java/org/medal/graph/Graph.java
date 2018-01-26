@@ -19,9 +19,9 @@ import java.util.Set;
 import org.medal.graph.api.AbstractGraph;
 import org.medal.graph.api.EdgeFactory;
 import org.medal.graph.api.IDProvider;
+import org.medal.graph.api.IEdge;
 import org.medal.graph.api.NodeFactory;
 import org.medal.graph.id.NumberIDProvider;
-import org.medal.graph.api.IEdge;
 
 public class Graph<N, E> extends AbstractGraph<Long, N, E, Node<N, E>, Edge<N, E>> {
 
@@ -80,6 +80,16 @@ public class Graph<N, E> extends AbstractGraph<Long, N, E, Node<N, E>, Edge<N, E
     @Override
     public void breakEdge(Edge<N, E> edge) {
         super.breakEdge(edge);
+    }
+    
+        @Override
+    public String toString() {
+
+        StringBuilder sb = new StringBuilder();
+        edges.stream().forEach((edge) -> {
+            sb.append(edge.toString()).append("\n");
+        });
+        return sb.toString();
     }
 
 }

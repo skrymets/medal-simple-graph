@@ -27,8 +27,9 @@ public abstract class AbstractDataObject<I, D> implements DataObject<I, D> {
     }
 
     @Override
-    public void setId(I id) {
+    public AbstractDataObject<I, D> setId(I id) {
         this.id = id;
+        return this;
     }
 
     @Override
@@ -37,8 +38,9 @@ public abstract class AbstractDataObject<I, D> implements DataObject<I, D> {
     }
 
     @Override
-    public void setData(D data) {
+    public AbstractDataObject<I, D> setData(D data) {
         this.data = data;
+        return this;
     }
 
 }
