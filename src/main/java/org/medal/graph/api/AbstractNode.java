@@ -150,12 +150,6 @@ public abstract class AbstractNode<I, NP, EP, N extends AbstractNode<I, NP, EP, 
                         Collectors.toSet(),
                         Collections::unmodifiableSet
                 ));
-
-//        return edges.stream()
-//                .map((Edge<I, D> edge) -> edge.getOpposite(Node.this))
-//                // avoid multiple node copies if there are more than one linked edges
-//                .distinct()
-//                .collect(Collectors.toSet());
     }
 
     @Override
@@ -168,35 +162,6 @@ public abstract class AbstractNode<I, NP, EP, N extends AbstractNode<I, NP, EP, 
                         Collectors.toSet(),
                         Collections::unmodifiableSet
                 ));
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 19 * hash + Objects.hashCode(this.getId());
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final INode other = (INode) obj;
-        //TODO: Consider nodes equality in the comparison, but avoid endless recursion!
-        if (!Objects.equals(this.getId(), other.getId())) {
-            return false;
-        }
-        if (!Objects.equals(this.getData(), other.getData())) {
-            return false;
-        }
-        return true;
     }
 
     @Override

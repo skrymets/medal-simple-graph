@@ -43,34 +43,58 @@ public class GrassFireTest {
         // We don't care about the edges' payload
         final int ROWS = 20;
         final int COLUMNS = 20;
-        GridGraph<Integer, Void> data = GridGraph.createInstance(ROWS, COLUMNS);
 
-        // a node @ left:top position
-        Node<Integer, Void> start = data.nodeAt(0, 0);
+        for (int i = 0; i < 1; i++) {
 
-        // a node @ right:bottom position
-        Random random = new Random();
+            GridGraph<Integer, Void> data = GridGraph.createInstance(ROWS, COLUMNS);
+            data.getNodes().forEach((Node<Integer, Void> n) -> n.setData(-(ROWS * COLUMNS)));
 
-        for (int i = 0; i < 3; i++) {
-            Node<Integer, Void> end = data.nodeAt(random.nextInt(ROWS), random.nextInt(COLUMNS));
-            calculateSteps(end);
+            Random random = new Random();
+
+            final int startX = random.nextInt(ROWS);
+            final int startY = random.nextInt(COLUMNS);
+            final int endX = random.nextInt(ROWS);
+            final int endY = random.nextInt(COLUMNS);
+
+            final Node<Integer, Void> START_NODE = data.nodeAt(startX, startY);
+            final Node<Integer, Void> END_NODE = data.nodeAt(endX, endY);
+
+            // Remove random number of vertices
+            for (int r = 0; r < ROWS; r++) {
+                for (int c = 0; c < COLUMNS; c++) {
+                    if (random.nextBoolean() && random.nextBoolean()) {
+                        final Node<Integer, Void> nodeAt = data.nodeAt(r, c);
+                        if (nodeAt == START_NODE || nodeAt == END_NODE) {
+                            continue;
+                        }
+                        data.deleteNode(nodeAt);
+                    }
+                }
+            }
+
+            calculateSteps(START_NODE, END_NODE);
         }
 
     }
 
-    private void calculateSteps(Node<Integer, Void> end) {
+    private void calculateSteps(Node<Integer, Void> start, Node<Integer, Void> end) {
         // -------------------------------------------------------------------------------
         GridGraph<Integer, Void> data = (GridGraph<Integer, Void>) end.getGraph();
 
-        Set<Node<Integer, Void>> visitedNodes = new HashSet<>(data.rows * data.columns);
-        visitedNodes.add(end);
-
+        // -------------------------------------------------------------------------------
+        // Initialize 
+        // -------------------------------------------------------------------------------
         final int[] distance = new int[]{0}; // wrap it to a single-value array to make "final"
+
+        Set<Node<Integer, Void>> visitedNodes = new HashSet<>(data.rows * data.columns);
         end.setData(distance[0]);
+        visitedNodes.add(end);
 
         Set<Node<Integer, Void>> layer = end.getLinkedNodes();
 
-        // Fill the distances layer-by-layer ---------------------------------------------
+        // -------------------------------------------------------------------------------
+        // Fill the distances layer-by-layer 
+        // -------------------------------------------------------------------------------
         while (true) {
             if (layer.isEmpty()) {
                 break; // There are no more unprocessed nodes. There is nothing to do here anymore;
@@ -80,12 +104,63 @@ public class GrassFireTest {
             distance[0]++;
             visitedNodes.addAll(layer);
             layer = layer.stream()
-                    .filter(Objects::nonNull)
+                    // .filter(Objects::nonNull)
                     .flatMap((Node<Integer, Void> n) -> n.getLinkedNodes().stream())
                     .filter((Node<Integer, Void> n) -> !visitedNodes.contains(n))
                     .collect(Collectors.toSet());
+
+            // System.out.println(data.toString());
+        }
+        
+        System.out.println(data.toString());
+
+        // -------------------------------------------------------------------------------
+        // Find the path
+        // -------------------------------------------------------------------------------
+        // Mark it as a path's step (*)
+        visitedNodes.clear();
+        layer.clear();
+        distance[0] = start.getData();
+
+        start.setData(null);
+
+        visitedNodes.add(start);
+
+        layer = start.getLinkedNodes();
+        boolean finished = false;
+
+        while (true) {
+
+            for (Node<Integer, Void> node : layer) {
+
+                // System.out.println(data.toString());
+                if (node == end) {
+                    finished = true;
+                    break;
+                }
+
+                visitedNodes.add(node);
+                if (node.getData() < distance[0]) {
+                    distance[0] = node.getData();
+                    node.setData(null);
+
+                    layer = node.getLinkedNodes()
+                            .stream()
+                            .filter((Node<Integer, Void> n) -> !visitedNodes.contains(n))
+                            .collect(Collectors.toSet());
+
+                    break;
+                }
+            }
+
+            if (layer.isEmpty() || finished) {
+                break; // There are no more unprocessed nodes. There is nothing to do here anymore;
+            }
         }
 
+        // -------------------------------------------------------------------------------
+        // Print the results
+        // -------------------------------------------------------------------------------
         System.out.println(data.toString());
     }
 
@@ -94,7 +169,7 @@ public class GrassFireTest {
         private final int rows;
         private final int columns;
 
-        private final Node[][] nodesIndex;
+        private final Node<N, E>[][] nodesIndex;
 
         private GridGraph(int rows, int columns) {
             this.rows = rows;
@@ -142,31 +217,56 @@ public class GrassFireTest {
         }
 
         @Override
+        public void deleteNode(Node<N, E> node) {
+
+            for (Node[] row : nodesIndex) {
+                for (int j = 0; j < row.length; j++) {
+                    Node n = row[j];
+                    if (node == n) {
+                        super.deleteNode(node);
+                        row[j] = null;
+                        return;
+                    }
+                }
+            }
+        }
+
+        @Override
         public String toString() {
 
             int maxLength = 0;
+            final String PLACEHOLDER = " ## ";
 
-            for (Node[] row : nodesIndex) {
-                for (Node node : row) {
+            for (Node<N, E>[] row : nodesIndex) {
+                for (Node<N, E> node : row) {
                     if (node == null) {
                         continue;
                     }
-                    int length = node.toString().length();
+                    int length = ((node.getData() == null)
+                            ? PLACEHOLDER
+                            : node.getData().toString()).length();
                     maxLength = Math.max(maxLength, length);
                 }
             }
 
-            final String formatPattern = "%1$" + (maxLength + 2) + "s";
+            final String formatPattern = "%1$" + (maxLength) + "s";
 
             StringBuilder sb = new StringBuilder("\n\n");
             for (Node[] row : nodesIndex) {
                 for (Node node : row) {
-                    sb.append(" ")
-                            .append(String.format(formatPattern,
-                                    (node == null)
-                                            ? "-"
-                                            : node.toString())
-                            );
+                    sb.append("|");
+                    if (node == null) {
+                        sb.append(String.format(formatPattern, "    "));
+                    } else {
+                        sb.append(String.format(
+                                formatPattern,
+                                (node.getData() == null)
+                                        ? PLACEHOLDER
+                                        : node.getData())
+                        );
+
+                    }
+
                 }
                 sb.append("\n");
             }

@@ -106,5 +106,7 @@ public interface IGraph<I, NP, EP, N extends INode<I, NP, EP, N, E>, E extends I
      * @param edge edge to be removed.
      */
     void breakEdge(E edge);
+    
+    void deleteNode(N node);
 
 }

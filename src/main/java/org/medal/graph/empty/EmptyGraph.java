@@ -64,4 +64,9 @@ public enum EmptyGraph implements IGraph {
         return Collections.emptySet();
     }
 
+    @Override
+    public void deleteNode(INode node) {
+    }
+
+
 }

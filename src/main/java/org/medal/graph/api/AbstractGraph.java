@@ -135,6 +135,17 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
         return sb.toString();
     }
 
+    @Override
+    public void deleteNode(N node) {
+        if (!getNodes().contains(node)) {
+            throw new IllegalArgumentException("The node does not belong to this graph");
+        }
+
+        node.getEdges().forEach(AbstractGraph.this::breakEdge);
+        nodes.remove(node);
+
+    }
+
     protected abstract NodeFactory<I, NP, EP, N, E> getNodeFactory();
 
     protected abstract EdgeFactory<I, NP, EP, N, E> getEdgeFactory();

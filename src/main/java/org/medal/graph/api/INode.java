@@ -25,7 +25,8 @@ import java.util.Set;
 public interface INode<I, NP, EP, N extends INode<I, NP, EP, N, E>, E extends IEdge<I, NP, EP, N, E>> extends DataObject<I, NP> {
 
     /**
-     * Returns a graph instance which this node belongs to
+     * Returns a graph instance which this node belongs to.
+     * Note that if the node was deleted from a graph it will still pointing to it.
      *
      * @return a graph instance, never <code>null</code>
      */
@@ -35,7 +36,7 @@ public interface INode<I, NP, EP, N extends INode<I, NP, EP, N, E>, E extends IE
      * Connects another node to this node with new undirected edge. A node that is being
      * connected is placed to the right side. The node to which the new is attached is
      * placed on the left side.
-     * 
+     *
      * @param node a node to be connected
      *
      * @return new undirected edge
