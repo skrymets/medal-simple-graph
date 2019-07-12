@@ -23,7 +23,7 @@ import org.medal.graph.id.NumberIDProvider;
 
 public class GraphImpl extends AbstractGraph<Long, String, String, NodeImpl, EdgeImpl> {
 
-    protected final NumberIDProvider nidp = new NumberIDProvider();
+    protected final NumberIDProvider idProvider = new NumberIDProvider();
 
     @Override
     protected NodeFactory<Long, String, String, NodeImpl, EdgeImpl> getNodeFactory() {
@@ -37,7 +37,7 @@ public class GraphImpl extends AbstractGraph<Long, String, String, NodeImpl, Edg
 
     @Override
     protected IDProvider<Long> getIdProvider() {
-        return nidp;
+        return idProvider;
     }
 
 }

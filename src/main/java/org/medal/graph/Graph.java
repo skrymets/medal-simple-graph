@@ -15,8 +15,9 @@
  */
 package org.medal.graph;
 
-import java.util.Set;
 import org.medal.graph.Edge.Link;
+
+import java.util.Set;
 
 public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
 

@@ -15,30 +15,33 @@
  */
 package org.medal.graph.impl;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Objects;
-import java.util.Set;
-import java.util.stream.Collectors;
-import static java.util.stream.Collectors.collectingAndThen;
 import org.medal.graph.Edge;
 import org.medal.graph.Edge.Link;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
 import org.medal.graph.empty.EmptyNode;
 
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Objects;
+import java.util.Set;
+import java.util.stream.Collectors;
+
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.collectingAndThen;
+
 public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, NP> implements Node<I, NP, EP, N, E> {
 
     private final Graph<I, NP, EP, N, E> graph;
 
     public AbstractNode(Graph<I, NP, EP, N, E> graph) {
-        Objects.requireNonNull(graph);
+        requireNonNull(graph);
         this.graph = graph;
     }
 
     enum InOut {
         IN, OUT
-    };
+    }
 
     @Override
     public Collection<E> getEdges() {
@@ -46,15 +49,13 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
                 .getEdges()
                 .stream()
                 .map(edge -> (E) edge)
-                .filter(e -> {
-                    return e.getLeft() == this || e.getRight() == this;
-                })
+                .filter(e -> e.getLeft() == this || e.getRight() == this)
                 .collect(collectingAndThen(
                         Collectors.toSet(),
                         Collections::unmodifiableSet
                 ));
     }
-    
+
     @Override
     public Collection<E> getIncomingEdges() {
         return getIncomingEdges(false);
@@ -81,7 +82,6 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
      * @param inOut             Incoming or outgoing edges filter.
      * @param includeUndirected Should the undirected edges be considered as
      *                          <code>inOut</code> either?
-     *
      * @return an unmodifiable collection of edges.
      */
     private Collection<E> getEdges(InOut inOut, boolean includeUndirected) {
@@ -130,9 +130,7 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
      * placed on the left side.
      *
      * @param otherNode a node to be connected
-     *
      * @return new undirected edge
-     *
      * @throws NullPointerException if <code>otherNode</code> is undefined
      */
     @Override

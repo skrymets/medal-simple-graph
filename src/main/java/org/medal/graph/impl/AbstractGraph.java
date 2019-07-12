@@ -15,15 +15,17 @@
  */
 package org.medal.graph.impl;
 
-import static java.util.Collections.unmodifiableSet;
-import java.util.HashSet;
-import static java.util.Objects.requireNonNull;
-import java.util.Set;
 import org.medal.graph.Edge.Link;
 import org.medal.graph.EdgeFactory;
 import org.medal.graph.Graph;
 import org.medal.graph.IDProvider;
 import org.medal.graph.NodeFactory;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static java.util.Collections.unmodifiableSet;
+import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>> implements Graph<I, NP, EP, N, E> {
 
