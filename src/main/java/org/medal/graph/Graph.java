@@ -15,8 +15,10 @@
  */
 package org.medal.graph;
 
-import java.util.Set;
 import org.medal.graph.Edge.Link;
+import org.medal.graph.events.GraphEventsSubscriber;
+
+import java.util.Set;
 
 public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
 
@@ -24,17 +26,16 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
      * Create a new graph node with a unique ID.
      *
      * @param payload node's payload. May be <code>null</code>
-     *
-     * @see org.medal.graph.IDProvider
      * @return a new node.
+     * @see org.medal.graph.IDProvider
      */
     N createNode(NP payload);
 
     /**
      * Create a new graph node with a unique ID.
      *
-     * @see org.medal.graph.IDProvider
      * @return a new node.
+     * @see org.medal.graph.IDProvider
      */
     N createNode();
 
@@ -42,9 +43,8 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
      * Creates several new nodes that are not connected among each other at this moment.
      *
      * @param count a number of nodes to create
-     *
      * @return a list of nodes that were created or an empty list, if <code>count</code>
-     *         is less or equal to zero.
+     * is less or equal to zero.
      */
     Set<N> createNodes(int count);
 
@@ -57,9 +57,7 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
      * @param right     node to be placed at the right side of the relation
      * @param direction sets new edge to be whether <code>DIRECTED</code> or
      *                  <code>UNDIRECTED</code>.
-     *
      * @return a new <code>Edge</code> instance.
-     *
      * @throws NullPointerException if <code>left</code> or <code>right</code> node is
      *                              undefined - <code>null</code>.
      * @see org.medal.graph.IDProvider
@@ -74,9 +72,7 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
      *
      * @param left  node to be placed at the left side of the relation
      * @param right node to be placed at the right side of the relation
-     *
      * @return a new <code>Edge</code> instance.
-     *
      * @throws NullPointerException if <code>left</code> or <code>right</code> node is
      *                              undefined - <code>null</code>.
      * @see org.medal.graph.IDProvider
@@ -106,5 +102,9 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
      * @param edge edge to be removed.
      */
     void breakEdge(E edge);
+
+    <S extends GraphEventsSubscriber<I, NP, EP, N, E>> void addSubscriber(S subscriber);
+
+    <S extends GraphEventsSubscriber<I, NP, EP, N, E>> void removeSubscriber(S subscriber);
 
 }

@@ -15,8 +15,9 @@
  */
 package org.medal.graph.id;
 
-import java.util.UUID;
 import org.medal.graph.IDProvider;
+
+import java.util.UUID;
 
 public class UUIDGenerator implements IDProvider<String> {
 
