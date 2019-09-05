@@ -27,13 +27,12 @@ import static java.util.Comparator.comparing;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author skrymets
  */
 public class GraphTest {
 
-    Comparator<NodeImpl> nodesComparator;
-    Comparator<EdgeImpl> edgesComparator;
+    private Comparator<NodeImpl> nodesComparator;
+    private Comparator<EdgeImpl> edgesComparator;
 
     public GraphTest() {
         nodesComparator = comparing(AbstractDataObject::getId);
@@ -77,14 +76,14 @@ public class GraphTest {
 
         // No edges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         long generatedEdgesCount = graph.getNodes().stream()
-                .flatMap((Node t) -> t.getEdges().stream())
-                .count();
+                .mapToLong((Node t) -> t.getEdges().size())
+                .sum();
         assertEquals(generatedEdgesCount, 0L);
 
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        Set firstTwo = new TreeSet(nodesComparator);
+        Set<NodeImpl> firstTwo = new TreeSet<>(nodesComparator);
         firstTwo.addAll(twoNodes);
-        Set secondTwo = new TreeSet(nodesComparator);
+        Set<NodeImpl> secondTwo = new TreeSet<>(nodesComparator);
         secondTwo.addAll(anotherTwoNodes);
 
         assertNotEquals(firstTwo, secondTwo);
@@ -150,15 +149,15 @@ public class GraphTest {
 
     @Test
     public void testGetNodes() {
-        Graph graph = new GraphImpl();
-        Collection<NodeImpl> newNodes = graph.createNodes(2);
+        GraphImpl graph = new GraphImpl();
+        Set<NodeImpl> newNodes = graph.createNodes(2);
 
         assertNotNull(graph.getNodes());
         assertFalse(graph.getNodes().isEmpty());
 
-        Set existingNodes = new TreeSet(nodesComparator);
+        Set<NodeImpl> existingNodes = new TreeSet<>(nodesComparator);
         existingNodes.addAll(graph.getNodes());
-        Set createdNodes = new TreeSet(nodesComparator);
+        Set<NodeImpl> createdNodes = new TreeSet<>(nodesComparator);
         createdNodes.addAll(newNodes);
 
         assertEquals(existingNodes, createdNodes);
