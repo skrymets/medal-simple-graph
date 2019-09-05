@@ -26,7 +26,7 @@ public interface Edge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * 1) A DIRECTED edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
      * 2) A UNDIRECTED edge is neither OUTGOING nor INCOMING for any node
      */
-    public enum Link {
+    enum Link {
         DIRECTED, UNDIRECTED
     }
 

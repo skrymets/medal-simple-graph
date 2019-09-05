@@ -15,12 +15,14 @@
  */
 package org.medal.graph.empty;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
 import org.medal.graph.Edge;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
+
+import java.util.Collection;
+import java.util.Set;
+
+import static java.util.Collections.emptySet;
 
 public enum EmptyNode implements Node {
 
@@ -45,12 +47,12 @@ public enum EmptyNode implements Node {
 
     @Override
     public Collection<Edge> getEdges() {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override
     public Set<Edge> getEdgesToNode(Node destination) {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override
@@ -60,27 +62,27 @@ public enum EmptyNode implements Node {
 
     @Override
     public Collection<Edge> getIncomingEdges() {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override
     public Collection<Edge> getIncomingEdges(boolean includeUndirected) {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override
     public Set<Node> getLinkedNodes() {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override
     public Collection<Edge> getOutgoingEdges() {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override
     public Collection<Edge> getOutgoingEdges(boolean includeUndirected) {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override

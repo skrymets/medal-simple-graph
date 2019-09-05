@@ -15,18 +15,16 @@
  */
 package org.medal.graph;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Random;
-import java.util.Set;
-import java.util.TreeSet;
-import static org.junit.Assert.*;
 import org.junit.Test;
+import org.medal.graph.impl.AbstractDataObject;
 import org.medal.graph.impl.EdgeImpl;
 import org.medal.graph.impl.GraphImpl;
 import org.medal.graph.impl.NodeImpl;
+
+import java.util.*;
+
+import static java.util.Comparator.comparing;
+import static org.junit.Assert.*;
 
 /**
  *
@@ -38,12 +36,8 @@ public class GraphTest {
     Comparator<EdgeImpl> edgesComparator;
 
     public GraphTest() {
-        nodesComparator = (NodeImpl o1, NodeImpl o2) -> {
-            return o1.getId().compareTo(o2.getId());
-        };
-        edgesComparator = (EdgeImpl o1, EdgeImpl o2) -> {
-            return o1.getId().compareTo(o2.getId());
-        };
+        nodesComparator = comparing(AbstractDataObject::getId);
+        edgesComparator = comparing(AbstractDataObject::getId);
     }
 
     @Test

@@ -62,7 +62,7 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * connected is placed to the right side. The node to which the new is attached is
      * placed on the left side.
      *
-     * @param leftNode a node to be connected
+     * @param rightNode a node to be connected
      *
      * @return new undirected edge
      *

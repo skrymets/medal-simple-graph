@@ -15,11 +15,14 @@
  */
 package org.medal.graph.empty;
 
-import java.util.Collections;
-import java.util.Set;
 import org.medal.graph.Edge;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
+import org.medal.graph.events.GraphEventsSubscriber;
+
+import java.util.Set;
+
+import static java.util.Collections.emptySet;
 
 public enum EmptyGraph implements Graph {
 
@@ -41,7 +44,7 @@ public enum EmptyGraph implements Graph {
 
     @Override
     public Set<Node> createNodes(int count) {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override
@@ -56,12 +59,19 @@ public enum EmptyGraph implements Graph {
 
     @Override
     public Set<Edge> getEdges() {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override
     public Set<Node> getNodes() {
-        return Collections.emptySet();
+        return emptySet();
     }
 
+    @Override
+    public void removeSubscriber(GraphEventsSubscriber subscriber) {
+    }
+
+    @Override
+    public void addSubscriber(GraphEventsSubscriber subscriber) {
+    }
 }

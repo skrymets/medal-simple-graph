@@ -19,11 +19,12 @@ import org.medal.graph.Edge;
 import org.medal.graph.EdgeFactory;
 import org.medal.graph.IDProvider;
 import org.medal.graph.NodeFactory;
+import org.medal.graph.events.GraphEventsSubscriber;
 import org.medal.graph.id.NumberIDProvider;
 
 public class GraphImpl extends AbstractGraph<Long, NodeImpl, EdgeImpl> {
 
-    protected final NumberIDProvider nidp = new NumberIDProvider();
+    protected final NumberIDProvider idProvider = new NumberIDProvider();
 
     @Override
     protected NodeFactory<Long, NodeImpl, EdgeImpl> getNodeFactory() {
@@ -37,7 +38,7 @@ public class GraphImpl extends AbstractGraph<Long, NodeImpl, EdgeImpl> {
 
     @Override
     protected IDProvider<Long> getIdProvider() {
-        return nidp;
+        return idProvider;
     }
 
 }

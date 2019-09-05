@@ -15,16 +15,20 @@
  */
 package org.medal.graph.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Objects;
 import org.medal.graph.Edge;
-import org.medal.graph.Edge.Link;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
 import org.medal.graph.Split;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
+import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.IntStream.range;
 
 public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends AbstractDataObject<I> implements Edge<I, N, E> {
 
@@ -42,7 +46,7 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
             N right,
             Link link) {
 
-        Objects.requireNonNull(graph);
+        requireNonNull(graph);
         if (left == null || right == null) {
             throw new IllegalArgumentException("Neither left or right note can be undefined.");
         }
@@ -97,19 +101,16 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
     @Override
     public Collection<E> selfCopy(int copies) {
         if (copies < 1) {
-            return Collections.emptyList();
+            return emptyList();
         }
 
-        List<E> clones = new ArrayList<>(copies);
-        for (int i = 0; i < copies; i++) {
-            clones.add(selfCopy());
-        }
+        List<E> clones = range(0, copies).mapToObj(i -> selfCopy()).collect(toCollection(() -> new ArrayList<>(copies)));
         return clones;
     }
 
     @Override
     public E selfCopy() {
-        E edge = (E) getGraph().connectNodes(left, right, link);
+        E edge = getGraph().connectNodes(left, right, link);
         edge.setData(this.getData());
         return edge;
     }
@@ -122,7 +123,7 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
 
         getGraph().breakEdge((E) this);
 
-        //TODO: Should we preserve data? Does this make sense? If the data is a context-seisitive or unique?
+        //TODO: Should we preserve data? Does this make sense? If the data is a context-sensitive or unique?
         //E leftEdge = getGraph().connectNodes(left, middleNode, link);
         E leftEdge = getGraph().connectNodes(left, middleNode, link);
         leftEdge.setData(this.getData());

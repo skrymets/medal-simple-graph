@@ -15,7 +15,7 @@
  */
 package org.medal.graph;
 
-import java.util.Objects;
+import static java.util.Objects.requireNonNull;
 
 public class Split<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
 
@@ -33,8 +33,8 @@ public class Split<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
     }
 
     public Split(E leftEdge, E rightEdge) {
-        Objects.requireNonNull(leftEdge);
-        Objects.requireNonNull(rightEdge);
+        requireNonNull(leftEdge);
+        requireNonNull(rightEdge);
 
         this.leftEdge = leftEdge;
         this.rightEdge = rightEdge;

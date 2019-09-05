@@ -15,7 +15,6 @@
  */
 package org.medal.graph.impl;
 
-import org.medal.graph.Edge.Link;
 import org.medal.graph.Graph;
 
 
