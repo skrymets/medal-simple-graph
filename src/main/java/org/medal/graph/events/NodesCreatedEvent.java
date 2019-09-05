@@ -23,14 +23,14 @@ import java.util.Set;
 
 public class NodesCreatedEvent<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends AbstractGraphEvent<I, N, E> {
 
-    private final Set<Node<I, N, E>> nodes;
+    private final Set<N> nodes;
 
-    public NodesCreatedEvent(Graph<I, N, E> graph, Set<Node<I, N, E>> nodes) {
+    public NodesCreatedEvent(Graph<I, N, E> graph, Set<N> nodes) {
         super(graph);
         this.nodes = nodes;
     }
 
-    public Set<Node<I, N, E>> getNodes() {
+    public Set<N> getNodes() {
         return nodes;
     }
 
