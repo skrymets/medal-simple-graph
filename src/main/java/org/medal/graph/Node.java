@@ -22,14 +22,14 @@ import java.util.Set;
  *
  * @author skrymets
  */
-public interface Node<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends DataObject<I, NP> {
+public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends DataObject<I> {
 
     /**
      * Returns a graph instance which this node belongs to
      *
      * @return a graph instance, never <code>null</code>
      */
-    Graph<I, NP, EP, N, E> getGraph();
+    Graph<I, N, E> getGraph();
 
     /**
      * Connects another node to this node with new undirected edge. A node that is being

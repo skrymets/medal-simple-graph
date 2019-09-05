@@ -17,11 +17,11 @@ package org.medal.graph.impl;
 
 import org.medal.graph.DataObject;
 
-public abstract class AbstractDataObject<I, D> implements DataObject<I, D> {
+public abstract class AbstractDataObject<I> implements DataObject<I> {
 
     protected I id;
     
-    protected D data;
+    protected Object data;
 
     @Override
     public I getId() {
@@ -34,12 +34,12 @@ public abstract class AbstractDataObject<I, D> implements DataObject<I, D> {
     }
 
     @Override
-    public D getData() {
+    public Object getData() {
         return data;
     }
 
     @Override
-    public void setData(D data) {
+    public void setData(Object data) {
         this.data = data;
     }
 

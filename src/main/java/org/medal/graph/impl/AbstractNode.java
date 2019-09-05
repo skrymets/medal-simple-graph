@@ -27,11 +27,11 @@ import org.medal.graph.Graph;
 import org.medal.graph.Node;
 import org.medal.graph.empty.EmptyNode;
 
-public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, NP> implements Node<I, NP, EP, N, E> {
+public abstract class AbstractNode<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends AbstractDataObject<I> implements Node<I, N, E> {
 
-    private final Graph<I, NP, EP, N, E> graph;
+    private final Graph<I, N, E> graph;
 
-    public AbstractNode(Graph<I, NP, EP, N, E> graph) {
+    public AbstractNode(Graph<I, N, E> graph) {
         Objects.requireNonNull(graph);
         this.graph = graph;
     }
@@ -110,7 +110,7 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     }
 
     @Override
-    public Graph<I, NP, EP, N, E> getGraph() {
+    public Graph<I, N, E> getGraph() {
         return graph;
     }
 

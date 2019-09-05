@@ -17,7 +17,7 @@ package org.medal.graph;
 
 import java.util.Objects;
 
-public class Split<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
+public class Split<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
 
     public static final Split UNDEFINED = new Split();
 
@@ -25,7 +25,7 @@ public class Split<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I,
 
     private final E rightEdge;
     
-    private EP edgePayload;
+    private Object edgePayload;
 
     private Split() {
         this.leftEdge = null;
@@ -48,11 +48,11 @@ public class Split<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I,
         return rightEdge;
     }
 
-    public EP getEdgePayload() {
+    public Object getEdgePayload() {
         return edgePayload;
     }
 
-    public Split<I, NP, EP, N, E> setEdgePayload(EP edgePayload) {
+    public Split<I, N, E> setEdgePayload(Object edgePayload) {
         this.edgePayload = edgePayload;
         return this;
     }

@@ -17,7 +17,7 @@ package org.medal.graph;
 
 import java.util.Collection;
 
-public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends DataObject<I, EP> {
+public interface Edge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends DataObject<I> {
 
     /**
      * "Link" means that imaginary arrow points from LEFT to RIGHT node
@@ -35,7 +35,7 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      *
      * @return a graph instance, never <code>null</code>
      */
-    Graph<I, ?, EP, N, E> getGraph();
+    Graph<I, N, E> getGraph();
 
     /**
      * Return this edge's direction attribute.
@@ -95,6 +95,6 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      *
      * @throws NullPointerException if <code>middleNode</code> is <code>null</code>.
      */
-    Split<I, NP, EP, N, E> insertMiddleNode(N middleNode);
+    Split<I, N, E> insertMiddleNode(N middleNode);
 
 }

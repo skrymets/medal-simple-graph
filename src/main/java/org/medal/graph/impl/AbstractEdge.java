@@ -26,7 +26,7 @@ import org.medal.graph.Graph;
 import org.medal.graph.Node;
 import org.medal.graph.Split;
 
-public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, EP> implements Edge<I, NP, EP, N, E> {
+public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends AbstractDataObject<I> implements Edge<I, N, E> {
 
     protected final N left;
 
@@ -34,10 +34,10 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
 
     protected Link link;
 
-    private final Graph<I, NP, EP, N, E> graph;
+    private final Graph<I, N, E> graph;
 
     public AbstractEdge(
-            Graph<I, NP, EP, N, E> graph,
+            Graph<I, N, E> graph,
             N left,
             N right,
             Link link) {
@@ -69,7 +69,7 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     }
 
     @Override
-    public Graph<I, NP, EP, N, E> getGraph() {
+    public Graph<I, N, E> getGraph() {
         return graph;
     }
 
@@ -115,7 +115,7 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     }
 
     @Override
-    public Split<I, NP, EP, N, E> insertMiddleNode(N middleNode) {
+    public Split<I, N, E> insertMiddleNode(N middleNode) {
         if (middleNode == null) {
             throw new NullPointerException("Can not insert an undefined node.");
         }
