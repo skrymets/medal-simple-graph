@@ -16,6 +16,7 @@
 package org.medal.graph;
 
 import org.junit.Test;
+import org.medal.graph.impl.AbstractDataObject;
 import org.medal.graph.impl.EdgeImpl;
 import org.medal.graph.impl.GraphImpl;
 import org.medal.graph.impl.NodeImpl;
@@ -29,22 +30,16 @@ import static org.junit.Assert.*;
  */
 public class GraphTest {
 
-    Comparator<NodeImpl> nodesComparator;
-    Comparator<EdgeImpl> edgesComparator;
+    private Comparator<NodeImpl> nodesComparator;
 
     public GraphTest() {
-        nodesComparator = (NodeImpl o1, NodeImpl o2) -> {
-            return o1.getId().compareTo(o2.getId());
-        };
-        edgesComparator = (EdgeImpl o1, EdgeImpl o2) -> {
-            return o1.getId().compareTo(o2.getId());
-        };
+        nodesComparator = Comparator.comparing(AbstractDataObject::getId);
     }
 
     @Test
     public void testCreateNode() {
-        Graph graph = new GraphImpl();
-        Node node1 = graph.createNode();
+        GraphImpl graph = new GraphImpl();
+        NodeImpl node1 = graph.createNode();
 
         assertNotNull(node1);
         assertNotNull(node1.getId());
@@ -57,7 +52,7 @@ public class GraphTest {
         Node node3 = graph.createNode(null);
         assertNull(node3.getData());
 
-        Node node4 = graph.createNode(new Object());
+        Node node4 = graph.createNode("string");
         assertNotNull(node4.getData());
     }
 
@@ -78,14 +73,14 @@ public class GraphTest {
 
         // No edges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         long generatedEdgesCount = graph.getNodes().stream()
-                .flatMap((Node t) -> t.getEdges().stream())
-                .count();
+                .mapToLong((Node t) -> t.getEdges().size())
+                .sum();
         assertEquals(generatedEdgesCount, 0L);
 
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        Set firstTwo = new TreeSet(nodesComparator);
+        Set<NodeImpl> firstTwo = new TreeSet<>(nodesComparator);
         firstTwo.addAll(twoNodes);
-        Set secondTwo = new TreeSet(nodesComparator);
+        Set<NodeImpl> secondTwo = new TreeSet<>(nodesComparator);
         secondTwo.addAll(anotherTwoNodes);
 
         assertNotEquals(firstTwo, secondTwo);
@@ -151,15 +146,15 @@ public class GraphTest {
 
     @Test
     public void testGetNodes() {
-        Graph graph = new GraphImpl();
+        Graph<Long, String, String, NodeImpl, EdgeImpl> graph = new GraphImpl();
         Collection<NodeImpl> newNodes = graph.createNodes(2);
 
         assertNotNull(graph.getNodes());
         assertFalse(graph.getNodes().isEmpty());
 
-        Set existingNodes = new TreeSet(nodesComparator);
+        Set<NodeImpl> existingNodes = new TreeSet<>(nodesComparator);
         existingNodes.addAll(graph.getNodes());
-        Set createdNodes = new TreeSet(nodesComparator);
+        Set<NodeImpl> createdNodes = new TreeSet<>(nodesComparator);
         createdNodes.addAll(newNodes);
 
         assertEquals(existingNodes, createdNodes);

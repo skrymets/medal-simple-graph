@@ -26,7 +26,7 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
      *
      * @param payload node's payload. May be <code>null</code>
      * @return a new node.
-     * @see org.medal.graph.IDProvider
+     * @see DataObject.IDProvider
      */
     N createNode(NP payload);
 
@@ -34,7 +34,7 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
      * Create a new graph node with a unique ID.
      *
      * @return a new node.
-     * @see org.medal.graph.IDProvider
+     * @see DataObject.IDProvider
      */
     N createNode();
 
@@ -59,7 +59,7 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
      * @return a new <code>Edge</code> instance.
      * @throws NullPointerException if <code>left</code> or <code>right</code> node is
      *                              undefined - <code>null</code>.
-     * @see org.medal.graph.IDProvider
+     * @see DataObject.IDProvider
      * @see org.medal.graph.Edge.Link#UNDIRECTED
      */
     E connectNodes(N left, N right, Link direction);
@@ -74,7 +74,7 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
      * @return a new <code>Edge</code> instance.
      * @throws NullPointerException if <code>left</code> or <code>right</code> node is
      *                              undefined - <code>null</code>.
-     * @see org.medal.graph.IDProvider
+     * @see DataObject.IDProvider
      * @see org.medal.graph.Edge.Link#UNDIRECTED
      */
     E connectNodes(N left, N right);

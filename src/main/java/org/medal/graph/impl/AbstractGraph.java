@@ -15,10 +15,10 @@
  */
 package org.medal.graph.impl;
 
+import org.medal.graph.DataObject;
 import org.medal.graph.Edge.Link;
 import org.medal.graph.EdgeFactory;
 import org.medal.graph.Graph;
-import org.medal.graph.IDProvider;
 import org.medal.graph.NodeFactory;
 
 import java.util.HashSet;
@@ -142,5 +142,5 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
 
     protected abstract EdgeFactory<I, NP, EP, N, E> getEdgeFactory();
 
-    protected abstract IDProvider<I> getIdProvider();
+    protected abstract DataObject.IDProvider<I> getIdProvider();
 }

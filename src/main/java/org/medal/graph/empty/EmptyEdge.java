@@ -18,7 +18,6 @@ package org.medal.graph.empty;
 import org.medal.graph.Edge;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
-import org.medal.graph.Split;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -65,7 +64,7 @@ public enum EmptyEdge implements Edge {
 
     @Override
     public Split insertMiddleNode(Node middleNode) {
-        return Split.UNDEFINED;
+        return EmptySplit.INSTANCE;
     }
 
     @Override

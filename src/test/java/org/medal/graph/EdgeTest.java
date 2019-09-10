@@ -32,11 +32,9 @@ import static org.junit.Assert.*;
  */
 public class EdgeTest {
 
-    protected GraphImpl graph;
-
-    protected List<NodeImpl> nodes;
-
     protected static final int INITIAL_NODES_COUNT = 10;
+    protected GraphImpl graph;
+    protected List<NodeImpl> nodes;
 
     public EdgeTest() {
     }
@@ -162,7 +160,7 @@ public class EdgeTest {
         //
 
         NodeImpl node2 = nodes.get(2);
-        Split split = edge1to3.insertMiddleNode(node2);
+        Edge.Split split = edge1to3.insertMiddleNode(node2);
 
         //
         // [node1] -----(leftEdge)----- [node2] -----(rightEdge)----- [node3]

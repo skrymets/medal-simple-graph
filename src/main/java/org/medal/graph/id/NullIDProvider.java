@@ -15,9 +15,9 @@
  */
 package org.medal.graph.id;
 
-import org.medal.graph.IDProvider;
+import org.medal.graph.DataObject;
 
-public enum NullIDProvider implements IDProvider {
+public enum NullIDProvider implements DataObject.IDProvider {
 
     INSTANCE;
 

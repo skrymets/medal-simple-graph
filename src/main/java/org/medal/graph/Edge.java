@@ -20,17 +20,6 @@ import java.util.Collection;
 public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends DataObject<I, EP> {
 
     /**
-     * "Link" means that imaginary arrow points from LEFT to RIGHT node
-     * (L) ----> (R)
-     * According to this definition another definition emerges:
-     * 1) A DIRECTED edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
-     * 2) A UNDIRECTED edge is neither OUTGOING nor INCOMING for any node
-     */
-    public enum Link {
-        DIRECTED, UNDIRECTED
-    }
-
-    /**
      * Returns a graph instance which this edge belongs to
      *
      * @return a graph instance, never <code>null</code>
@@ -93,5 +82,27 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      * @throws NullPointerException if <code>middleNode</code> is <code>null</code>.
      */
     Split<I, NP, EP, N, E> insertMiddleNode(N middleNode);
+
+    /**
+     * "Link" means that imaginary arrow points from LEFT to RIGHT node
+     * (L) ----> (R)
+     * According to this definition another definition emerges:
+     * 1) A DIRECTED edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
+     * 2) A UNDIRECTED edge is neither OUTGOING nor INCOMING for any node
+     */
+    public enum Link {
+        DIRECTED, UNDIRECTED
+    }
+
+    interface Split<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
+
+        E getLeftEdge();
+
+        E getRightEdge();
+
+        EP getEdgePayload();
+
+        Split<I, NP, EP, N, E> setEdgePayload(EP edgePayload);
+    }
 
 }

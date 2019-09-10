@@ -18,7 +18,6 @@ package org.medal.graph.impl;
 import org.medal.graph.Edge;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
-import org.medal.graph.Split;
 
 import java.util.*;
 
@@ -27,10 +26,8 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     protected final N left;
 
     protected final N right;
-
-    protected Link link;
-
     private final Graph<I, NP, EP, N, E> graph;
+    protected Link link;
 
     public AbstractEdge(
             Graph<I, NP, EP, N, E> graph,
@@ -126,7 +123,7 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
         E rightEdge = getGraph().connectNodes(middleNode, right, link);
         rightEdge.setData(this.getData());
 
-        Split split = new Split(leftEdge, rightEdge);
+        Split split = new SplitImpl(leftEdge, rightEdge);
         split.setEdgePayload(getData()); // Preserve the payload
 
         return split;
@@ -181,4 +178,47 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
         return left.toString() + " -" + ((link == Link.DIRECTED) ? '>' : '-') + ' ' + right.toString();
     }
 
+    public static class SplitImpl<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> implements Split<I, NP, EP, N, E> {
+
+        private final E leftEdge;
+
+        private final E rightEdge;
+
+        private EP edgePayload;
+
+        private SplitImpl() {
+            this.leftEdge = null;
+            this.rightEdge = null;
+        }
+
+        private SplitImpl(E leftEdge, E rightEdge) {
+            Objects.requireNonNull(leftEdge);
+            Objects.requireNonNull(rightEdge);
+
+            this.leftEdge = leftEdge;
+            this.rightEdge = rightEdge;
+        }
+
+        @Override
+        public E getLeftEdge() {
+            return leftEdge;
+        }
+
+        @Override
+        public E getRightEdge() {
+            return rightEdge;
+        }
+
+        @Override
+        public EP getEdgePayload() {
+            return edgePayload;
+        }
+
+        @Override
+        public Split<I, NP, EP, N, E> setEdgePayload(EP edgePayload) {
+            this.edgePayload = edgePayload;
+            return this;
+        }
+
+    }
 }

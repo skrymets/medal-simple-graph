@@ -25,3 +25,4 @@ public class EdgeImpl extends AbstractEdge<Long, String, String, NodeImpl, EdgeI
     }
 
 }
+

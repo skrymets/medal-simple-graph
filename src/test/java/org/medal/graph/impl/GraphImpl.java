@@ -15,9 +15,9 @@
  */
 package org.medal.graph.impl;
 
+import org.medal.graph.DataObject;
 import org.medal.graph.Edge;
 import org.medal.graph.EdgeFactory;
-import org.medal.graph.IDProvider;
 import org.medal.graph.NodeFactory;
 import org.medal.graph.id.NumberIDProvider;
 
@@ -36,7 +36,7 @@ public class GraphImpl extends AbstractGraph<Long, String, String, NodeImpl, Edg
     }
 
     @Override
-    protected IDProvider<Long> getIdProvider() {
+    protected DataObject.IDProvider<Long> getIdProvider() {
         return nidp;
     }
 
