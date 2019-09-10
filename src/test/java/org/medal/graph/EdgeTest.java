@@ -15,9 +15,6 @@
  */
 package org.medal.graph;
 
-import java.util.ArrayList;
-import java.util.List;
-import static org.junit.Assert.*;
 import org.junit.Before;
 import org.junit.Test;
 import org.medal.graph.Edge.Link;
@@ -25,8 +22,12 @@ import org.medal.graph.impl.EdgeImpl;
 import org.medal.graph.impl.GraphImpl;
 import org.medal.graph.impl.NodeImpl;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+
 /**
- *
  * @author skrymets
  */
 public class EdgeTest {
@@ -65,7 +66,7 @@ public class EdgeTest {
 
         NodeImpl node1 = nodes.get(0);
         NodeImpl node2 = nodes.get(1);
-        
+
         EdgeImpl edge = node1.connect(node2);
         //
         // [node1] -----(edge)----- [node2]
@@ -80,7 +81,7 @@ public class EdgeTest {
 
         NodeImpl node1 = nodes.get(0);
         NodeImpl node2 = nodes.get(1);
-        
+
         EdgeImpl edge = node1.connectNodeFromRight(node2);
 
         //
@@ -191,7 +192,7 @@ public class EdgeTest {
         assertFalse(graph.getEdges().contains(edge1to3));
         assertFalse(node1.getEdges().contains(edge1to3));
         assertFalse(node3.getEdges().contains(edge1to3));
-        
+
         /**
          * Do not accept an undefined node
          */

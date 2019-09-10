@@ -15,12 +15,13 @@
  */
 package org.medal.graph.empty;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
 import org.medal.graph.Edge;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
+
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Set;
 
 public enum EmptyNode implements Node {
 

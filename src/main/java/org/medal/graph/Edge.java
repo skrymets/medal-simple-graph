@@ -49,7 +49,6 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      * <code>null</code>, then actual value will be set to <code>UNDIRECTED</code>
      *
      * @param direction attribute value
-     *
      * @return this edge reference
      */
     E setDirected(Link direction);
@@ -58,7 +57,7 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      * Returns a node that is linked to the specified <code>node</code> by this edge.
      *
      * @return a <code>Node</code> instance on the other side of this edge if the
-     *         specified <code>node</code> belongs to this edge, otherwise - <code>null</code>
+     * specified <code>node</code> belongs to this edge, otherwise - <code>null</code>
      */
     N getOpposite(N node);
 
@@ -89,10 +88,8 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      * well.
      *
      * @param middleNode a node to be inserted in-between
-     *
      * @return <code>Split</code> object that holds references to both parts of the
-     *         divided edge, and a payload of the original edge, if any.
-     *
+     * divided edge, and a payload of the original edge, if any.
      * @throws NullPointerException if <code>middleNode</code> is <code>null</code>.
      */
     Split<I, NP, EP, N, E> insertMiddleNode(N middleNode);

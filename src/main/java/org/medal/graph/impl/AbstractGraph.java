@@ -15,15 +15,17 @@
  */
 package org.medal.graph.impl;
 
-import static java.util.Collections.unmodifiableSet;
-import java.util.HashSet;
-import static java.util.Objects.requireNonNull;
-import java.util.Set;
 import org.medal.graph.Edge.Link;
 import org.medal.graph.EdgeFactory;
 import org.medal.graph.Graph;
 import org.medal.graph.IDProvider;
 import org.medal.graph.NodeFactory;
+
+import java.util.HashSet;
+import java.util.Set;
+
+import static java.util.Collections.unmodifiableSet;
+import static java.util.Objects.requireNonNull;
 
 public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>> implements Graph<I, NP, EP, N, E> {
 
@@ -52,9 +54,8 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
      * Creates several new nodes that are not connected at this moment.
      *
      * @param count a number of nodes to create
-     *
      * @return a list of nodes that were created or an empty list, if <code>count</code>
-     *         is less or equal to zero.
+     * is less or equal to zero.
      */
     @Override
     public Set<N> createNodes(int count) {
@@ -82,9 +83,8 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
      *
      * @param left  Left node
      * @param right Right node
-     *
      * @return a newly created edge, or <code>UNDEFINED</code> if either left or
-     *         right node (or both) is <code>null</code>
+     * right node (or both) is <code>null</code>
      */
     @Override
     public E connectNodes(N left, N right, Link direction) {

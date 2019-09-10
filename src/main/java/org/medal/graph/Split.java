@@ -24,7 +24,7 @@ public class Split<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I,
     private final E leftEdge;
 
     private final E rightEdge;
-    
+
     private EP edgePayload;
 
     private Split() {

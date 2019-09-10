@@ -20,7 +20,7 @@ import org.medal.graph.DataObject;
 public abstract class AbstractDataObject<I, D> implements DataObject<I, D> {
 
     protected I id;
-    
+
     protected D data;
 
     @Override
