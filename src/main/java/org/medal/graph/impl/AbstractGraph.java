@@ -21,11 +21,14 @@ import org.medal.graph.EdgeFactory;
 import org.medal.graph.Graph;
 import org.medal.graph.NodeFactory;
 
+import java.util.Collection;
 import java.util.HashSet;
+import java.util.Objects;
 import java.util.Set;
 
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toSet;
 
 public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>> implements Graph<I, NP, EP, N, E> {
 
@@ -136,6 +139,23 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
 
         sb.append("\n}");
         return sb.toString();
+    }
+
+    @Override
+    public void deleteNodes(Collection<N> nodes) {
+        if (nodes == null || nodes.isEmpty()) {
+            return;
+        }
+
+        // TODO: 2019-09-10 Remove only nodes that belong to this particular graph
+        final Set<E> edges = nodes.stream()
+                .filter(Objects::nonNull)
+                .map(n -> n.getEdges())
+                .flatMap(Collection::stream)
+                .collect(toSet());
+
+        this.edges.removeAll(edges);
+        this.nodes.removeAll(nodes);
     }
 
     protected abstract NodeFactory<I, NP, EP, N, E> getNodeFactory();

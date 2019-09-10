@@ -23,6 +23,7 @@ import org.medal.graph.impl.NodeImpl;
 
 import java.util.*;
 
+import static java.util.Collections.singleton;
 import static org.junit.Assert.*;
 
 /**
@@ -183,6 +184,43 @@ public class GraphTest {
         assertFalse(graph.getEdges().contains(edge));
         assertFalse(node1.getEdges().contains(edge));
         assertFalse(node2.getEdges().contains(edge));
+    }
+
+    @Test
+    public void testDeleteNodes() {
+        GraphImpl graph = new GraphImpl();
+        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(4));
+        /*
+         *   (0) ----- (1)
+         *    |  \   /  |
+         *    |    X    |
+         *    |  /   \  |
+         *   (3) ----- (2)
+         */
+        nodes.get(0).connect(nodes.get(1));
+        nodes.get(1).connect(nodes.get(2));
+        nodes.get(2).connect(nodes.get(3));
+        nodes.get(3).connect(nodes.get(0));
+        nodes.get(1).connect(nodes.get(3));
+        nodes.get(0).connect(nodes.get(2));
+        assertEquals(6, graph.getEdges().size());
+        assertEquals(4, graph.getNodes().size());
+
+        graph.deleteNodes(singleton((NodeImpl) null));
+        assertEquals(6, graph.getEdges().size());
+        assertEquals(4, graph.getNodes().size());
+
+        graph.deleteNodes(singleton(nodes.get(2)));
+        /*
+         *   (0) ----- (1)
+         *    |      /
+         *    |    /
+         *    |  /
+         *   (3)
+         */
+        assertEquals(3, graph.getEdges().size());
+        assertEquals(3, graph.getNodes().size());
+
     }
 
 }

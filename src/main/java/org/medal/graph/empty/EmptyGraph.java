@@ -19,6 +19,7 @@ import org.medal.graph.Edge;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
@@ -28,6 +29,10 @@ public enum EmptyGraph implements Graph {
 
     @Override
     public void breakEdge(Edge edge) {
+    }
+
+    @Override
+    public void deleteNodes(Collection nodes) {
     }
 
     @Override
@@ -64,5 +69,6 @@ public enum EmptyGraph implements Graph {
     public Set<Node> getNodes() {
         return Collections.emptySet();
     }
+
 
 }

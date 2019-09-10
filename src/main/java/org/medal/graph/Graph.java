@@ -17,6 +17,7 @@ package org.medal.graph;
 
 import org.medal.graph.Edge.Link;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
@@ -101,5 +102,12 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
      * @param edge edge to be removed.
      */
     void breakEdge(E edge);
+
+    /**
+     * Deletes nodes from this graph. Also deletes all connected edges
+     *
+     * @param nodes a collection  of nodes to be deleted.
+     */
+    void deleteNodes(Collection<N> nodes);
 
 }
