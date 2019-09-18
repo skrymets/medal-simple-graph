@@ -23,6 +23,7 @@ import org.medal.graph.impl.NodeImpl;
 
 import java.util.*;
 
+import static java.util.Collections.emptySet;
 import static java.util.Collections.singleton;
 import static org.junit.Assert.*;
 
@@ -223,4 +224,45 @@ public class GraphTest {
 
     }
 
+    @Test
+    public void testConnectBunchOfNodes() {
+        GraphImpl graph1 = new GraphImpl();
+        Collection<EdgeImpl> edgeCollection = graph1.connectNodes(emptySet());
+        assertNotNull(edgeCollection);
+        assertTrue(edgeCollection.isEmpty());
+
+        edgeCollection = graph1.connectNodes(null);
+        assertNotNull(edgeCollection);
+        assertTrue(edgeCollection.isEmpty());
+
+        /*
+         * The number of combinations of k-length elements from  a set of n-length is:
+         * C = n!/k!(n-k)!
+         * n = 4, k = 2
+         * n! = 24, k! = 2
+         * C = 24/2*(4 - 2)! = 12/2 = 6
+         *  */
+        Set<NodeImpl> nodes1 = graph1.createNodes(4);
+        final Collection<EdgeImpl> edges1 = graph1.connectNodes(nodes1);
+        assertNotNull(edges1);
+        assertFalse(edges1.isEmpty());
+        assertEquals(6, edges1.size());
+
+        GraphImpl graph2 = new GraphImpl();
+        Set<NodeImpl> nodes2 = graph2.createNodes(6);
+        final Collection<EdgeImpl> edges2 = graph2.connectNodes(nodes2);
+        assertEquals(15, edges2.size());
+    }
+
+    @Test(expected = NotSameGraphException.class)
+    public void testFailToConnectNodesOfDifferentGraphs() {
+
+        GraphImpl graph1 = new GraphImpl();
+        Set<NodeImpl> nodes1 = graph1.createNodes(2);
+
+        GraphImpl graph2 = new GraphImpl();
+
+        graph2.connectNodes(nodes1);
+        fail("Should fail before, because the nodes belong to a different graph");
+    }
 }

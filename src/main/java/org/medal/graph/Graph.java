@@ -81,6 +81,18 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
     E connectNodes(N left, N right);
 
     /**
+     * Creates <code>UNDIRECTED</code> links among all nodes in a set of nodes that belong to the same graph<br/>
+     * If the set of nodes is <code>null</code> or empty - nothing will be done by this method.
+     *
+     * @param nodes a set of nodes that should be connected
+     * @return a collection of edges that were made by this method. May be empty if the <code>nodes</code> set is
+     * <code>null</code>, empty or contains a single node. This method does not create the loops. The result is
+     * never <code>null</code>.
+     * @throws NotSameGraphException if the <code>nodes</code> contains nodes that belong to the different graphs
+     */
+    Collection<E> connectNodes(Set<N> nodes) throws NotSameGraphException;
+
+    /**
      * Returns an unmodifiable set of edges in this graph.
      *
      * @return a set of edges. Never <code>null</code>

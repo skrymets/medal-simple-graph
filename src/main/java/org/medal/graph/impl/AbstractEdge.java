@@ -174,6 +174,11 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     }
 
     @Override
+    public boolean isIncident(N node) {
+        return (node == left || node == right);
+    }
+
+    @Override
     public String toString() {
         return left.toString() + " -" + ((link == Link.DIRECTED) ? '>' : '-') + ' ' + right.toString();
     }

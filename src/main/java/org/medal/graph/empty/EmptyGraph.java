@@ -18,10 +18,12 @@ package org.medal.graph.empty;
 import org.medal.graph.Edge;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
+import org.medal.graph.NotSameGraphException;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Set;
+
+import static java.util.Collections.emptySet;
 
 public enum EmptyGraph implements Graph {
 
@@ -47,7 +49,7 @@ public enum EmptyGraph implements Graph {
 
     @Override
     public Set<Node> createNodes(int count) {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override
@@ -61,13 +63,18 @@ public enum EmptyGraph implements Graph {
     }
 
     @Override
+    public Collection connectNodes(Set nodes) throws NotSameGraphException {
+        return emptySet();
+    }
+
+    @Override
     public Set<Edge> getEdges() {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override
     public Set<Node> getNodes() {
-        return Collections.emptySet();
+        return emptySet();
     }
 
 

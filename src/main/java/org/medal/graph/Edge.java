@@ -84,6 +84,14 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
     Split<I, NP, EP, N, E> insertMiddleNode(N middleNode);
 
     /**
+     * The edge is said to join x and y and to be incident on x and on y
+     *
+     * @param node to check incidence
+     * @return <code>true</code> if the edge is incident to a node, <code>false</code> otherwise or if the N is <code>null</code>
+     */
+    boolean isIncident(N node);
+
+    /**
      * "Link" means that imaginary arrow points from LEFT to RIGHT node
      * (L) ----> (R)
      * According to this definition another definition emerges:

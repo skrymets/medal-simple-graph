@@ -68,6 +68,11 @@ public enum EmptyEdge implements Edge {
     }
 
     @Override
+    public boolean isIncident(Node node) {
+        return false;
+    }
+
+    @Override
     public Collection<Edge> selfCopy(int copies) {
         return Collections.emptySet();
     }

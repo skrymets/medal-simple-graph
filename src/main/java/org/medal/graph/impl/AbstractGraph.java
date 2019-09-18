@@ -15,19 +15,16 @@
  */
 package org.medal.graph.impl;
 
-import org.medal.graph.DataObject;
+import org.medal.graph.*;
 import org.medal.graph.Edge.Link;
-import org.medal.graph.EdgeFactory;
-import org.medal.graph.Graph;
-import org.medal.graph.NodeFactory;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
+import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.Collectors.toSet;
 
 public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>> implements Graph<I, NP, EP, N, E> {
@@ -91,6 +88,10 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
      */
     @Override
     public E connectNodes(N left, N right, Link direction) {
+        return connectNodes0(left, right, direction);
+    }
+
+    private E connectNodes0(N left, N right, Link direction) {
 
         requireNonNull(left);
         requireNonNull(right);
@@ -110,6 +111,27 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
     @Override
     public E connectNodes(N left, N right) {
         return connectNodes(left, right, Link.UNDIRECTED);
+    }
+
+    @Override
+    public Collection<E> connectNodes(Set<N> nodes) throws NotSameGraphException {
+        requireSameGraph(nodes);
+        final LinkedList<N> safeNodes = new LinkedList<N>(ofNullable(nodes).orElse(emptySet()));
+
+        final List<E> edges = new ArrayList<>();
+        while (!safeNodes.isEmpty()) {
+            final N top = safeNodes.poll();
+            edges.addAll(safeNodes.stream().map(n -> connectNodes0(top, n, Link.UNDIRECTED)).collect(toList()));
+        }
+
+        return edges;
+    }
+
+    private void requireSameGraph(Set<N> nodes) {
+        final Set<N> nodeSet = ofNullable(nodes).orElse(emptySet());
+        if (nodeSet.stream().filter(n -> n.getGraph() != this).count() > 0) {
+            throw new NotSameGraphException("All the nodes must belong to this graphs.");
+        }
     }
 
     @Override

@@ -23,8 +23,11 @@ import org.medal.graph.impl.GraphImpl;
 import org.medal.graph.impl.NodeImpl;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
+import static java.util.stream.Collectors.toSet;
 import static org.junit.Assert.*;
 
 /**
@@ -197,5 +200,19 @@ public class EdgeTest {
         leftEdge.insertMiddleNode(null);
         fail("Should throw a NullPointerException");
 
+    }
+
+    @Test
+    public void isIncident() {
+        GraphImpl graph = new GraphImpl();
+        final Set<NodeImpl> nodes = graph.createNodes(3);
+        final Collection<EdgeImpl> edgeCollection = graph.connectNodes(nodes.stream().limit(2).collect(toSet()));
+        assertEquals(1, edgeCollection.size());
+
+        final ArrayList<NodeImpl> indexed = new ArrayList<>(nodes);
+        final EdgeImpl edge = edgeCollection.stream().findFirst().get();
+        assertTrue(edge.isIncident(indexed.get(0)));
+        assertTrue(edge.isIncident(indexed.get(1)));
+        assertFalse(edge.isIncident(indexed.get(2)));
     }
 }
