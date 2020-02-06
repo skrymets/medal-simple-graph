@@ -35,6 +35,12 @@ public enum EmptyNode implements Node {
     }
 
     @Override
+    public Edge loop() {
+        return EmptyEdge.INSTANCE;
+    }
+
+
+    @Override
     public Edge connectNodeFromLeft(Node leftNode) {
         return EmptyEdge.INSTANCE;
     }

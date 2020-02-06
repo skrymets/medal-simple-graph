@@ -132,6 +132,11 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     }
 
     @Override
+    public E loop() {
+        return connect((N) this);
+    }
+
+    @Override
     public Set<N> getLinkedNodes() {
         if (getEdges().isEmpty()) {
             return Collections.emptySet();

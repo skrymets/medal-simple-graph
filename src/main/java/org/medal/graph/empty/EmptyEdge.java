@@ -73,6 +73,11 @@ public enum EmptyEdge implements Edge {
     }
 
     @Override
+    public boolean isLoop() {
+        return false;
+    }
+
+    @Override
     public Collection<Edge> selfCopy(int copies) {
         return Collections.emptySet();
     }
@@ -99,5 +104,6 @@ public enum EmptyEdge implements Edge {
     @Override
     public void setData(Object data) {
     }
+
 
 }

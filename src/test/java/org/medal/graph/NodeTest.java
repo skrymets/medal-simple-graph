@@ -293,4 +293,10 @@ public class NodeTest {
 
     }
 
+    @Test
+    public void testCreateLoop() {
+        final NodeImpl node = graph.createNode();
+        final EdgeImpl loopEdge = node.loop();
+        assertTrue(loopEdge.isLoop());
+    }
 }

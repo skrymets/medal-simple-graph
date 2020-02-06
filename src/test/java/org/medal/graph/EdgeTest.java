@@ -203,7 +203,7 @@ public class EdgeTest {
     }
 
     @Test
-    public void isIncident() {
+    public void testIsIncident() {
         GraphImpl graph = new GraphImpl();
         final Set<NodeImpl> nodes = graph.createNodes(3);
         final Collection<EdgeImpl> edgeCollection = graph.connectNodes(nodes.stream().limit(2).collect(toSet()));
@@ -214,5 +214,38 @@ public class EdgeTest {
         assertTrue(edge.isIncident(indexed.get(0)));
         assertTrue(edge.isIncident(indexed.get(1)));
         assertFalse(edge.isIncident(indexed.get(2)));
+    }
+
+    @Test
+    public void testIsLoop() {
+        GraphImpl graph = new GraphImpl();
+        final List<NodeImpl> nodes = new ArrayList(graph.createNodes(2));
+
+        final NodeImpl first = nodes.get(0);
+        final NodeImpl second = nodes.get(1);
+
+        final EdgeImpl loopNode = first.loop();
+        final EdgeImpl regularNode = first.connect(second);
+
+        assertTrue(loopNode.isLoop());
+        assertFalse(regularNode.isLoop());
+    }
+
+    @Test
+    public void testCollapseEdge() {
+        GraphImpl graph = new GraphImpl();
+        final NodeImpl firstNode = graph.createNode();
+        final NodeImpl secondNode = graph.createNode();
+
+        final EdgeImpl edge = firstNode.connect(secondNode);
+
+        assertEquals(1, graph.getEdges().size());
+        assertEquals(2, graph.getNodes().size());
+
+        edge.collapse();
+
+        assertTrue(graph.getEdges().isEmpty());
+        assertEquals(2, graph.getNodes().size());
+
     }
 }

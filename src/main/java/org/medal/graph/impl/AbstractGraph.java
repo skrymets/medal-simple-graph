@@ -149,7 +149,7 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("graph CodeFlow {\n");
+        StringBuilder sb = new StringBuilder("graph G {\n");
 
         nodes.stream().forEach((node) -> {
             sb.append(node.toString()).append("\n");

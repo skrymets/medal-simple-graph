@@ -81,10 +81,11 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
     E connectNodes(N left, N right);
 
     /**
-     * Creates <code>UNDIRECTED</code> links among all nodes in a set of nodes that belong to the same graph<br/>
-     * If the set of nodes is <code>null</code> or empty - nothing will be done by this method.
+     * Creates <code>UNDIRECTED</code> links among all nodes in a set of nodes that belong to the same graph.<br/>
+     * If the set of nodes is <code>null</code> or empty - nothing will be done by this method. Because the input
+     * parameter has type of a set - this method does not create loops (edges).
      *
-     * @param nodes a set of nodes that should be connected
+     * @param nodes a set of nodes that should be connected.
      * @return a collection of edges that were made by this method. May be empty if the <code>nodes</code> set is
      * <code>null</code>, empty or contains a single node. This method does not create the loops. The result is
      * never <code>null</code>.
@@ -107,7 +108,7 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
     Set<N> getNodes();
 
     /**
-     * Removes edge from this graph. Both left and right nodes do not refer this edge
+     * Removes edge from this graph. Both left and right nodes remain in the graph but do not refer this edge
      * anymore. <br/>
      * If <code>edge</code> is <code>null</code> - does nothing.
      *

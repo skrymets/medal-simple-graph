@@ -42,6 +42,13 @@ public interface Node<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
     E connect(N node);
 
     /**
+     * Creates the loop edge, that connects this node to itself;
+     *
+     * @return new  loop edge
+     */
+    E loop();
+
+    /**
      * Connects another node to this node with new directed edge. A node that is being
      * connected is placed to the left side. The node to which the new is attached is
      * placed on the right side.

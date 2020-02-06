@@ -92,6 +92,13 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
     boolean isIncident(N node);
 
     /**
+     * Checks whether this edge is a loop -  an edge that joins a vertex to itself.
+     *
+     * @return <code>true</code> - if the edge is a loop, <code>false</code> otherwise.
+     */
+    boolean isLoop();
+
+    /**
      * "Link" means that imaginary arrow points from LEFT to RIGHT node
      * (L) ----> (R)
      * According to this definition another definition emerges:

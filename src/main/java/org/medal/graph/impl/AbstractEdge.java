@@ -20,6 +20,8 @@ import org.medal.graph.Graph;
 import org.medal.graph.Node;
 
 import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, EP> implements Edge<I, NP, EP, N, E> {
 
@@ -85,6 +87,7 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
 
     @Override
     public void collapse() {
+        graph.breakEdge((E) this);
     }
 
     @Override
@@ -93,10 +96,7 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
             return Collections.emptyList();
         }
 
-        List<E> clones = new ArrayList<>(copies);
-        for (int i = 0; i < copies; i++) {
-            clones.add(selfCopy());
-        }
+        List<E> clones = IntStream.range(0, copies).mapToObj(i -> selfCopy()).collect(Collectors.toCollection(() -> new ArrayList<>(copies)));
         return clones;
     }
 
@@ -176,6 +176,11 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     @Override
     public boolean isIncident(N node) {
         return (node == left || node == right);
+    }
+
+    @Override
+    public boolean isLoop() {
+        return (left == right);
     }
 
     @Override
