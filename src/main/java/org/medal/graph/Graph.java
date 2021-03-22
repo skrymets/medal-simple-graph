@@ -16,26 +16,26 @@
 package org.medal.graph;
 
 import org.medal.graph.Edge.Link;
+import org.medal.graph.events.GraphEventsSubscriber;
 
-import java.util.Collection;
 import java.util.Set;
 
-public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> {
+public interface Graph<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
 
     /**
      * Create a new graph node with a unique ID.
      *
      * @param payload node's payload. May be <code>null</code>
      * @return a new node.
-     * @see DataObject.IDProvider
+     * @see org.medal.graph.IDProvider
      */
-    N createNode(NP payload);
+    N createNode(Object payload);
 
     /**
      * Create a new graph node with a unique ID.
      *
      * @return a new node.
-     * @see DataObject.IDProvider
+     * @see org.medal.graph.IDProvider
      */
     N createNode();
 
@@ -102,6 +102,10 @@ public interface Graph<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edg
      * @param edge edge to be removed.
      */
     void breakEdge(E edge);
+
+    <S extends GraphEventsSubscriber<I, N, E>> void addSubscriber(S subscriber);
+
+    <S extends GraphEventsSubscriber<I, N, E>> void removeSubscriber(S subscriber);
 
     /**
      * Deletes nodes from this graph. Also deletes all connected edges

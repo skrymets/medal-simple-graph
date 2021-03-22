@@ -22,6 +22,10 @@ import org.medal.graph.Node;
 import java.util.Collection;
 import java.util.Collections;
 
+import java.util.Collection;
+
+import static java.util.Collections.emptySet;
+
 public enum EmptyEdge implements Edge {
 
     INSTANCE;
@@ -69,7 +73,7 @@ public enum EmptyEdge implements Edge {
 
     @Override
     public Collection<Edge> selfCopy(int copies) {
-        return Collections.emptySet();
+        return emptySet();
     }
 
     @Override

@@ -29,13 +29,17 @@ import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
 
-public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, NP> implements Node<I, NP, EP, N, E> {
+public abstract class AbstractNode<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends AbstractDataObject<I> implements Node<I, N, E> {
 
-    private final Graph<I, NP, EP, N, E> graph;
+    private final Graph<I, N, E> graph;
 
-    AbstractNode(Graph<I, NP, EP, N, E> graph) {
+    public AbstractNode(Graph<I, N, E> graph) {
         Objects.requireNonNull(graph);
         this.graph = graph;
+    }
+
+    enum InOut {
+        IN, OUT
     }
 
     @Override
@@ -43,6 +47,7 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
         return getGraph()
                 .getEdges()
                 .stream()
+                .map(edge -> (E) edge)
                 .filter(e -> e.getLeft() == this || e.getRight() == this)
                 .collect(collectingAndThen(
                         Collectors.toSet(),
@@ -103,7 +108,7 @@ public abstract class AbstractNode<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     }
 
     @Override
-    public Graph<I, NP, EP, N, E> getGraph() {
+    public Graph<I, N, E> getGraph() {
         return graph;
     }
 

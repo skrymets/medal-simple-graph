@@ -15,11 +15,11 @@
  */
 package org.medal.graph.id;
 
-import org.medal.graph.DataObject;
+import org.medal.graph.IDProvider;
 
 import java.util.UUID;
 
-public class UUIDGenerator implements DataObject.IDProvider<String> {
+public class UUIDGenerator implements IDProvider<String> {
 
     @Override
     public String createId() {

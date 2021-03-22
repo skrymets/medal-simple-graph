@@ -17,14 +17,25 @@ package org.medal.graph;
 
 import java.util.Collection;
 
-public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends DataObject<I, EP> {
+public interface Edge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends DataObject<I> {
+
+    /**
+     * "Link" means that imaginary arrow points from LEFT to RIGHT node
+     * (L) ----> (R)
+     * According to this definition another definition emerges:
+     * 1) A DIRECTED edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
+     * 2) A UNDIRECTED edge is neither OUTGOING nor INCOMING for any node
+     */
+    enum Link {
+        DIRECTED, UNDIRECTED
+    }
 
     /**
      * Returns a graph instance which this edge belongs to
      *
      * @return a graph instance, never <code>null</code>
      */
-    Graph<I, ?, EP, N, E> getGraph();
+    Graph<I, N, E> getGraph();
 
     /**
      * Return this edge's direction attribute.
@@ -81,7 +92,7 @@ public interface Edge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge
      * divided edge, and a payload of the original edge, if any.
      * @throws NullPointerException if <code>middleNode</code> is <code>null</code>.
      */
-    Split<I, NP, EP, N, E> insertMiddleNode(N middleNode);
+    Split<I, N, E> insertMiddleNode(N middleNode);
 
     /**
      * "Link" means that imaginary arrow points from LEFT to RIGHT node

@@ -15,15 +15,15 @@
  */
 package org.medal.graph;
 
-public interface DataObject<I, D> {
+public interface DataObject<I> {
 
     I getId();
 
     void setId(I id);
 
-    D getData();
+    Object getData();
 
-    void setData(D data);
+    void setData(Object data);
 
     interface IDProvider<I> {
 

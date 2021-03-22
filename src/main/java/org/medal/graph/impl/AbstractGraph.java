@@ -15,32 +15,39 @@
  */
 package org.medal.graph.impl;
 
-import org.medal.graph.DataObject;
 import org.medal.graph.Edge.Link;
-import org.medal.graph.EdgeFactory;
-import org.medal.graph.Graph;
-import org.medal.graph.NodeFactory;
+import org.medal.graph.*;
+import org.medal.graph.events.GraphEventsSubscriber;
+import org.medal.graph.events.NodesCreatedEvent;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
+import java.util.List;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.stream.IntStream;
 
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
 
-public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP, N, E>, E extends AbstractEdge<I, NP, EP, N, E>> implements Graph<I, NP, EP, N, E> {
+public abstract class AbstractGraph<I, N extends AbstractNode<I, N, E>, E extends AbstractEdge<I, N, E>> implements Graph<I, N, E> {
 
     protected final Set<N> nodes = new HashSet<>();
 
     protected final Set<E> edges = new HashSet<>();
 
+    protected final List<GraphEventsSubscriber<I, N, E>> eventSubscribers = new CopyOnWriteArrayList<>();
+
+
     public AbstractGraph() {
     }
 
     @Override
-    public N createNode(NP payload) {
+    public N createNode(Object payload) {
+        return createNode0(payload);
+    }
+
+    private N createNode0(Object payload) {
         N node = getNodeFactory().createNode();
         node.setId(getIdProvider().createId());
         node.setData(payload);
@@ -64,11 +71,14 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
     public Set<N> createNodes(int count) {
         Set<N> newNodes = new HashSet<>();
         if (count > 0) {
-            for (int i = 0; i < count; i++) {
-                newNodes.add(createNode());
-            }
+            newNodes = IntStream.range(0, count).mapToObj(i -> createNode()).collect(toSet());
         }
+        notifySubscribers(new NodesCreatedEvent<>(this, unmodifiableSet(newNodes)));
         return newNodes;
+    }
+
+    private <T extends GraphEvent<I, N, E>> void notifySubscribers(T event) {
+        eventSubscribers.stream().forEach(subscriber -> subscriber.processEvent(event));
     }
 
     @Override
@@ -142,6 +152,15 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
     }
 
     @Override
+    public <S extends GraphEventsSubscriber<I, N, E>> void addSubscriber(S subscriber) {
+        eventSubscribers.add(subscriber);
+    }
+
+    @Override
+    public <S extends GraphEventsSubscriber<I, N, E>> void removeSubscriber(S subscriber) {
+        eventSubscribers.remove(subscriber);
+    }
+    @Override
     public void deleteNodes(Collection<N> nodes) {
         if (nodes == null || nodes.isEmpty()) {
             return;
@@ -160,7 +179,9 @@ public abstract class AbstractGraph<I, NP, EP, N extends AbstractNode<I, NP, EP,
 
     protected abstract NodeFactory<I, NP, EP, N, E> getNodeFactory();
 
-    protected abstract EdgeFactory<I, NP, EP, N, E> getEdgeFactory();
+    protected abstract NodeFactory<I, N, E> getNodeFactory();
+
+    protected abstract EdgeFactory<I, N, E> getEdgeFactory();
 
     protected abstract DataObject.IDProvider<I> getIdProvider();
 }

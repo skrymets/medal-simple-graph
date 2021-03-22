@@ -21,21 +21,33 @@ import org.medal.graph.Node;
 
 import java.util.*;
 
-public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> extends AbstractDataObject<I, EP> implements Edge<I, NP, EP, N, E> {
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Objects;
+
+import static java.util.Collections.emptyList;
+import static java.util.Objects.requireNonNull;
+import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.IntStream.range;
+
+public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends AbstractDataObject<I> implements Edge<I, N, E> {
 
     protected final N left;
 
     protected final N right;
-    private final Graph<I, NP, EP, N, E> graph;
+
     protected Link link;
 
+    private final Graph<I, N, E> graph;
+
     public AbstractEdge(
-            Graph<I, NP, EP, N, E> graph,
+            Graph<I, N, E> graph,
             N left,
             N right,
             Link link) {
 
-        Objects.requireNonNull(graph);
+        requireNonNull(graph);
         if (left == null || right == null) {
             throw new IllegalArgumentException("Neither left or right note can be undefined.");
         }
@@ -62,7 +74,7 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     }
 
     @Override
-    public Graph<I, NP, EP, N, E> getGraph() {
+    public Graph<I, N, E> getGraph() {
         return graph;
     }
 
@@ -90,32 +102,29 @@ public abstract class AbstractEdge<I, NP, EP, N extends Node<I, NP, EP, N, E>, E
     @Override
     public Collection<E> selfCopy(int copies) {
         if (copies < 1) {
-            return Collections.emptyList();
+            return emptyList();
         }
 
-        List<E> clones = new ArrayList<>(copies);
-        for (int i = 0; i < copies; i++) {
-            clones.add(selfCopy());
-        }
+        List<E> clones = range(0, copies).mapToObj(i -> selfCopy()).collect(toCollection(() -> new ArrayList<>(copies)));
         return clones;
     }
 
     @Override
     public E selfCopy() {
-        E edge = (E) getGraph().connectNodes(left, right, link);
+        E edge = getGraph().connectNodes(left, right, link);
         edge.setData(this.getData());
         return edge;
     }
 
     @Override
-    public Split<I, NP, EP, N, E> insertMiddleNode(N middleNode) {
+    public Split<I, N, E> insertMiddleNode(N middleNode) {
         if (middleNode == null) {
             throw new NullPointerException("Can not insert an undefined node.");
         }
 
         getGraph().breakEdge((E) this);
 
-        //TODO: Should we preserve data? Does this make sense? If the data is a context-seisitive or unique?
+        //TODO: Should we preserve data? Does this make sense? If the data is a context-sensitive or unique?
         //E leftEdge = getGraph().connectNodes(left, middleNode, link);
         E leftEdge = getGraph().connectNodes(left, middleNode, link);
         leftEdge.setData(this.getData());

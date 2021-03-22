@@ -15,7 +15,7 @@
  */
 package org.medal.graph.id;
 
-import org.medal.graph.DataObject;
+import org.medal.graph.IDProvider;
 
 import java.util.concurrent.atomic.AtomicLong;
 
