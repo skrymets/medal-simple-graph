@@ -23,6 +23,7 @@ import org.medal.graph.impl.NodeImpl;
 
 import java.util.*;
 
+import static java.util.Collections.singleton;
 import static java.util.Comparator.comparing;
 import static org.junit.Assert.*;
 
@@ -35,7 +36,6 @@ public class GraphTest {
 
     public GraphTest() {
         nodesComparator = comparing(AbstractDataObject::getId);
-        edgesComparator = comparing(AbstractDataObject::getId);
     }
 
     @Test
@@ -148,7 +148,7 @@ public class GraphTest {
 
     @Test
     public void testGetNodes() {
-        Graph<Long, String, String, NodeImpl, EdgeImpl> graph = new GraphImpl();
+        Graph<Long, NodeImpl, EdgeImpl> graph = new GraphImpl();
         Collection<NodeImpl> newNodes = graph.createNodes(2);
 
         assertNotNull(graph.getNodes());

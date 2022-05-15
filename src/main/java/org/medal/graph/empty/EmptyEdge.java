@@ -20,9 +20,6 @@ import org.medal.graph.Graph;
 import org.medal.graph.Node;
 
 import java.util.Collection;
-import java.util.Collections;
-
-import java.util.Collection;
 
 import static java.util.Collections.emptySet;
 

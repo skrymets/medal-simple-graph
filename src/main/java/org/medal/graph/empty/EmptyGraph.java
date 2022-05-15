@@ -20,13 +20,10 @@ import org.medal.graph.Graph;
 import org.medal.graph.Node;
 import org.medal.graph.events.GraphEventsSubscriber;
 
+import java.util.Collection;
 import java.util.Set;
 
 import static java.util.Collections.emptySet;
-
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Set;
 
 public enum EmptyGraph implements Graph {
 

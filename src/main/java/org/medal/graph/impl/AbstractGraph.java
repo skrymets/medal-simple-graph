@@ -15,14 +15,16 @@
  */
 package org.medal.graph.impl;
 
+import org.medal.graph.DataObject.IDProvider;
 import org.medal.graph.Edge.Link;
-import org.medal.graph.*;
+import org.medal.graph.EdgeFactory;
+import org.medal.graph.Graph;
+import org.medal.graph.GraphEvent;
+import org.medal.graph.NodeFactory;
 import org.medal.graph.events.GraphEventsSubscriber;
 import org.medal.graph.events.NodesCreatedEvent;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
@@ -160,6 +162,7 @@ public abstract class AbstractGraph<I, N extends AbstractNode<I, N, E>, E extend
     public <S extends GraphEventsSubscriber<I, N, E>> void removeSubscriber(S subscriber) {
         eventSubscribers.remove(subscriber);
     }
+
     @Override
     public void deleteNodes(Collection<N> nodes) {
         if (nodes == null || nodes.isEmpty()) {
@@ -177,11 +180,9 @@ public abstract class AbstractGraph<I, N extends AbstractNode<I, N, E>, E extend
         this.nodes.removeAll(nodes);
     }
 
-    protected abstract NodeFactory<I, NP, EP, N, E> getNodeFactory();
-
     protected abstract NodeFactory<I, N, E> getNodeFactory();
 
     protected abstract EdgeFactory<I, N, E> getEdgeFactory();
 
-    protected abstract DataObject.IDProvider<I> getIdProvider();
+    protected abstract IDProvider<I> getIdProvider();
 }

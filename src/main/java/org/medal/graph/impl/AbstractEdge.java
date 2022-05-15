@@ -19,8 +19,6 @@ import org.medal.graph.Edge;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
 
-import java.util.*;
-
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -187,13 +185,13 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
         return left.toString() + " -" + ((link == Link.DIRECTED) ? '>' : '-') + ' ' + right.toString();
     }
 
-    public static class SplitImpl<I, NP, EP, N extends Node<I, NP, EP, N, E>, E extends Edge<I, NP, EP, N, E>> implements Split<I, NP, EP, N, E> {
+    public static class SplitImpl<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> implements Split<I, N, E> {
 
         private final E leftEdge;
 
         private final E rightEdge;
 
-        private EP edgePayload;
+        private Object edgePayload;
 
         private SplitImpl() {
             this.leftEdge = null;
@@ -219,12 +217,12 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
         }
 
         @Override
-        public EP getEdgePayload() {
+        public Object getEdgePayload() {
             return edgePayload;
         }
 
         @Override
-        public Split<I, NP, EP, N, E> setEdgePayload(EP edgePayload) {
+        public Split<I, N, E> setEdgePayload(Object edgePayload) {
             this.edgePayload = edgePayload;
             return this;
         }

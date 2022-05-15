@@ -192,9 +192,4 @@ public abstract class AbstractNode<I, N extends Node<I, N, E>, E extends Edge<I,
     public String toString() {
         return (getData() == null) ? "node_" + hashCode() : getData().toString();
     }
-
-    enum InOut {
-        IN, OUT
-    }
-
 }

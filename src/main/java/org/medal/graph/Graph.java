@@ -18,6 +18,7 @@ package org.medal.graph;
 import org.medal.graph.Edge.Link;
 import org.medal.graph.events.GraphEventsSubscriber;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface Graph<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
@@ -27,7 +28,7 @@ public interface Graph<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
      *
      * @param payload node's payload. May be <code>null</code>
      * @return a new node.
-     * @see org.medal.graph.IDProvider
+     * @see org.medal.graph.DataObject.IDProvider
      */
     N createNode(Object payload);
 
@@ -35,7 +36,7 @@ public interface Graph<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
      * Create a new graph node with a unique ID.
      *
      * @return a new node.
-     * @see org.medal.graph.IDProvider
+     * @see org.medal.graph.DataObject.IDProvider
      */
     N createNode();
 
