@@ -27,7 +27,6 @@ import java.util.*;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author skrymets
  */
 public class NodeTest {

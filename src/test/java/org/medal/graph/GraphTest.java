@@ -23,6 +23,7 @@ import org.medal.graph.impl.NodeImpl;
 
 import java.util.*;
 
+import static java.util.Collections.singleton;
 import static java.util.Comparator.comparing;
 import static org.junit.Assert.*;
 
@@ -36,13 +37,12 @@ public class GraphTest {
 
     public GraphTest() {
         nodesComparator = comparing(AbstractDataObject::getId);
-        edgesComparator = comparing(AbstractDataObject::getId);
     }
 
     @Test
     public void testCreateNode() {
-        Graph graph = new GraphImpl();
-        Node node1 = graph.createNode();
+        GraphImpl graph = new GraphImpl();
+        NodeImpl node1 = graph.createNode();
 
         assertNotNull(node1);
         assertNotNull(node1.getId());
@@ -55,7 +55,7 @@ public class GraphTest {
         Node node3 = graph.createNode(null);
         assertNull(node3.getData());
 
-        Node node4 = graph.createNode(new Object());
+        Node node4 = graph.createNode("string");
         assertNotNull(node4.getData());
     }
 
@@ -149,8 +149,8 @@ public class GraphTest {
 
     @Test
     public void testGetNodes() {
-        GraphImpl graph = new GraphImpl();
-        Set<NodeImpl> newNodes = graph.createNodes(2);
+        Graph<Long, NodeImpl, EdgeImpl> graph = new GraphImpl();
+        Collection<NodeImpl> newNodes = graph.createNodes(2);
 
         assertNotNull(graph.getNodes());
         assertFalse(graph.getNodes().isEmpty());
@@ -186,6 +186,43 @@ public class GraphTest {
         assertFalse(graph.getEdges().contains(edge));
         assertFalse(node1.getEdges().contains(edge));
         assertFalse(node2.getEdges().contains(edge));
+    }
+
+    @Test
+    public void testDeleteNodes() {
+        GraphImpl graph = new GraphImpl();
+        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(4));
+        /*
+         *   (0) ----- (1)
+         *    |  \   /  |
+         *    |    X    |
+         *    |  /   \  |
+         *   (3) ----- (2)
+         */
+        nodes.get(0).connect(nodes.get(1));
+        nodes.get(1).connect(nodes.get(2));
+        nodes.get(2).connect(nodes.get(3));
+        nodes.get(3).connect(nodes.get(0));
+        nodes.get(1).connect(nodes.get(3));
+        nodes.get(0).connect(nodes.get(2));
+        assertEquals(6, graph.getEdges().size());
+        assertEquals(4, graph.getNodes().size());
+
+        graph.deleteNodes(singleton((NodeImpl) null));
+        assertEquals(6, graph.getEdges().size());
+        assertEquals(4, graph.getNodes().size());
+
+        graph.deleteNodes(singleton(nodes.get(2)));
+        /*
+         *   (0) ----- (1)
+         *    |      /
+         *    |    /
+         *    |  /
+         *   (3)
+         */
+        assertEquals(3, graph.getEdges().size());
+        assertEquals(3, graph.getNodes().size());
+
     }
 
 }

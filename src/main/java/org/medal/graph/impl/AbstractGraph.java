@@ -15,14 +15,16 @@
  */
 package org.medal.graph.impl;
 
+import org.medal.graph.DataObject.IDProvider;
 import org.medal.graph.Edge.Link;
-import org.medal.graph.*;
+import org.medal.graph.EdgeFactory;
+import org.medal.graph.Graph;
+import org.medal.graph.GraphEvent;
+import org.medal.graph.NodeFactory;
 import org.medal.graph.events.GraphEventsSubscriber;
 import org.medal.graph.events.NodesCreatedEvent;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.stream.IntStream;
 
@@ -159,6 +161,23 @@ public abstract class AbstractGraph<I, N extends AbstractNode<I, N, E>, E extend
     @Override
     public <S extends GraphEventsSubscriber<I, N, E>> void removeSubscriber(S subscriber) {
         eventSubscribers.remove(subscriber);
+    }
+
+    @Override
+    public void deleteNodes(Collection<N> nodes) {
+        if (nodes == null || nodes.isEmpty()) {
+            return;
+        }
+
+        // TODO: 2019-09-10 Remove only nodes that belong to this particular graph
+        final Set<E> edges = nodes.stream()
+                .filter(Objects::nonNull)
+                .map(n -> n.getEdges())
+                .flatMap(Collection::stream)
+                .collect(toSet());
+
+        this.edges.removeAll(edges);
+        this.nodes.removeAll(nodes);
     }
 
     protected abstract NodeFactory<I, N, E> getNodeFactory();

@@ -28,16 +28,13 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 /**
- *
  * @author skrymets
  */
 public class EdgeTest {
 
-    protected GraphImpl graph;
-
-    protected List<NodeImpl> nodes;
-
     protected static final int INITIAL_NODES_COUNT = 10;
+    protected GraphImpl graph;
+    protected List<NodeImpl> nodes;
 
     public EdgeTest() {
     }
@@ -67,7 +64,7 @@ public class EdgeTest {
 
         NodeImpl node1 = nodes.get(0);
         NodeImpl node2 = nodes.get(1);
-        
+
         EdgeImpl edge = node1.connect(node2);
         //
         // [node1] -----(edge)----- [node2]
@@ -82,7 +79,7 @@ public class EdgeTest {
 
         NodeImpl node1 = nodes.get(0);
         NodeImpl node2 = nodes.get(1);
-        
+
         EdgeImpl edge = node1.connectNodeFromRight(node2);
 
         //
@@ -163,7 +160,7 @@ public class EdgeTest {
         //
 
         NodeImpl node2 = nodes.get(2);
-        Split split = edge1to3.insertMiddleNode(node2);
+        Edge.Split split = edge1to3.insertMiddleNode(node2);
 
         //
         // [node1] -----(leftEdge)----- [node2] -----(rightEdge)----- [node3]
@@ -193,7 +190,7 @@ public class EdgeTest {
         assertFalse(graph.getEdges().contains(edge1to3));
         assertFalse(node1.getEdges().contains(edge1to3));
         assertFalse(node3.getEdges().contains(edge1to3));
-        
+
         /**
          * Do not accept an undefined node
          */

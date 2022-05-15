@@ -22,5 +22,5 @@ public class NodeImpl extends AbstractNode<Long, NodeImpl, EdgeImpl> {
     NodeImpl(Graph graph) {
         super(graph);
     }
-    
+
 }

@@ -18,7 +18,6 @@ package org.medal.graph.impl;
 import org.medal.graph.Edge;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
-import org.medal.graph.Split;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -131,7 +130,7 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
         E rightEdge = getGraph().connectNodes(middleNode, right, link);
         rightEdge.setData(this.getData());
 
-        Split split = new Split(leftEdge, rightEdge);
+        Split split = new SplitImpl(leftEdge, rightEdge);
         split.setEdgePayload(getData()); // Preserve the payload
 
         return split;
@@ -186,4 +185,47 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
         return left.toString() + " -" + ((link == Link.DIRECTED) ? '>' : '-') + ' ' + right.toString();
     }
 
+    public static class SplitImpl<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> implements Split<I, N, E> {
+
+        private final E leftEdge;
+
+        private final E rightEdge;
+
+        private Object edgePayload;
+
+        private SplitImpl() {
+            this.leftEdge = null;
+            this.rightEdge = null;
+        }
+
+        private SplitImpl(E leftEdge, E rightEdge) {
+            Objects.requireNonNull(leftEdge);
+            Objects.requireNonNull(rightEdge);
+
+            this.leftEdge = leftEdge;
+            this.rightEdge = rightEdge;
+        }
+
+        @Override
+        public E getLeftEdge() {
+            return leftEdge;
+        }
+
+        @Override
+        public E getRightEdge() {
+            return rightEdge;
+        }
+
+        @Override
+        public Object getEdgePayload() {
+            return edgePayload;
+        }
+
+        @Override
+        public Split<I, N, E> setEdgePayload(Object edgePayload) {
+            this.edgePayload = edgePayload;
+            return this;
+        }
+
+    }
 }

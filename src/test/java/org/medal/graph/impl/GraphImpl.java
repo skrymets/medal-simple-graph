@@ -15,11 +15,10 @@
  */
 package org.medal.graph.impl;
 
+import org.medal.graph.DataObject.IDProvider;
 import org.medal.graph.Edge;
 import org.medal.graph.EdgeFactory;
-import org.medal.graph.IDProvider;
 import org.medal.graph.NodeFactory;
-import org.medal.graph.events.GraphEventsSubscriber;
 import org.medal.graph.id.NumberIDProvider;
 
 public class GraphImpl extends AbstractGraph<Long, NodeImpl, EdgeImpl> {

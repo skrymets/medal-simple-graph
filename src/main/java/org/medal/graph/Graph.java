@@ -18,6 +18,7 @@ package org.medal.graph;
 import org.medal.graph.Edge.Link;
 import org.medal.graph.events.GraphEventsSubscriber;
 
+import java.util.Collection;
 import java.util.Set;
 
 public interface Graph<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
@@ -27,7 +28,7 @@ public interface Graph<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
      *
      * @param payload node's payload. May be <code>null</code>
      * @return a new node.
-     * @see org.medal.graph.IDProvider
+     * @see org.medal.graph.DataObject.IDProvider
      */
     N createNode(Object payload);
 
@@ -35,7 +36,7 @@ public interface Graph<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
      * Create a new graph node with a unique ID.
      *
      * @return a new node.
-     * @see org.medal.graph.IDProvider
+     * @see org.medal.graph.DataObject.IDProvider
      */
     N createNode();
 
@@ -60,7 +61,7 @@ public interface Graph<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
      * @return a new <code>Edge</code> instance.
      * @throws NullPointerException if <code>left</code> or <code>right</code> node is
      *                              undefined - <code>null</code>.
-     * @see org.medal.graph.IDProvider
+     * @see DataObject.IDProvider
      * @see org.medal.graph.Edge.Link#UNDIRECTED
      */
     E connectNodes(N left, N right, Link direction);
@@ -75,7 +76,7 @@ public interface Graph<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
      * @return a new <code>Edge</code> instance.
      * @throws NullPointerException if <code>left</code> or <code>right</code> node is
      *                              undefined - <code>null</code>.
-     * @see org.medal.graph.IDProvider
+     * @see DataObject.IDProvider
      * @see org.medal.graph.Edge.Link#UNDIRECTED
      */
     E connectNodes(N left, N right);
@@ -106,5 +107,12 @@ public interface Graph<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
     <S extends GraphEventsSubscriber<I, N, E>> void addSubscriber(S subscriber);
 
     <S extends GraphEventsSubscriber<I, N, E>> void removeSubscriber(S subscriber);
+
+    /**
+     * Deletes nodes from this graph. Also deletes all connected edges
+     *
+     * @param nodes a collection  of nodes to be deleted.
+     */
+    void deleteNodes(Collection<N> nodes);
 
 }

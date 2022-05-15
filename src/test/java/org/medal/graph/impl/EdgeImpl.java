@@ -23,5 +23,6 @@ public class EdgeImpl extends AbstractEdge<Long, NodeImpl, EdgeImpl> {
     EdgeImpl(Graph graph, NodeImpl left, NodeImpl right, Link link) {
         super(graph, left, right, link);
     }
-    
+
 }
+

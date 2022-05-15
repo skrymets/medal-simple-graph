@@ -25,4 +25,9 @@ public interface DataObject<I> {
 
     void setData(Object data);
 
+    interface IDProvider<I> {
+
+        I createId();
+
+    }
 }

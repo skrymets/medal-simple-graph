@@ -91,12 +91,12 @@ public enum EmptyNode implements Node {
     }
 
     @Override
-    public Object getData() {
-        return EMPTY;
+    public void setId(Object id) {
     }
 
     @Override
-    public void setId(Object id) {
+    public Object getData() {
+        return EMPTY;
     }
 
     @Override

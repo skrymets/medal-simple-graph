@@ -20,17 +20,6 @@ import java.util.Collection;
 public interface Edge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends DataObject<I> {
 
     /**
-     * "Link" means that imaginary arrow points from LEFT to RIGHT node
-     * (L) ----> (R)
-     * According to this definition another definition emerges:
-     * 1) A DIRECTED edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
-     * 2) A UNDIRECTED edge is neither OUTGOING nor INCOMING for any node
-     */
-    enum Link {
-        DIRECTED, UNDIRECTED
-    }
-
-    /**
      * Returns a graph instance which this edge belongs to
      *
      * @return a graph instance, never <code>null</code>
@@ -49,7 +38,6 @@ public interface Edge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * <code>null</code>, then actual value will be set to <code>UNDIRECTED</code>
      *
      * @param direction attribute value
-     *
      * @return this edge reference
      */
     E setDirected(Link direction);
@@ -58,7 +46,7 @@ public interface Edge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * Returns a node that is linked to the specified <code>node</code> by this edge.
      *
      * @return a <code>Node</code> instance on the other side of this edge if the
-     *         specified <code>node</code> belongs to this edge, otherwise - <code>null</code>
+     * specified <code>node</code> belongs to this edge, otherwise - <code>null</code>
      */
     N getOpposite(N node);
 
@@ -89,12 +77,32 @@ public interface Edge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * well.
      *
      * @param middleNode a node to be inserted in-between
-     *
      * @return <code>Split</code> object that holds references to both parts of the
-     *         divided edge, and a payload of the original edge, if any.
-     *
+     * divided edge, and a payload of the original edge, if any.
      * @throws NullPointerException if <code>middleNode</code> is <code>null</code>.
      */
     Split<I, N, E> insertMiddleNode(N middleNode);
+
+    /**
+     * "Link" means that imaginary arrow points from LEFT to RIGHT node
+     * (L) ----> (R)
+     * According to this definition another definition emerges:
+     * 1) A DIRECTED edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
+     * 2) A UNDIRECTED edge is neither OUTGOING nor INCOMING for any node
+     */
+    public enum Link {
+        DIRECTED, UNDIRECTED
+    }
+
+    interface Split<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
+
+        E getLeftEdge();
+
+        E getRightEdge();
+
+        Object getEdgePayload();
+
+        Split<I, N, E> setEdgePayload(Object edgePayload);
+    }
 
 }

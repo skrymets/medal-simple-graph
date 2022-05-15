@@ -15,12 +15,11 @@
  */
 package org.medal.graph.id;
 
-import org.medal.graph.IDProvider;
+import org.medal.graph.DataObject.IDProvider;
 
 import java.util.concurrent.atomic.AtomicLong;
 
 /**
- *
  * @author skrymets
  */
 public class NumberIDProvider implements IDProvider<Long> {

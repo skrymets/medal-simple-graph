@@ -19,7 +19,6 @@ import java.util.Collection;
 import java.util.Set;
 
 /**
- *
  * @author skrymets
  */
 public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends DataObject<I> {
@@ -35,11 +34,9 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * Connects another node to this node with new undirected edge. A node that is being
      * connected is placed to the right side. The node to which the new is attached is
      * placed on the left side.
-     * 
+     *
      * @param node a node to be connected
-     *
      * @return new undirected edge
-     *
      * @throws NullPointerException if <code>otherNode</code> is undefined
      */
     E connect(N node);
@@ -50,9 +47,7 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * placed on the right side.
      *
      * @param leftNode a node to be connected
-     *
      * @return new undirected edge
-     *
      * @throws NullPointerException if <code>otherNode</code> is undefined
      */
     E connectNodeFromLeft(N leftNode);
@@ -65,7 +60,6 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * @param rightNode a node to be connected
      *
      * @return new undirected edge
-     *
      * @throws NullPointerException if <code>otherNode</code> is undefined
      */
     E connectNodeFromRight(N rightNode);
@@ -74,7 +68,7 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * Returns a collection of the node's edges, including directed and undirected, if any
      *
      * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
+     * <code>null</code>.
      */
     Collection<E> getEdges();
 
@@ -87,7 +81,7 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * </p>
      *
      * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
+     * <code>null</code>.
      */
     Set<E> getEdgesToNode(N destination);
 
@@ -95,9 +89,8 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * Returns a collection of the node's incoming edges, NOT including undirected, if any
      *
      * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Direction
+     * <code>null</code>.
+     * @see org.medal.graph.Edge.Link
      */
     Collection<E> getIncomingEdges();
 
@@ -106,11 +99,9 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      *
      * @param includeUndirected Should the undirected edges be considered as incoming
      *                          either?
-     *
      * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Direction
+     * <code>null</code>.
+     * @see org.medal.graph.Edge.Link
      */
     Collection<E> getIncomingEdges(boolean includeUndirected);
 
@@ -119,7 +110,7 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * undirected connections.
      *
      * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
+     * <code>null</code>.
      */
     Set<N> getLinkedNodes();
 
@@ -127,9 +118,8 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * Returns a collection of the node's outgoing edges, NOT including undirected, if any
      *
      * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Direction
+     * <code>null</code>.
+     * @see org.medal.graph.Edge.Link
      */
     Collection<E> getOutgoingEdges();
 
@@ -138,11 +128,9 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      *
      * @param includeUndirected Should the undirected edges be considered as outgoing
      *                          either?
-     *
      * @return an unmodifiable collection of edges. May be empty, but never
-     *         <code>null</code>.
-     *
-     * @see org.medal.graph.Edge.Direction
+     * <code>null</code>.
+     * @see org.medal.graph.Edge.Link
      */
     Collection<E> getOutgoingEdges(boolean includeUndirected);
 
