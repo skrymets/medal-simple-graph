@@ -148,13 +148,11 @@ public class EdgeTest {
     @Test(expected = NullPointerException.class)
     public void testInsertMiddleNode() {
 
-        final String testPayload = "0123456789";
 
         NodeImpl node1 = nodes.get(0);
         NodeImpl node3 = nodes.get(1);
 
         EdgeImpl edge1to3 = node1.connect(node3);
-        edge1to3.setData(testPayload);
         //
         // [node1] -----(edge1to3:"0123456789")----- [node3]
         //
@@ -166,11 +164,6 @@ public class EdgeTest {
         // [node1] -----(leftEdge)----- [node2] -----(rightEdge)----- [node3]
         //
         assertNotNull(split);
-
-        /**
-         * The payload is preserved
-         */
-        assertEquals(split.getEdgePayload(), testPayload);
 
         Edge leftEdge = split.getLeftEdge();
         Edge rightEdge = split.getRightEdge();

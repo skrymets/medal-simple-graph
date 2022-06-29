@@ -20,6 +20,6 @@ import org.medal.graph.Edge;
 import org.medal.graph.GraphEvent;
 import org.medal.graph.Node;
 
-public interface GraphEventsSubscriber<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
-    <T extends GraphEvent<I, N, E>> void processEvent(T event);
+public interface GraphEventsSubscriber<N extends Node<N, E>, E extends Edge<N, E>> {
+    <T extends GraphEvent<N, E>> void processEvent(T event);
 }

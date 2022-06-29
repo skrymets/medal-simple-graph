@@ -17,14 +17,14 @@ package org.medal.graph;
 
 import java.util.Collection;
 
-public interface Edge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends DataObject<I> {
+public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
 
     /**
      * Returns a graph instance which this edge belongs to
      *
      * @return a graph instance, never <code>null</code>
      */
-    Graph<I, N, E> getGraph();
+    Graph<N, E> getGraph();
 
     /**
      * Return this edge's direction attribute.
@@ -81,7 +81,7 @@ public interface Edge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * divided edge, and a payload of the original edge, if any.
      * @throws NullPointerException if <code>middleNode</code> is <code>null</code>.
      */
-    Split<I, N, E> insertMiddleNode(N middleNode);
+    Split<N, E> insertMiddleNode(N middleNode);
 
     /**
      * "Link" means that imaginary arrow points from LEFT to RIGHT node
@@ -94,7 +94,7 @@ public interface Edge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
         DIRECTED, UNDIRECTED
     }
 
-    interface Split<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
+    interface Split<N extends Node<N, E>, E extends Edge<N, E>> {
 
         E getLeftEdge();
 
@@ -102,7 +102,7 @@ public interface Edge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
 
         Object getEdgePayload();
 
-        Split<I, N, E> setEdgePayload(Object edgePayload);
+        Split<N, E> setEdgePayload(Object edgePayload);
     }
 
 }

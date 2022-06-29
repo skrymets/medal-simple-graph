@@ -15,8 +15,8 @@
  */
 package org.medal.graph;
 
-public interface GraphEvent<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
+public interface GraphEvent<N extends Node<N, E>, E extends Edge<N, E>> {
 
-    Graph<I, N, E> getGraph();
+    Graph<N, E> getGraph();
 
 }

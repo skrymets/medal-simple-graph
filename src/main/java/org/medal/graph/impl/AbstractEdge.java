@@ -22,14 +22,13 @@ import org.medal.graph.Node;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
 
 import static java.util.Collections.emptyList;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toCollection;
 import static java.util.stream.IntStream.range;
 
-public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends AbstractDataObject<I> implements Edge<I, N, E> {
+public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> implements Edge<N, E> {
 
     protected final N left;
 
@@ -37,10 +36,10 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
 
     protected Link link;
 
-    private final Graph<I, N, E> graph;
+    private final Graph<N, E> graph;
 
     public AbstractEdge(
-            Graph<I, N, E> graph,
+            Graph<N, E> graph,
             N left,
             N right,
             Link link) {
@@ -72,7 +71,7 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
     }
 
     @Override
-    public Graph<I, N, E> getGraph() {
+    public Graph<N, E> getGraph() {
         return graph;
     }
 
@@ -110,12 +109,11 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
     @Override
     public E selfCopy() {
         E edge = getGraph().connectNodes(left, right, link);
-        edge.setData(this.getData());
         return edge;
     }
 
     @Override
-    public Split<I, N, E> insertMiddleNode(N middleNode) {
+    public Split<N, E> insertMiddleNode(N middleNode) {
         if (middleNode == null) {
             throw new NullPointerException("Can not insert an undefined node.");
         }
@@ -125,59 +123,12 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
         //TODO: Should we preserve data? Does this make sense? If the data is a context-sensitive or unique?
         //E leftEdge = getGraph().connectNodes(left, middleNode, link);
         E leftEdge = getGraph().connectNodes(left, middleNode, link);
-        leftEdge.setData(this.getData());
 
         E rightEdge = getGraph().connectNodes(middleNode, right, link);
-        rightEdge.setData(this.getData());
 
         Split split = new SplitImpl(leftEdge, rightEdge);
-        split.setEdgePayload(getData()); // Preserve the payload
 
         return split;
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.id);
-        hash = 47 * hash + Objects.hashCode(this.left);
-        hash = 47 * hash + Objects.hashCode(this.right);
-        hash = 47 * hash + Objects.hashCode(this.link);
-        // Payload MUST NOT participate in the hash!
-        // hash = 47 * hash + Objects.hashCode(this.payload); 
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final AbstractEdge other = (AbstractEdge) obj;
-        //TODO: Consider ID in equality (from business point of view)
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.left, other.left)) {
-            return false;
-        }
-        if (!Objects.equals(this.right, other.right)) {
-            return false;
-        }
-        if (this.link != other.link) {
-            return false;
-        }
-        // Payload MUST NOT participate in the eguals!
-//        if (!Objects.equals(this.payload, other.payload)) {
-//            return false;
-//        }
-        return true;
     }
 
     @Override
@@ -185,7 +136,7 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
         return left.toString() + " -" + ((link == Link.DIRECTED) ? '>' : '-') + ' ' + right.toString();
     }
 
-    public static class SplitImpl<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> implements Split<I, N, E> {
+    public static class SplitImpl<N extends Node<N, E>, E extends Edge<N, E>> implements Split<N, E> {
 
         private final E leftEdge;
 
@@ -199,8 +150,8 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
         }
 
         private SplitImpl(E leftEdge, E rightEdge) {
-            Objects.requireNonNull(leftEdge);
-            Objects.requireNonNull(rightEdge);
+            requireNonNull(leftEdge);
+            requireNonNull(rightEdge);
 
             this.leftEdge = leftEdge;
             this.rightEdge = rightEdge;
@@ -222,7 +173,7 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
         }
 
         @Override
-        public Split<I, N, E> setEdgePayload(Object edgePayload) {
+        public Split<N, E> setEdgePayload(Object edgePayload) {
             this.edgePayload = edgePayload;
             return this;
         }

@@ -21,11 +21,11 @@ import org.medal.graph.Node;
 
 import java.util.Set;
 
-public class NodesCreatedEvent<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends AbstractGraphEvent<I, N, E> {
+public class NodesCreatedEvent<N extends Node<N, E>, E extends Edge<N, E>> extends AbstractGraphEvent<N, E> {
 
     private final Set<N> nodes;
 
-    public NodesCreatedEvent(Graph<I, N, E> graph, Set<N> nodes) {
+    public NodesCreatedEvent(Graph<N, E> graph, Set<N> nodes) {
         super(graph);
         this.nodes = nodes;
     }

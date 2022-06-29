@@ -17,14 +17,14 @@ package org.medal.graph;
 
 import static java.util.Objects.requireNonNull;
 
-public class Split<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> {
+public class Split<I, N extends Node<N, E>, E extends Edge<N, E>> {
 
     public static final Split UNDEFINED = new Split();
 
     private final E leftEdge;
 
     private final E rightEdge;
-    
+
     private Object edgePayload;
 
     private Split() {

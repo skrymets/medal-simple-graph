@@ -20,16 +20,16 @@ import org.medal.graph.Graph;
 import org.medal.graph.GraphEvent;
 import org.medal.graph.Node;
 
-public class AbstractGraphEvent<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> implements GraphEvent<I, N, E> {
+public class AbstractGraphEvent<N extends Node<N, E>, E extends Edge<N, E>> implements GraphEvent<N, E> {
 
-    private final Graph<I, N, E> graph;
+    private final Graph<N, E> graph;
 
-    public AbstractGraphEvent(Graph<I, N, E> graph) {
+    public AbstractGraphEvent(Graph<N, E> graph) {
         this.graph = graph;
     }
 
     @Override
-    public Graph<I, N, E> getGraph() {
+    public Graph<N, E> getGraph() {
         return this.graph;
     }
 

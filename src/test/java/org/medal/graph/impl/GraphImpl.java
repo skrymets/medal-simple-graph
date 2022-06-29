@@ -15,29 +15,20 @@
  */
 package org.medal.graph.impl;
 
-import org.medal.graph.DataObject.IDProvider;
 import org.medal.graph.Edge;
 import org.medal.graph.EdgeFactory;
 import org.medal.graph.NodeFactory;
-import org.medal.graph.id.NumberIDProvider;
 
-public class GraphImpl extends AbstractGraph<Long, NodeImpl, EdgeImpl> {
-
-    protected final NumberIDProvider idProvider = new NumberIDProvider();
+public class GraphImpl extends AbstractGraph<NodeImpl, EdgeImpl> {
 
     @Override
-    protected NodeFactory<Long, NodeImpl, EdgeImpl> getNodeFactory() {
+    protected NodeFactory<NodeImpl, EdgeImpl> getNodeFactory() {
         return () -> new NodeImpl(GraphImpl.this);
     }
 
     @Override
-    protected EdgeFactory<Long, NodeImpl, EdgeImpl> getEdgeFactory() {
+    protected EdgeFactory<NodeImpl, EdgeImpl> getEdgeFactory() {
         return (NodeImpl left, NodeImpl right, Edge.Link direction) -> new EdgeImpl(GraphImpl.this, left, right, direction);
-    }
-
-    @Override
-    protected IDProvider<Long> getIdProvider() {
-        return idProvider;
     }
 
 }

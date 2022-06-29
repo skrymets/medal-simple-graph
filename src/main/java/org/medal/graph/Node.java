@@ -21,14 +21,14 @@ import java.util.Set;
 /**
  * @author skrymets
  */
-public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends DataObject<I> {
+public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
 
     /**
      * Returns a graph instance which this node belongs to
      *
      * @return a graph instance, never <code>null</code>
      */
-    Graph<I, N, E> getGraph();
+    Graph<N, E> getGraph();
 
     /**
      * Connects another node to this node with new undirected edge. A node that is being
@@ -58,7 +58,6 @@ public interface Node<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> exten
      * placed on the left side.
      *
      * @param rightNode a node to be connected
-     *
      * @return new undirected edge
      * @throws NullPointerException if <code>otherNode</code> is undefined
      */
