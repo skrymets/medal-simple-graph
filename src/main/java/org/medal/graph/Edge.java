@@ -16,6 +16,7 @@
 package org.medal.graph;
 
 import java.util.Collection;
+import java.util.Optional;
 
 public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
 
@@ -26,21 +27,35 @@ public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
      */
     Graph<N, E> getGraph();
 
-    /**
-     * Return this edge's direction attribute.
-     *
-     * @return direction attribute, never <code>null</code>
-     */
-    Link getDirected();
 
     /**
-     * Set this edge's direction attribute. If the <code>direction</code> value is
-     * <code>null</code>, then actual value will be set to <code>UNDIRECTED</code>
+     * "Direction" means that imaginary arrow points from LEFT to RIGHT node
+     * (L) ----> (R)
+     * According to this definition another definition emerges:
+     * 1) A DIRECTED edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
+     * 2) A UNDIRECTED edge is neither OUTGOING nor INCOMING for any node
+     * <p>
+     * Return this edge's direction attribute.
      *
-     * @param direction attribute value
+     * @return direction attribute
+     */
+    boolean isDirected();
+
+    /**
+     * Set this edge's direction attribute to <code>DIRECTED</code>
+     *
      * @return this edge reference
      */
-    E setDirected(Link direction);
+    E setDirected();
+
+    E setDirected(boolean directed);
+
+    /**
+     * Set this edge's direction attribute to <code>UNDIRECTED</code>
+     *
+     * @return this edge reference
+     */
+    E setUndirected();
 
     /**
      * Returns a node that is linked to the specified <code>node</code> by this edge.
@@ -48,7 +63,7 @@ public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
      * @return a <code>Node</code> instance on the other side of this edge if the
      * specified <code>node</code> belongs to this edge, otherwise - <code>null</code>
      */
-    N getOpposite(N node);
+    Optional<N> getOpposite(N node);
 
     /**
      * Return a node that resides in left position of this edge.
@@ -64,15 +79,21 @@ public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
      */
     N getRight();
 
-    void collapse();
+    /**
+     * Collapses nodes that are linked by this edge into one node by
+     * executing a collapse function on them.
+     *
+     * @return a collapsed node
+     */
+    N collapse();
 
-    E selfCopy();
+    E duplicate();
 
-    Collection<E> selfCopy(int copies);
+    Collection<E> duplicate(int copies);
 
     /**
      * "Cuts" this edge onto two parts and inserts a given node in-between. After this
-     * operation the edge's left and right nodes are not not linked to it anymore, while
+     * operation the edge's left and right nodes are not linked to it anymore, while
      * the edge still references them. The edge is not referenced by a graph object as
      * well.
      *
@@ -83,26 +104,12 @@ public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
      */
     Split<N, E> insertMiddleNode(N middleNode);
 
-    /**
-     * "Link" means that imaginary arrow points from LEFT to RIGHT node
-     * (L) ----> (R)
-     * According to this definition another definition emerges:
-     * 1) A DIRECTED edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
-     * 2) A UNDIRECTED edge is neither OUTGOING nor INCOMING for any node
-     */
-    public enum Link {
-        DIRECTED, UNDIRECTED
-    }
-
     interface Split<N extends Node<N, E>, E extends Edge<N, E>> {
 
         E getLeftEdge();
 
         E getRightEdge();
 
-        Object getEdgePayload();
-
-        Split<N, E> setEdgePayload(Object edgePayload);
     }
 
 }

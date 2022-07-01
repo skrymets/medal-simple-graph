@@ -20,8 +20,8 @@ import org.medal.graph.Graph;
 
 public class EdgeImpl extends AbstractEdge<NodeImpl, EdgeImpl> {
 
-    EdgeImpl(Graph graph, NodeImpl left, NodeImpl right, Link link) {
-        super(graph, left, right, link);
+    EdgeImpl(Graph graph, NodeImpl left, NodeImpl right, boolean directed) {
+        super(graph, left, right, directed);
     }
 
 }

@@ -15,7 +15,6 @@
  */
 package org.medal.graph.impl;
 
-import org.medal.graph.Edge;
 import org.medal.graph.EdgeFactory;
 import org.medal.graph.NodeFactory;
 
@@ -28,7 +27,7 @@ public class GraphImpl extends AbstractGraph<NodeImpl, EdgeImpl> {
 
     @Override
     protected EdgeFactory<NodeImpl, EdgeImpl> getEdgeFactory() {
-        return (NodeImpl left, NodeImpl right, Edge.Link direction) -> new EdgeImpl(GraphImpl.this, left, right, direction);
+        return (NodeImpl left, NodeImpl right, boolean directed) -> new EdgeImpl(GraphImpl.this, left, right, directed);
     }
 
 }

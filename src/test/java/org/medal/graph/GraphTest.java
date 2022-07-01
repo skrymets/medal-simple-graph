@@ -94,13 +94,13 @@ public class GraphTest {
 
         EdgeImpl undirectedConnection1 = graph.connectNodes(node1, node2);
         assertNotNull(undirectedConnection1);
-        assertEquals(undirectedConnection1.getDirected(), Edge.Link.UNDIRECTED);
+        assertFalse(undirectedConnection1.isDirected());
 
-        EdgeImpl undirectedConnection2 = graph.connectNodes(node1, node2, Edge.Link.UNDIRECTED);
-        assertEquals(undirectedConnection2.getDirected(), Edge.Link.UNDIRECTED);
+        EdgeImpl undirectedConnection2 = graph.connectNodes(node1, node2, false);
+        assertFalse(undirectedConnection2.isDirected());
 
-        EdgeImpl directedConnection1 = graph.connectNodes(node1, node2, Edge.Link.DIRECTED);
-        assertEquals(directedConnection1.getDirected(), Edge.Link.DIRECTED);
+        EdgeImpl directedConnection1 = graph.connectNodes(node1, node2, true);
+        assertTrue(directedConnection1.isDirected());
 
         assertNotEquals(undirectedConnection1, undirectedConnection2);
         assertNotEquals(undirectedConnection2, directedConnection1);

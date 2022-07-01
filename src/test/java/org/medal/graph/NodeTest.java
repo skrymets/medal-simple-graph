@@ -17,12 +17,14 @@ package org.medal.graph;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.medal.graph.Edge.Link;
 import org.medal.graph.impl.EdgeImpl;
 import org.medal.graph.impl.GraphImpl;
 import org.medal.graph.impl.NodeImpl;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Set;
 
 import static org.junit.Assert.*;
 
@@ -136,7 +138,7 @@ public class NodeTest {
         NodeImpl rightNode = nodes.get(1);
 
         EdgeImpl edge = rightNode.connectNodeFromLeft(leftNode);
-        assertTrue(edge.getDirected() == Link.DIRECTED);
+        assertTrue(edge.isDirected());
         assertSame(edge.getLeft(), leftNode);
         assertSame(edge.getRight(), rightNode);
 
@@ -154,7 +156,7 @@ public class NodeTest {
         NodeImpl rightNode = nodes.get(1);
 
         EdgeImpl edge = leftNode.connectNodeFromRight(rightNode);
-        assertTrue(edge.getDirected() == Link.DIRECTED);
+        assertTrue(edge.isDirected());
         assertSame(edge.getLeft(), leftNode);
         assertSame(edge.getRight(), rightNode);
 
@@ -186,8 +188,8 @@ public class NodeTest {
         EdgeImpl inEdge = testNode.connectNodeFromLeft(leftNode);
         EdgeImpl outEdge = testNode.connectNodeFromRight(rightNode);
 
-        assertTrue(inEdge.getDirected() == Link.DIRECTED);
-        assertTrue(outEdge.getDirected() == Link.DIRECTED);
+        assertTrue(inEdge.isDirected());
+        assertTrue(outEdge.isDirected());
 
         // Now there are some new connections
         Collection<EdgeImpl> incomingEdges = testNode.getIncomingEdges();
@@ -214,7 +216,7 @@ public class NodeTest {
         NodeImpl rightNode = nodes.get(1);
 
         EdgeImpl edge = leftNode.connect(rightNode);
-        assertTrue(edge.getDirected() == Link.UNDIRECTED);
+        assertFalse(edge.isDirected());
 
         assertSame(edge.getLeft(), leftNode);
         assertSame(edge.getRight(), rightNode);
@@ -258,39 +260,6 @@ public class NodeTest {
         assertNotNull(linkedToTheRightNode);
         assertTrue(linkedToTheRightNode.size() == 2);
         assertTrue(linkedToTheRightNode.contains(middleNode) && linkedToTheRightNode.contains(leftNode));
-    }
-
-    @Test(expected = UnsupportedOperationException.class)
-    public void testGetEdgesToNode() {
-
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(3));
-        assertEquals(nodes.size(), 3);
-
-        NodeImpl nodeOne = nodes.get(0);
-        NodeImpl nodeTwo = nodes.get(1);
-        NodeImpl nodeThree = nodes.get(2);
-
-        //
-        //  [nodeOne] --(1)--> [nodeTwo]--(4)-\
-        //      \   \__(2)____/                \
-        //       \_____(3)________________ [nodeThree] 
-        //
-        EdgeImpl one2two1 = nodeOne.connectNodeFromRight(nodeTwo); // Directed
-        EdgeImpl one2two2 = nodeOne.connect(nodeTwo); // Underected
-        EdgeImpl one2three1 = nodeOne.connect(nodeThree); // Underected
-
-        assertNotSame(one2two1, one2two2);
-
-        Set<EdgeImpl> one2twoX = nodeOne.getEdgesToNode(nodeTwo);
-        assertNotNull(one2twoX);
-        assertTrue(one2twoX.size() == 2);
-
-        assertTrue(one2twoX.containsAll(Arrays.asList(one2two1, one2two2)));
-        assertFalse(one2twoX.containsAll(Arrays.asList(one2three1)));
-
-        one2twoX.add(one2three1);
-        fail("Should throw UnsupportedOperationException");
-
     }
 
 }

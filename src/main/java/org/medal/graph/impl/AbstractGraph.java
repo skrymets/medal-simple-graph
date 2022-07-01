@@ -15,21 +15,20 @@
  */
 package org.medal.graph.impl;
 
-import org.medal.graph.Edge.Link;
 import org.medal.graph.EdgeFactory;
 import org.medal.graph.Graph;
-import org.medal.graph.GraphEvent;
 import org.medal.graph.NodeFactory;
-import org.medal.graph.events.GraphEventsSubscriber;
-import org.medal.graph.events.NodesCreatedEvent;
 
-import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
-import java.util.stream.IntStream;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Objects;
+import java.util.Set;
 
+import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
 import static java.util.stream.Collectors.toSet;
+import static java.util.stream.IntStream.range;
 
 public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends AbstractEdge<N, E>>
         implements Graph<N, E> {
@@ -37,9 +36,6 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
     protected final Set<N> nodes = new HashSet<>();
 
     protected final Set<E> edges = new HashSet<>();
-
-    protected final List<GraphEventsSubscriber<N, E>> eventSubscribers = new CopyOnWriteArrayList<>();
-
 
     public AbstractGraph() {
     }
@@ -60,16 +56,9 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
      */
     @Override
     public Set<N> createNodes(int count) {
-        Set<N> newNodes = new HashSet<>();
-        if (count > 0) {
-            newNodes = IntStream.range(0, count).mapToObj(i -> createNode()).collect(toSet());
-        }
-        notifySubscribers(new NodesCreatedEvent<>(this, unmodifiableSet(newNodes)));
-        return newNodes;
-    }
+        if (count < 1) return emptySet();
 
-    private <T extends GraphEvent<N, E>> void notifySubscribers(T event) {
-        eventSubscribers.stream().forEach(subscriber -> subscriber.processEvent(event));
+        return range(0, count).mapToObj(i -> createNode()).collect(toSet());
     }
 
     @Override
@@ -87,11 +76,11 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
      *
      * @param left  Left node
      * @param right Right node
-     * @return a newly created edge, or <code>UNDEFINED</code> if either left or
-     * right node (or both) is <code>null</code>
+     * @return a newly created edge
+     * @throws NullPointerException if either left or right node (or both) is <code>null</code>
      */
     @Override
-    public E connectNodes(N left, N right, Link direction) {
+    public E connectNodes(N left, N right, boolean directed) {
 
         requireNonNull(left);
         requireNonNull(right);
@@ -100,7 +89,7 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
             throw new IllegalArgumentException("Nodes can not belong to different graphs");
         }
 
-        E edge = getEdgeFactory().createEdge(left, right, (direction == null) ? Link.UNDIRECTED : direction);
+        E edge = getEdgeFactory().createEdge(left, right, directed);
 
         registerEdge(edge);
 
@@ -109,12 +98,12 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
 
     @Override
     public E connectNodes(N left, N right) {
-        return connectNodes(left, right, Link.UNDIRECTED);
+        return connectNodes(left, right, false);
     }
 
     @Override
     public void breakEdge(E edge) {
-        if (edge == null || !edges.contains(edge)) {
+        if (edge == null) {
             return;
         }
 
@@ -139,16 +128,6 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
 
         sb.append("\n}");
         return sb.toString();
-    }
-
-    @Override
-    public <S extends GraphEventsSubscriber<N, E>> void addSubscriber(S subscriber) {
-        eventSubscribers.add(subscriber);
-    }
-
-    @Override
-    public <S extends GraphEventsSubscriber<N, E>> void removeSubscriber(S subscriber) {
-        eventSubscribers.remove(subscriber);
     }
 
     @Override
