@@ -22,28 +22,27 @@ import org.medal.graph.Node;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 
 import static java.util.Collections.emptyList;
+import static java.util.List.of;
 import static java.util.Objects.requireNonNull;
+import static java.util.Optional.empty;
 import static java.util.stream.Collectors.toCollection;
+import static java.util.stream.Collectors.toList;
 import static java.util.stream.IntStream.range;
 
-public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends AbstractDataObject<I> implements Edge<I, N, E> {
+public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> implements Edge<N, E> {
 
-    protected final N left;
+    protected N left;
 
-    protected final N right;
+    protected N right;
 
-    protected Link link;
+    protected boolean directed;
 
-    private final Graph<I, N, E> graph;
+    private final Graph<N, E> graph;
 
-    public AbstractEdge(
-            Graph<I, N, E> graph,
-            N left,
-            N right,
-            Link link) {
+    public AbstractEdge(Graph<N, E> graph, N left, N right, boolean directed) {
 
         requireNonNull(graph);
         if (left == null || right == null) {
@@ -53,7 +52,7 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
         this.graph = graph;
         this.left = left;
         this.right = right;
-        this.link = (link == null) ? Link.UNDIRECTED : link;
+        this.directed = directed;
     }
 
     @Override
@@ -66,141 +65,140 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
         return right;
     }
 
-    @Override
-    public Link getDirected() {
-        return link;
+    E setLeft(N left) {
+        this.left = left;
+        return (E) this;
     }
 
-    @Override
-    public Graph<I, N, E> getGraph() {
-        return graph;
-    }
-
-    @Override
-    public E setDirected(Link direction) {
-        this.link = (direction == null) ? Link.UNDIRECTED : direction;
+    E setRight(N right) {
+        this.right = right;
         return (E) this;
     }
 
     @Override
-    public N getOpposite(N node) {
+    public boolean isDirected() {
+        return directed;
+    }
+
+    @Override
+    public Graph<N, E> getGraph() {
+        return graph;
+    }
+
+    @Override
+    public E setDirected() {
+        this.directed = true;
+        return (E) this;
+    }
+
+    @Override
+    public E setDirected(boolean directed) {
+        this.directed = directed;
+        return (E) this;
+    }
+
+    @Override
+    public E setUndirected() {
+        this.directed = false;
+        return (E) this;
+    }
+
+    @Override
+    public Optional<N> getOpposite(N node) {
         if (left == node) {
-            return right;
+            return Optional.of(right);
         } else if (right == node) {
-            return left;
+            return Optional.of(left);
         } else {
-            return null;
+            return empty();
         }
     }
 
-    @Override
-    public void collapse() {
+    public Collection<E> getLeftSiblingEdges() {
+        return left.getEdges().stream()
+                .filter(e -> e != this)
+                .collect(toList());
+    }
+
+    public Collection<E> getRightSiblingEdges() {
+        return right.getEdges().stream()
+                .filter(e -> e != this)
+                .collect(toList());
     }
 
     @Override
-    public Collection<E> selfCopy(int copies) {
+    public N collapse() {
+        final N collapsedNode = graph.createNode();
+        relinkEdges(getLeftSiblingEdges(), left, collapsedNode);
+        relinkEdges(getRightSiblingEdges(), right, collapsedNode);
+
+        graph.breakEdge((E) this);
+        graph.deleteNodes(of(left, right));
+        return collapsedNode;
+    }
+
+    private void relinkEdges(Collection<E> edges, N oldTarget, N newTarget) {
+        edges.stream().forEach(e -> {
+            // Find an opposite node for this edge's left/right node
+            // Note: this doesn't necessary mean that a left/right node in this
+            // ( collapse method's target ) edge is also the left/right node
+            // in the neighborEdge
+            final N oppositeNode = e.getOpposite(oldTarget).get();
+            if (e.getLeft() == oppositeNode) {
+                ((AbstractEdge<N, E>) e).setRight(newTarget);
+            } else {
+                ((AbstractEdge<N, E>) e).setLeft(newTarget);
+            }
+        });
+    }
+
+    @Override
+    public Collection<E> duplicate(int copies) {
         if (copies < 1) {
             return emptyList();
         }
 
-        List<E> clones = range(0, copies).mapToObj(i -> selfCopy()).collect(toCollection(() -> new ArrayList<>(copies)));
+        List<E> clones = range(0, copies).mapToObj(i -> duplicate()).collect(toCollection(() -> new ArrayList<>(copies)));
         return clones;
     }
 
     @Override
-    public E selfCopy() {
-        E edge = getGraph().connectNodes(left, right, link);
-        edge.setData(this.getData());
+    public E duplicate() {
+        E edge = getGraph().connectNodes(left, right, directed);
         return edge;
     }
 
     @Override
-    public Split<I, N, E> insertMiddleNode(N middleNode) {
+    public Split<N, E> insertMiddleNode(N middleNode) {
         if (middleNode == null) {
             throw new NullPointerException("Can not insert an undefined node.");
         }
 
         getGraph().breakEdge((E) this);
 
-        //TODO: Should we preserve data? Does this make sense? If the data is a context-sensitive or unique?
-        //E leftEdge = getGraph().connectNodes(left, middleNode, link);
-        E leftEdge = getGraph().connectNodes(left, middleNode, link);
-        leftEdge.setData(this.getData());
+        E leftEdge = getGraph().connectNodes(left, middleNode, directed);
 
-        E rightEdge = getGraph().connectNodes(middleNode, right, link);
-        rightEdge.setData(this.getData());
+        E rightEdge = getGraph().connectNodes(middleNode, right, directed);
 
-        Split split = new SplitImpl(leftEdge, rightEdge);
-        split.setEdgePayload(getData()); // Preserve the payload
+        Split<N, E> split = new SplitImpl(leftEdge, rightEdge);
 
         return split;
     }
 
     @Override
-    public int hashCode() {
-        int hash = 7;
-        hash = 47 * hash + Objects.hashCode(this.id);
-        hash = 47 * hash + Objects.hashCode(this.left);
-        hash = 47 * hash + Objects.hashCode(this.right);
-        hash = 47 * hash + Objects.hashCode(this.link);
-        // Payload MUST NOT participate in the hash!
-        // hash = 47 * hash + Objects.hashCode(this.payload); 
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final AbstractEdge other = (AbstractEdge) obj;
-        //TODO: Consider ID in equality (from business point of view)
-        if (!Objects.equals(this.id, other.id)) {
-            return false;
-        }
-        if (!Objects.equals(this.left, other.left)) {
-            return false;
-        }
-        if (!Objects.equals(this.right, other.right)) {
-            return false;
-        }
-        if (this.link != other.link) {
-            return false;
-        }
-        // Payload MUST NOT participate in the eguals!
-//        if (!Objects.equals(this.payload, other.payload)) {
-//            return false;
-//        }
-        return true;
-    }
-
-    @Override
     public String toString() {
-        return left.toString() + " -" + ((link == Link.DIRECTED) ? '>' : '-') + ' ' + right.toString();
+        return left.toString() + " -" + (directed ? '>' : '-') + ' ' + right.toString();
     }
 
-    public static class SplitImpl<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> implements Split<I, N, E> {
+    public static class SplitImpl<N extends Node<N, E>, E extends Edge<N, E>> implements Split<N, E> {
 
         private final E leftEdge;
 
         private final E rightEdge;
 
-        private Object edgePayload;
-
-        private SplitImpl() {
-            this.leftEdge = null;
-            this.rightEdge = null;
-        }
-
         private SplitImpl(E leftEdge, E rightEdge) {
-            Objects.requireNonNull(leftEdge);
-            Objects.requireNonNull(rightEdge);
+            requireNonNull(leftEdge);
+            requireNonNull(rightEdge);
 
             this.leftEdge = leftEdge;
             this.rightEdge = rightEdge;
@@ -214,17 +212,6 @@ public abstract class AbstractEdge<I, N extends Node<I, N, E>, E extends Edge<I,
         @Override
         public E getRightEdge() {
             return rightEdge;
-        }
-
-        @Override
-        public Object getEdgePayload() {
-            return edgePayload;
-        }
-
-        @Override
-        public Split<I, N, E> setEdgePayload(Object edgePayload) {
-            this.edgePayload = edgePayload;
-            return this;
         }
 
     }

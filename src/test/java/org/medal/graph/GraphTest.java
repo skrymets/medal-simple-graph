@@ -16,7 +16,6 @@
 package org.medal.graph;
 
 import org.junit.Test;
-import org.medal.graph.impl.AbstractDataObject;
 import org.medal.graph.impl.EdgeImpl;
 import org.medal.graph.impl.GraphImpl;
 import org.medal.graph.impl.NodeImpl;
@@ -35,7 +34,7 @@ public class GraphTest {
     private Comparator<NodeImpl> nodesComparator;
 
     public GraphTest() {
-        nodesComparator = comparing(AbstractDataObject::getId);
+        nodesComparator = comparing(NodeImpl::hashCode);
     }
 
     @Test
@@ -44,18 +43,6 @@ public class GraphTest {
         NodeImpl node1 = graph.createNode();
 
         assertNotNull(node1);
-        assertNotNull(node1.getId());
-        assertNull(node1.getData());
-
-        Node node2 = graph.createNode();
-        assertNotEquals(node1.getId(), node2.getId());
-
-        // allow null as a payload
-        Node node3 = graph.createNode(null);
-        assertNull(node3.getData());
-
-        Node node4 = graph.createNode("string");
-        assertNotNull(node4.getData());
     }
 
     @Test
@@ -107,13 +94,13 @@ public class GraphTest {
 
         EdgeImpl undirectedConnection1 = graph.connectNodes(node1, node2);
         assertNotNull(undirectedConnection1);
-        assertEquals(undirectedConnection1.getDirected(), Edge.Link.UNDIRECTED);
+        assertFalse(undirectedConnection1.isDirected());
 
-        EdgeImpl undirectedConnection2 = graph.connectNodes(node1, node2, Edge.Link.UNDIRECTED);
-        assertEquals(undirectedConnection2.getDirected(), Edge.Link.UNDIRECTED);
+        EdgeImpl undirectedConnection2 = graph.connectNodes(node1, node2, false);
+        assertFalse(undirectedConnection2.isDirected());
 
-        EdgeImpl directedConnection1 = graph.connectNodes(node1, node2, Edge.Link.DIRECTED);
-        assertEquals(directedConnection1.getDirected(), Edge.Link.DIRECTED);
+        EdgeImpl directedConnection1 = graph.connectNodes(node1, node2, true);
+        assertTrue(directedConnection1.isDirected());
 
         assertNotEquals(undirectedConnection1, undirectedConnection2);
         assertNotEquals(undirectedConnection2, directedConnection1);
@@ -148,7 +135,7 @@ public class GraphTest {
 
     @Test
     public void testGetNodes() {
-        Graph<Long, NodeImpl, EdgeImpl> graph = new GraphImpl();
+        Graph<NodeImpl, EdgeImpl> graph = new GraphImpl();
         Collection<NodeImpl> newNodes = graph.createNodes(2);
 
         assertNotNull(graph.getNodes());

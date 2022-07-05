@@ -16,24 +16,22 @@
 package org.medal.graph.impl;
 
 import org.medal.graph.Edge;
-import org.medal.graph.Edge.Link;
 import org.medal.graph.Graph;
 import org.medal.graph.Node;
-import org.medal.graph.empty.EmptyNode;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Objects;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.stream.Collectors.collectingAndThen;
+import static java.util.stream.Collectors.toSet;
 
-public abstract class AbstractNode<I, N extends Node<I, N, E>, E extends Edge<I, N, E>> extends AbstractDataObject<I> implements Node<I, N, E> {
+public abstract class AbstractNode<N extends Node<N, E>, E extends Edge<N, E>> implements Node<N, E> {
 
-    private final Graph<I, N, E> graph;
+    private final Graph<N, E> graph;
 
-    public AbstractNode(Graph<I, N, E> graph) {
+    public AbstractNode(Graph<N, E> graph) {
         Objects.requireNonNull(graph);
         this.graph = graph;
     }
@@ -50,7 +48,7 @@ public abstract class AbstractNode<I, N extends Node<I, N, E>, E extends Edge<I,
                 .map(edge -> (E) edge)
                 .filter(e -> e.getLeft() == this || e.getRight() == this)
                 .collect(collectingAndThen(
-                        Collectors.toSet(),
+                        toSet(),
                         Collections::unmodifiableSet
                 ));
     }
@@ -88,9 +86,9 @@ public abstract class AbstractNode<I, N extends Node<I, N, E>, E extends Edge<I,
         Collection<E> edges = getEdges();
         return edges.stream()
                 .filter(edge -> {
-                    if (edge.getDirected() == Link.UNDIRECTED && includeUndirected) {
+                    if (edge.isDirected() == false && includeUndirected) {
                         return true;
-                    } else if (edge.getDirected() == Link.DIRECTED) {
+                    } else if (edge.isDirected()) {
                         /*
                          * The definition of directions is here:
                          * org.medal.graph.Edge.Link
@@ -102,24 +100,24 @@ public abstract class AbstractNode<I, N extends Node<I, N, E>, E extends Edge<I,
                     }
                 })
                 .collect(collectingAndThen(
-                        Collectors.toSet(),
+                        toSet(),
                         Collections::unmodifiableSet
                 ));
     }
 
     @Override
-    public Graph<I, N, E> getGraph() {
+    public Graph<N, E> getGraph() {
         return graph;
     }
 
     @Override
     public E connectNodeFromRight(N rightNode) {
-        return getGraph().connectNodes((N) this, rightNode, Link.DIRECTED);
+        return getGraph().connectNodes((N) this, rightNode, true);
     }
 
     @Override
     public E connectNodeFromLeft(N leftNode) {
-        return getGraph().connectNodes(leftNode, (N) this, Link.DIRECTED);
+        return getGraph().connectNodes(leftNode, (N) this, true);
     }
 
     /**
@@ -133,63 +131,18 @@ public abstract class AbstractNode<I, N extends Node<I, N, E>, E extends Edge<I,
      */
     @Override
     public E connect(N otherNode) {
-        return getGraph().connectNodes((N) this, otherNode, Link.UNDIRECTED);
+        return getGraph().connectNodes((N) this, otherNode, false);
     }
 
     @Override
     public Set<N> getLinkedNodes() {
-        if (getEdges().isEmpty()) {
-            return Collections.emptySet();
-        }
-
         return getEdges().stream()
-                .map((edge) -> edge.getOpposite((N) AbstractNode.this))
-                .filter((oppositeNode) -> !(oppositeNode == EmptyNode.INSTANCE))
+                .map((edge) -> edge.getOpposite((N) AbstractNode.this)
+                        .orElseThrow(() -> new IllegalArgumentException("This node does not belong to an edge")))
                 .collect(collectingAndThen(
-                        Collectors.toSet(),
+                        toSet(),
                         Collections::unmodifiableSet
                 ));
     }
 
-    @Override
-    public Set<E> getEdgesToNode(N destination) {
-        return getEdges()
-                .stream()
-                .filter(e -> (e.getOpposite((N) this).equals(destination)))
-                .collect(collectingAndThen(
-                        Collectors.toSet(),
-                        Collections::unmodifiableSet
-                ));
-    }
-
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 19 * hash + Objects.hashCode(this.getId());
-        return hash;
-    }
-
-    @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        final Node other = (Node) obj;
-        //TODO: Consider nodes equality in the comparison, but avoid endless recursion!
-        if (!Objects.equals(this.getId(), other.getId())) {
-            return false;
-        }
-        return Objects.equals(this.getData(), other.getData());
-    }
-
-    @Override
-    public String toString() {
-        return (getData() == null) ? "node_" + hashCode() : getData().toString();
-    }
 }
