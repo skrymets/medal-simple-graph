@@ -28,12 +28,12 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
      *
      * @return a graph instance, never <code>null</code>
      */
-    Graph<N, E> getGraph();
+    Graph<N, E> graph();
 
     /**
      * Connects another node to this node with new undirected edge. A node that is being
-     * connected is placed to the right side. The node to which the new is attached is
-     * placed on the left side.
+     * connected is placed to the right (target) side. The node to which {@code node} is attached is
+     * placed on the left (source) side.
      *
      * @param node a node to be connected
      * @return new undirected edge
@@ -43,25 +43,25 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
 
     /**
      * Connects another node to this node with new directed edge. A node that is being
-     * connected is placed to the left side. The node to which the new is attached is
-     * placed on the right side.
+     * connected is placed to the source (tail) side. The node to which {@code sourceNode} is attached is
+     * placed on the right (head) side.
      *
-     * @param leftNode a node to be connected
+     * @param sourceNode a node to be connected
      * @return new undirected edge
-     * @throws NullPointerException if <code>otherNode</code> is undefined
+     * @throws NullPointerException if {@code sourceNode} is undefined
      */
-    E connectNodeFromLeft(N leftNode);
+    E connectAsSource(N sourceNode);
 
     /**
      * Connects another node to this node with new directed edge. A node that is being
-     * connected is placed to the right side. The node to which the new is attached is
-     * placed on the left side.
+     * connected is placed to the target (head) side. The node to which {@code targetNode} is attached is
+     * placed on the left (tail) side.
      *
-     * @param rightNode a node to be connected
+     * @param targetNode a node to be connected
      * @return new undirected edge
-     * @throws NullPointerException if <code>otherNode</code> is undefined
+     * @throws NullPointerException if {@code targetNode} is undefined
      */
-    E connectNodeFromRight(N rightNode);
+    E connectAsTarget(N targetNode);
 
     /**
      * Returns a collection of the node's edges, including directed and undirected, if any
@@ -69,7 +69,7 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
      * @return an unmodifiable collection of edges. May be empty, but never
      * <code>null</code>.
      */
-    Collection<E> getEdges();
+    Collection<E> edges();
 
     /**
      * Returns a collection of the node's incoming edges, NOT including undirected, if any
@@ -77,7 +77,7 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
      * @return an unmodifiable collection of edges. May be empty, but never
      * <code>null</code>.
      */
-    Collection<E> getIncomingEdges();
+    Collection<E> incomingEdges();
 
     /**
      * Returns a collection of the node's incoming edges.
@@ -87,7 +87,7 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
      * @return an unmodifiable collection of edges. May be empty, but never
      * <code>null</code>.
      */
-    Collection<E> getIncomingEdges(boolean includeUndirected);
+    Collection<E> incomingEdges(boolean includeUndirected);
 
     /**
      * Returns a collection of nodes that are linked to this node by both: directed and
@@ -96,7 +96,7 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
      * @return an unmodifiable collection of edges. May be empty, but never
      * <code>null</code>.
      */
-    Set<N> getLinkedNodes();
+    Set<N> linkedNodes();
 
     /**
      * Returns a collection of the node's outgoing edges, NOT including undirected, if any
@@ -104,7 +104,7 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
      * @return an unmodifiable collection of edges. May be empty, but never
      * <code>null</code>.
      */
-    Collection<E> getOutgoingEdges();
+    Collection<E> outgoingEdges();
 
     /**
      * Returns a collection of the node's outgoing edges.
@@ -114,6 +114,6 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
      * @return an unmodifiable collection of edges. May be empty, but never
      * <code>null</code>.
      */
-    Collection<E> getOutgoingEdges(boolean includeUndirected);
+    Collection<E> outgoingEdges(boolean includeUndirected);
 
 }

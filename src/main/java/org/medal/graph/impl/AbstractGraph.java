@@ -19,16 +19,11 @@ import org.medal.graph.EdgeFactory;
 import org.medal.graph.Graph;
 import org.medal.graph.NodeFactory;
 
-import java.util.Collection;
 import java.util.HashSet;
-import java.util.Objects;
 import java.util.Set;
 
-import static java.util.Collections.emptySet;
 import static java.util.Collections.unmodifiableSet;
 import static java.util.Objects.requireNonNull;
-import static java.util.stream.Collectors.toSet;
-import static java.util.stream.IntStream.range;
 
 public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends AbstractEdge<N, E>>
         implements Graph<N, E> {
@@ -37,7 +32,7 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
 
     protected final Set<E> edges = new HashSet<>();
 
-    public AbstractGraph() {
+    protected AbstractGraph() {
     }
 
     @Override
@@ -47,49 +42,35 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
         return node;
     }
 
-    /**
-     * Creates several new nodes that are not connected at this moment.
-     *
-     * @param count a number of nodes to create
-     * @return a list of nodes that were created or an empty list, if <code>count</code>
-     * is less or equal to zero.
-     */
     @Override
-    public Set<N> createNodes(int count) {
-        if (count < 1) return emptySet();
-
-        return range(0, count).mapToObj(i -> createNode()).collect(toSet());
-    }
-
-    @Override
-    public Set<N> getNodes() {
+    public Set<N> nodes() {
         return unmodifiableSet(nodes);
     }
 
     @Override
-    public Set<E> getEdges() {
+    public Set<E> edges() {
         return unmodifiableSet(edges);
     }
 
     /**
      * Connects two nodes with a new edge, and registers the edge in the parent graph(s)
      *
-     * @param left  Left node
-     * @param right Right node
+     * @param source Left node
+     * @param target Right node
      * @return a newly created edge
-     * @throws NullPointerException if either left or right node (or both) is <code>null</code>
+     * @throws NullPointerException if either source or target node (or both) is <code>null</code>
      */
     @Override
-    public E connectNodes(N left, N right, boolean directed) {
+    public E connect(N source, N target, boolean directed) {
 
-        requireNonNull(left);
-        requireNonNull(right);
+        requireNonNull(source);
+        requireNonNull(target);
 
-        if (left.getGraph() != right.getGraph()) {
+        if (source.graph() != target.graph() || source.graph() != this || target.graph() != this) {
             throw new IllegalArgumentException("Nodes can not belong to different graphs");
         }
 
-        E edge = getEdgeFactory().createEdge(left, right, directed);
+        E edge = getEdgeFactory().createEdge(source, target, directed);
 
         registerEdge(edge);
 
@@ -97,13 +78,13 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
     }
 
     @Override
-    public E connectNodes(N left, N right) {
-        return connectNodes(left, right, false);
+    public E connect(N left, N right) {
+        return connect(left, right, false);
     }
 
     @Override
-    public void breakEdge(E edge) {
-        if (edge == null) {
+    public void deleteEdge(E edge) {
+        if (edge == null || edge.graph() != this) {
             return;
         }
 
@@ -115,36 +96,14 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
     }
 
     @Override
-    public String toString() {
-        StringBuilder sb = new StringBuilder("graph {\n");
-
-        nodes.stream().forEach((node) -> {
-            sb.append(node.toString()).append("\n");
-        });
-
-        edges.stream().forEach((edge) -> {
-            sb.append(edge.toString()).append("\n");
-        });
-
-        sb.append("\n}");
-        return sb.toString();
-    }
-
-    @Override
-    public void deleteNodes(Collection<N> nodes) {
-        if (nodes == null || nodes.isEmpty()) {
-            return;
+    public boolean deleteNode(N node) {
+        if (node == null || node.graph() != this) {
+            return false;
         }
 
-        // TODO: 2019-09-10 Remove only nodes that belong to this particular graph
-        final Set<E> edges = nodes.stream()
-                .filter(Objects::nonNull)
-                .map(n -> n.getEdges())
-                .flatMap(Collection::stream)
-                .collect(toSet());
-
-        this.edges.removeAll(edges);
-        this.nodes.removeAll(nodes);
+        this.edges.removeAll(node.edges());
+        this.nodes.remove(node);
+        return true;
     }
 
     protected abstract NodeFactory<N, E> getNodeFactory();

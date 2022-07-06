@@ -21,9 +21,7 @@ import org.medal.graph.impl.EdgeImpl;
 import org.medal.graph.impl.GraphImpl;
 import org.medal.graph.impl.NodeImpl;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
 import java.util.Set;
 
 import static org.junit.Assert.*;
@@ -41,82 +39,73 @@ public class NodeTest {
     @Before
     public void prepareData() {
         graph = new GraphImpl();
-        graph.getNodes();
     }
 
     @Test(expected = UnsupportedOperationException.class)
     public void testGetEdges() {
 
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
-        assertEquals(nodes.size(), 2);
-
-        NodeImpl node1 = nodes.get(0);
-        NodeImpl node2 = nodes.get(1);
+        NodeImpl node1 = graph.createNode();
+        NodeImpl node2 = graph.createNode();
+        assertEquals(2, graph.nodes().size());
 
         // There is nothing connected yet
-        assertNotNull(node1.getEdges());
-        assertTrue(node1.getEdges().isEmpty());
+        assertNotNull(node1.edges());
+        assertTrue(node1.edges().isEmpty());
 
         EdgeImpl connection = node1.connect(node2);
 
-        assertFalse(node1.getEdges().isEmpty());
-        assertFalse(node2.getEdges().isEmpty());
+        assertFalse(node1.edges().isEmpty());
+        assertFalse(node2.edges().isEmpty());
 
         // EdgeImpl is connected to the nodes
-        assertSame(connection, node1.getEdges().iterator().next());
-        assertSame(node1.getEdges().iterator().next(), node2.getEdges().iterator().next());
+        assertSame(connection, node1.edges().iterator().next());
+        assertSame(node1.edges().iterator().next(), node2.edges().iterator().next());
 
-        node1.getEdges().add(connection);
+        node1.edges().add(connection);
         fail("Should throw UnsupportedOperationException");
     }
 
     @Test
     public void testGetOutgoingEdges() {
 
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(3));
-        assertEquals(nodes.size(), 3);
-
-        NodeImpl node1 = nodes.get(0);
-        NodeImpl node2 = nodes.get(1);
-        NodeImpl node3 = nodes.get(2);
+        NodeImpl node1 = graph.createNode();
+        NodeImpl node2 = graph.createNode();
+        NodeImpl node3 = graph.createNode();
 
         // [node2] ----- [node1] -------> [node3]
         // Create new un/directed connections
         node1.connect(node2);
-        EdgeImpl outEdge = node1.connectNodeFromRight(node3);
+        EdgeImpl outEdge = node1.connectAsTarget(node3);
 
         // Now there are some new connections
-        Collection<EdgeImpl> outEdges = node1.getOutgoingEdges();
+        Collection<EdgeImpl> outEdges = node1.outgoingEdges();
 
         assertTrue(outEdges.size() == 1);
         assertTrue(outEdges.contains(outEdge));
 
-        outEdges = node1.getOutgoingEdges(true);
+        outEdges = node1.outgoingEdges(true);
         assertTrue(outEdges.size() == 2);
     }
 
     @Test
     public void testGetIncomingEdges() {
 
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(3));
-        assertEquals(nodes.size(), 3);
-
-        NodeImpl node1 = nodes.get(0);
-        NodeImpl node2 = nodes.get(1);
-        NodeImpl node3 = nodes.get(2);
+        NodeImpl node1 = graph.createNode();
+        NodeImpl node2 = graph.createNode();
+        NodeImpl node3 = graph.createNode();
 
         // [node2] ------> [node1] ----- [node3]
         // Create new un/directed connections
-        EdgeImpl inEdge = node1.connectNodeFromLeft(node2);
+        EdgeImpl inEdge = node1.connectAsSource(node2);
         node1.connect(node3);
 
         // Now there are some new connections
-        Collection<EdgeImpl> inEdges = node1.getIncomingEdges();
+        Collection<EdgeImpl> inEdges = node1.incomingEdges();
 
         assertTrue(inEdges.size() == 1);
         assertTrue(inEdges.contains(inEdge));
 
-        inEdges = node1.getIncomingEdges(true);
+        inEdges = node1.incomingEdges(true);
         assertTrue(inEdges.size() == 2);
     }
 
@@ -124,59 +113,52 @@ public class NodeTest {
     public void testGetGraph() {
 
         NodeImpl node = graph.createNode();
-        assertNotNull(node.getGraph());
-        assertSame(node.getGraph(), graph);
+        assertNotNull(node.graph());
+        assertSame(node.graph(), graph);
 
     }
 
     @Test(expected = NullPointerException.class)
     public void testConnectNodeFromLeft() {
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
-        assertEquals(nodes.size(), 2);
 
-        NodeImpl leftNode = nodes.get(0);
-        NodeImpl rightNode = nodes.get(1);
+        NodeImpl leftNode = graph.createNode();
+        NodeImpl rightNode = graph.createNode();
 
-        EdgeImpl edge = rightNode.connectNodeFromLeft(leftNode);
+        EdgeImpl edge = rightNode.connectAsSource(leftNode);
         assertTrue(edge.isDirected());
-        assertSame(edge.getLeft(), leftNode);
-        assertSame(edge.getRight(), rightNode);
+        assertSame(edge.left(), leftNode);
+        assertSame(edge.right(), rightNode);
 
-        rightNode.connectNodeFromLeft(null);
+        rightNode.connectAsSource(null);
         fail("Should throw NullPointerException");
 
     }
 
     @Test(expected = NullPointerException.class)
     public void testConnectNodeFromRight() {
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
-        assertEquals(nodes.size(), 2);
 
-        NodeImpl leftNode = nodes.get(0);
-        NodeImpl rightNode = nodes.get(1);
+        NodeImpl leftNode = graph.createNode();
+        NodeImpl rightNode = graph.createNode();
 
-        EdgeImpl edge = leftNode.connectNodeFromRight(rightNode);
+        EdgeImpl edge = leftNode.connectAsTarget(rightNode);
         assertTrue(edge.isDirected());
-        assertSame(edge.getLeft(), leftNode);
-        assertSame(edge.getRight(), rightNode);
+        assertSame(edge.left(), leftNode);
+        assertSame(edge.right(), rightNode);
 
-        leftNode.connectNodeFromRight(null);
+        leftNode.connectAsTarget(null);
         fail("Should throw NullPointerException");
     }
 
     @Test
     public void testConnectNodeFromLeftAndRight() {
 
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(3));
-        assertEquals(nodes.size(), 3);
-
-        NodeImpl testNode = nodes.get(0);
-        NodeImpl leftNode = nodes.get(1);
-        NodeImpl rightNode = nodes.get(2);
+        NodeImpl testNode = graph.createNode();
+        NodeImpl leftNode = graph.createNode();
+        NodeImpl rightNode = graph.createNode();
 
         // Initially there are no connections
-        Collection<EdgeImpl> emptyIncomingEdges = testNode.getIncomingEdges();
-        Collection<EdgeImpl> emptyOutgoingEdges = testNode.getOutgoingEdges();
+        Collection<EdgeImpl> emptyIncomingEdges = testNode.incomingEdges();
+        Collection<EdgeImpl> emptyOutgoingEdges = testNode.outgoingEdges();
 
         assertNotNull(emptyIncomingEdges);
         assertNotNull(emptyOutgoingEdges);
@@ -185,15 +167,15 @@ public class NodeTest {
         assertTrue(emptyOutgoingEdges.isEmpty());
 
         // Create new directed connections
-        EdgeImpl inEdge = testNode.connectNodeFromLeft(leftNode);
-        EdgeImpl outEdge = testNode.connectNodeFromRight(rightNode);
+        EdgeImpl inEdge = testNode.connectAsSource(leftNode);
+        EdgeImpl outEdge = testNode.connectAsTarget(rightNode);
 
         assertTrue(inEdge.isDirected());
         assertTrue(outEdge.isDirected());
 
         // Now there are some new connections
-        Collection<EdgeImpl> incomingEdges = testNode.getIncomingEdges();
-        Collection<EdgeImpl> outgoingEdges = testNode.getOutgoingEdges();
+        Collection<EdgeImpl> incomingEdges = testNode.incomingEdges();
+        Collection<EdgeImpl> outgoingEdges = testNode.outgoingEdges();
 
         assertNotNull(incomingEdges);
         assertNotNull(outgoingEdges);
@@ -209,49 +191,44 @@ public class NodeTest {
 
     @Test
     public void testConnect() {
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
-        assertEquals(nodes.size(), 2);
 
-        NodeImpl leftNode = nodes.get(0);
-        NodeImpl rightNode = nodes.get(1);
+        NodeImpl leftNode = graph.createNode();
+        NodeImpl rightNode = graph.createNode();
 
         EdgeImpl edge = leftNode.connect(rightNode);
         assertFalse(edge.isDirected());
 
-        assertSame(edge.getLeft(), leftNode);
-        assertSame(edge.getRight(), rightNode);
+        assertSame(edge.left(), leftNode);
+        assertSame(edge.right(), rightNode);
 
-        assertFalse(graph.getEdges().isEmpty());
-        assertTrue(graph.getEdges().size() == 1);
+        assertFalse(graph.edges().isEmpty());
+        assertTrue(graph.edges().size() == 1);
 
-        assertTrue(leftNode.getIncomingEdges().isEmpty());
-        assertTrue(leftNode.getOutgoingEdges().isEmpty());
+        assertTrue(leftNode.incomingEdges().isEmpty());
+        assertTrue(leftNode.outgoingEdges().isEmpty());
 
-        assertFalse(rightNode.getIncomingEdges(true).isEmpty());
-        assertFalse(rightNode.getOutgoingEdges(true).isEmpty());
+        assertFalse(rightNode.incomingEdges(true).isEmpty());
+        assertFalse(rightNode.outgoingEdges(true).isEmpty());
 
     }
 
     @Test
     public void testGetLinkedNodes() {
 
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(3));
-        assertEquals(nodes.size(), 3);
-
-        NodeImpl leftNode = nodes.get(0);
-        NodeImpl middleNode = nodes.get(1);
-        NodeImpl rightNode = nodes.get(2);
+        NodeImpl leftNode = graph.createNode();
+        NodeImpl middleNode = graph.createNode();
+        NodeImpl rightNode = graph.createNode();
 
         //
         //  [leftNode] --> [middleNode] <-- [rightNode]
         //     \_______________________________/
         //
-        leftNode.connectNodeFromRight(middleNode);
+        leftNode.connectAsTarget(middleNode);
         leftNode.connect(rightNode);
-        middleNode.connectNodeFromLeft(rightNode);
+        middleNode.connectAsSource(rightNode);
 
-        final Set<NodeImpl> linkedToTheLeftNode = leftNode.getLinkedNodes();
-        final Set<NodeImpl> linkedToTheRightNode = rightNode.getLinkedNodes();
+        final Set<NodeImpl> linkedToTheLeftNode = leftNode.linkedNodes();
+        final Set<NodeImpl> linkedToTheRightNode = rightNode.linkedNodes();
 
         assertNotNull(linkedToTheLeftNode);
         assertTrue(linkedToTheLeftNode.size() == 2);
