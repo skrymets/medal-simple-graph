@@ -35,44 +35,29 @@ public interface Graph<N extends Node<N, E>, E extends Edge<N, E>> {
     boolean deleteNode(N node);
 
     /**
-     * Creates a new directed between two nodes.<br/>
-     * Connects <code>left</code> and <code>right</code> nodes with a new
-     * <code>Edge</code> with a unique ID.
+     * Creates a new edge between two nodes.<br/>
+     * Connects {@code left} and {@code right} nodes with a new
+     * {@code edge} with a unique ID.
      *
-     * @param left     node to be placed on the left side of the relation
-     * @param right    node to be placed on the right side of the relation
-     * @param directed sets new edge to be whether <code>DIRECTED</code> or
-     *                 <code>UNDIRECTED</code>.
+     * @param left  an end node of the relation
+     * @param right an end node of the relation
      * @return a new <code>Edge</code> instance.
-     * @throws NullPointerException if <code>left</code> or <code>right</code> node is
-     *                              undefined - <code>null</code>.
-     */
-    E connect(N left, N right, boolean directed);
-
-    /**
-     * Creates an <code>UNDIRECTED</code> directed between two nodes.<br/>
-     * Connects <code>left</code> and <code>right</code> nodes with a new
-     * <code>Edge</code> with a unique ID.
-     *
-     * @param left  node to be placed on the left side of the relation
-     * @param right node to be placed on the right side of the relation
-     * @return a new <code>Edge</code> instance.
-     * @throws NullPointerException if <code>left</code> or <code>right</code> node is
-     *                              undefined - <code>null</code>.
+     * @throws NullPointerException if {@code left} or {@code right} node is
+     *                              undefined - {@code null}.
      */
     E connect(N left, N right);
 
     /**
      * Returns an unmodifiable set of edges in this graph.
      *
-     * @return a set of edges. Never <code>null</code>
+     * @return a set of edges. Never {@code null}
      */
     Set<E> edges();
 
     /**
      * Returns an unmodifiable set of nodes in this graph.
      *
-     * @return a set of nodes. Never <code>null</code>
+     * @return a set of nodes. Never {@code null}
      */
     Set<N> nodes();
 

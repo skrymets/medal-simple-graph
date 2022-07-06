@@ -31,7 +31,7 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
     Graph<N, E> graph();
 
     /**
-     * Returns the number of edges incident on this node, both: directed and undirected.
+     * Returns the number of edges incident on this node.
      * Self-loop edges counted twice.
      *
      * @return the number of edges incident on this node
@@ -39,78 +39,22 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
     long degree();
 
     /**
-     * Returns the number of directed edges incident and ending on this node.
-     * This node is the head of that edges.
-     *
-     * @return a number {@code >= 0}
-     */
-    long inDegree();
-
-    /**
-     * Returns the number of directed edges incident and beginning on this node.
-     * This node is the tail of that edges.
-     *
-     * @return a number {@code >= 0}
-     */
-    long outDegree();
-
-    /**
-     * Connects another node to this node with new undirected edge. A node that is being
-     * connected is placed to the right (target) side. The node to which {@code node} is attached is
-     * placed on the left (source) side.
+     * Connects another node to this node with new edge. A node that is being
+     * connected is placed to the right side. The node to which {@code node} is attached is
+     * placed on the left side.
      *
      * @param node a node to be connected
-     * @return new undirected edge
+     * @return new edge
      * @throws NullPointerException if <code>otherNode</code> is undefined
      */
     E connect(N node);
 
     /**
-     * Connects another node to this node with new directed edge. A node that is being
-     * connected is placed to the source (tail) side. The node to which {@code sourceNode} is attached is
-     * placed on the right (head) side.
-     *
-     * @param sourceNode a node to be connected
-     * @return new undirected edge
-     * @throws NullPointerException if {@code sourceNode} is undefined
-     */
-    E connectSource(N sourceNode);
-
-    /**
-     * Connects another node to this node with new directed edge. A node that is being
-     * connected is placed to the target (head) side. The node to which {@code targetNode} is attached is
-     * placed on the left (tail) side.
-     *
-     * @param targetNode a node to be connected
-     * @return new undirected edge
-     * @throws NullPointerException if {@code targetNode} is undefined
-     */
-    E connectTarget(N targetNode);
-
-    /**
-     * Returns a collection of the node's incident edges, including directed and undirected, if any
+     * Returns a collection of the node's incident edges, if any
      *
      * @return an unmodifiable collection of edges. May be empty, but never {@code null}.
      */
     Collection<E> incidentEdges();
-
-    /**
-     * Returns a collection of the node's incoming edges, NOT including undirected, if any
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     * {@code null}.
-     */
-    Collection<E> incomingEdges();
-
-    /**
-     * Returns a collection of the node's incoming edges.
-     *
-     * @param includeUndirected Should the undirected edges be considered as incoming
-     *                          either?
-     * @return an unmodifiable collection of edges. May be empty, but never
-     * {@code null}.
-     */
-    Collection<E> incomingEdges(boolean includeUndirected);
 
     /**
      * Returns a collection of nodes that are adjacent to this node.
@@ -118,24 +62,6 @@ public interface Node<N extends Node<N, E>, E extends Edge<N, E>> {
      * @return an unmodifiable collection of edges. May be empty, but never {@code null}.
      */
     Set<N> adjacentNodes();
-
-    /**
-     * Returns a collection of the node's outgoing edges, NOT including undirected, if any
-     *
-     * @return an unmodifiable collection of edges. May be empty, but never
-     * {@code null}.
-     */
-    Collection<E> outgoingEdges();
-
-    /**
-     * Returns a collection of the node's outgoing edges.
-     *
-     * @param includeUndirected Should the undirected edges be considered as outgoing
-     *                          either?
-     * @return an unmodifiable collection of edges. May be empty, but never
-     * {@code null}.
-     */
-    Collection<E> outgoingEdges(boolean includeUndirected);
 
     /**
      * Checks whether this node is adjacent with {@code other} node

@@ -61,7 +61,7 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
      * @throws NullPointerException if either source or target node (or both) is <code>null</code>
      */
     @Override
-    public E connect(N source, N target, boolean directed) {
+    public E connect(N source, N target) {
 
         requireNonNull(source);
         requireNonNull(target);
@@ -70,16 +70,11 @@ public abstract class AbstractGraph<N extends AbstractNode<N, E>, E extends Abst
             throw new IllegalArgumentException("Nodes can not belong to different graphs");
         }
 
-        E edge = getEdgeFactory().createEdge(source, target, directed);
+        E edge = getEdgeFactory().createEdge(source, target);
 
         registerEdge(edge);
 
         return edge;
-    }
-
-    @Override
-    public E connect(N left, N right) {
-        return connect(left, right, false);
     }
 
     @Override

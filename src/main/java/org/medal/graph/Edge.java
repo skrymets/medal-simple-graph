@@ -26,36 +26,6 @@ public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
      */
     Graph<N, E> graph();
 
-
-    /**
-     * "Direction" means that imaginary arrow points from LEFT to RIGHT node
-     * (L) ----> (R)
-     * According to this definition another definition emerges:
-     * 1) A DIRECTED edge is OUTGOING for LEFT, and is INCOMING for RIGHT nodes
-     * 2) A UNDIRECTED edge is neither OUTGOING nor INCOMING for any node
-     * <p>
-     * Return this edge's direction attribute.
-     *
-     * @return direction attribute
-     */
-    boolean isDirected();
-
-    /**
-     * Set this edge's direction attribute to <code>DIRECTED</code>
-     *
-     * @return this edge reference
-     */
-    E setDirected();
-
-    E setDirected(boolean directed);
-
-    /**
-     * Set this edge's direction attribute to <code>UNDIRECTED</code>
-     *
-     * @return this edge reference
-     */
-    E setUndirected();
-
     /**
      * Returns a node that is linked to the specified {@code node} by this edge.
      *
@@ -86,8 +56,6 @@ public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
      * @return a collapsed node
      */
     N collapse();
-
-    E duplicate();
 
     /**
      * "Cuts" this edge onto two parts and inserts a new node in-between. After this
