@@ -15,7 +15,6 @@
  */
 package org.medal.graph;
 
-import java.util.Collection;
 import java.util.Optional;
 
 public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
@@ -25,7 +24,7 @@ public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
      *
      * @return a graph instance, never <code>null</code>
      */
-    Graph<N, E> getGraph();
+    Graph<N, E> graph();
 
 
     /**
@@ -58,26 +57,27 @@ public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
     E setUndirected();
 
     /**
-     * Returns a node that is linked to the specified <code>node</code> by this edge.
+     * Returns a node that is linked to the specified {@code node} by this edge.
      *
-     * @return a <code>Node</code> instance on the other side of this edge if the
-     * specified <code>node</code> belongs to this edge, otherwise - <code>null</code>
+     * @param node a node which opposite counterparty we're looking for
+     * @return a node instance on the other side of this edge if the
+     * specified {@code node} belongs to this edge, otherwise - {@code null}
      */
-    Optional<N> getOpposite(N node);
+    Optional<N> opposite(N node);
 
     /**
      * Return a node that resides in left position of this edge.
      *
      * @return left node, never not <code>null</code>
      */
-    N getLeft();
+    N left();
 
     /**
      * Return a node that resides in right position of this edge.
      *
      * @return right node, never not <code>null</code>
      */
-    N getRight();
+    N right();
 
     /**
      * Collapses nodes that are linked by this edge into one node by
@@ -89,7 +89,15 @@ public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
 
     E duplicate();
 
-    Collection<E> duplicate(int copies);
+    /**
+     * "Cuts" this edge onto two parts and inserts a new node in-between. After this
+     * operation the edge's left and right nodes are not linked to it anymore. The edge
+     * is not referenced by a graph object as well.
+     *
+     * @return <code>Split</code> object that holds references to both parts of the
+     * divided edge, and a payload of the original edge, if any.
+     */
+    Split<N, E> insertMiddleNode();
 
     /**
      * "Cuts" this edge onto two parts and inserts a given node in-between. After this
@@ -104,11 +112,34 @@ public interface Edge<N extends Node<N, E>, E extends Edge<N, E>> {
      */
     Split<N, E> insertMiddleNode(N middleNode);
 
+    /**
+     * Checks whether this edge is adjacent with {@code other} edge (sharing same node)
+     *
+     * @param other an edge which adjacency must be checked
+     * @return {@code true} if this edge is adjacent with {@code other} edge, {@code false} otherwise
+     */
+    boolean isAdjacent(E other);
+
+    /**
+     * Checks whether this edge is incident with {@code node} (the node is connected to this edge)
+     *
+     * @param node a node which incidence must be checked
+     * @return {@code true} if this edge is adjacent with {@code node}, {@code false} otherwise
+     */
+    boolean isIncident(N node);
+
+    /**
+     * Checks whether this edge joins a node to itself.
+     *
+     * @return {@code true} if this edge's ends are the same node, {@code false} otherwise.
+     */
+    boolean isLoop();
+
     interface Split<N extends Node<N, E>, E extends Edge<N, E>> {
 
-        E getLeftEdge();
+        E leftEdge();
 
-        E getRightEdge();
+        E rightEdge();
 
     }
 

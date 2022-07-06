@@ -15,7 +15,6 @@
  */
 package org.medal.graph;
 
-import java.util.Collection;
 import java.util.Set;
 
 public interface Graph<N extends Node<N, E>, E extends Edge<N, E>> {
@@ -28,13 +27,12 @@ public interface Graph<N extends Node<N, E>, E extends Edge<N, E>> {
     N createNode();
 
     /**
-     * Creates several new nodes that are not connected among each other at this moment.
+     * Deletes nodes from this graph. Also deletes all connected edges
      *
-     * @param count a number of nodes to create
-     * @return a list of nodes that were created or an empty list, if <code>count</code>
-     * is less or equal to zero.
+     * @param node a node to be deleted.
+     * @return {@code true} if the node {@code N} was deleted, {@code false} otherwise.
      */
-    Set<N> createNodes(int count);
+    boolean deleteNode(N node);
 
     /**
      * Creates a new directed between two nodes.<br/>
@@ -49,7 +47,7 @@ public interface Graph<N extends Node<N, E>, E extends Edge<N, E>> {
      * @throws NullPointerException if <code>left</code> or <code>right</code> node is
      *                              undefined - <code>null</code>.
      */
-    E connectNodes(N left, N right, boolean directed);
+    E connect(N left, N right, boolean directed);
 
     /**
      * Creates an <code>UNDIRECTED</code> directed between two nodes.<br/>
@@ -62,36 +60,29 @@ public interface Graph<N extends Node<N, E>, E extends Edge<N, E>> {
      * @throws NullPointerException if <code>left</code> or <code>right</code> node is
      *                              undefined - <code>null</code>.
      */
-    E connectNodes(N left, N right);
+    E connect(N left, N right);
 
     /**
      * Returns an unmodifiable set of edges in this graph.
      *
      * @return a set of edges. Never <code>null</code>
      */
-    Set<E> getEdges();
+    Set<E> edges();
 
     /**
      * Returns an unmodifiable set of nodes in this graph.
      *
      * @return a set of nodes. Never <code>null</code>
      */
-    Set<N> getNodes();
+    Set<N> nodes();
 
     /**
      * Removes edge from this graph. Both left and right nodes do not refer this edge
      * anymore. <br/>
-     * If <code>edge</code> is <code>null</code> - does nothing.
+     * If {@code edge} is {@code null} - does nothing.
      *
      * @param edge edge to be removed.
      */
-    void breakEdge(E edge);
-
-    /**
-     * Deletes nodes from this graph. Also deletes all connected edges
-     *
-     * @param nodes a collection  of nodes to be deleted.
-     */
-    void deleteNodes(Collection<N> nodes);
+    void deleteEdge(E edge);
 
 }

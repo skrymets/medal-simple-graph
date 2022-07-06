@@ -22,7 +22,6 @@ import org.medal.graph.impl.NodeImpl;
 
 import java.util.*;
 
-import static java.util.Collections.singleton;
 import static java.util.Comparator.comparing;
 import static org.junit.Assert.*;
 
@@ -45,61 +44,20 @@ public class GraphTest {
         assertNotNull(node1);
     }
 
-    @Test
-    public void testCreateNodes() {
-        GraphImpl graph = new GraphImpl();
-
-        Set<NodeImpl> twoNodes = graph.createNodes(2);
-        assertNotNull(twoNodes);
-        assertEquals(twoNodes.size(), 2);
-
-        assertNotNull(graph.getNodes());
-        assertEquals(graph.getNodes().size(), 2);
-
-        Collection<NodeImpl> anotherTwoNodes = graph.createNodes(2);
-        assertEquals(anotherTwoNodes.size(), 2);
-        assertEquals(graph.getNodes().size(), 4);
-
-        // No edges ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        long generatedEdgesCount = graph.getNodes().stream()
-                .mapToLong((Node t) -> t.getEdges().size())
-                .sum();
-        assertEquals(generatedEdgesCount, 0L);
-
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        Set<NodeImpl> firstTwo = new TreeSet<>(nodesComparator);
-        firstTwo.addAll(twoNodes);
-        Set<NodeImpl> secondTwo = new TreeSet<>(nodesComparator);
-        secondTwo.addAll(anotherTwoNodes);
-
-        assertNotEquals(firstTwo, secondTwo);
-
-        // Silently process non-positive values ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        GraphImpl graph2 = new GraphImpl();
-        Set<NodeImpl> nodes = graph2.createNodes(-1000);
-        assertNotNull(nodes);
-        assertEquals(nodes.size(), 0);
-
-        nodes = graph2.createNodes(0);
-        assertNotNull(nodes);
-        assertEquals(nodes.size(), 0);
-    }
-
     @Test(expected = NullPointerException.class)
     public void testConnectNodes() {
         GraphImpl graph = new GraphImpl();
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
-        final NodeImpl node1 = nodes.get(0);
-        final NodeImpl node2 = nodes.get(1);
+        final NodeImpl node1 = graph.createNode();
+        final NodeImpl node2 = graph.createNode();
 
-        EdgeImpl undirectedConnection1 = graph.connectNodes(node1, node2);
+        EdgeImpl undirectedConnection1 = graph.connect(node1, node2);
         assertNotNull(undirectedConnection1);
         assertFalse(undirectedConnection1.isDirected());
 
-        EdgeImpl undirectedConnection2 = graph.connectNodes(node1, node2, false);
+        EdgeImpl undirectedConnection2 = graph.connect(node1, node2, false);
         assertFalse(undirectedConnection2.isDirected());
 
-        EdgeImpl directedConnection1 = graph.connectNodes(node1, node2, true);
+        EdgeImpl directedConnection1 = graph.connect(node1, node2, true);
         assertTrue(directedConnection1.isDirected());
 
         assertNotEquals(undirectedConnection1, undirectedConnection2);
@@ -108,26 +66,25 @@ public class GraphTest {
 
         // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
         boolean takeFirst = new Random().nextBoolean();
-        graph.connectNodes(takeFirst ? node1 : null, takeFirst ? null : node2);
+        graph.connect(takeFirst ? node1 : null, takeFirst ? null : node2);
         fail("Should not connect undefined nodes. Must throw NullPointerException");
     }
 
     @Test
     public void testGetEdges() {
         GraphImpl graph = new GraphImpl();
-        Set<EdgeImpl> edges = graph.getEdges();
+        Set<EdgeImpl> edges = graph.edges();
 
         assertNotNull(edges);
 
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
-        final NodeImpl node1 = nodes.get(0);
-        final NodeImpl node2 = nodes.get(1);
+        final NodeImpl node1 = graph.createNode();
+        final NodeImpl node2 = graph.createNode();
 
         EdgeImpl edge1 = node1.connect(node2);
-        assertEquals(graph.getEdges().size(), 1);
+        assertEquals(graph.edges().size(), 1);
 
         EdgeImpl edge2 = node1.connect(node2);
-        assertEquals(graph.getEdges().size(), 2);
+        assertEquals(graph.edges().size(), 2);
 
         assertNotEquals(edge1, edge2);
 
@@ -136,13 +93,13 @@ public class GraphTest {
     @Test
     public void testGetNodes() {
         Graph<NodeImpl, EdgeImpl> graph = new GraphImpl();
-        Collection<NodeImpl> newNodes = graph.createNodes(2);
+        Collection<NodeImpl> newNodes = List.of(graph.createNode(), graph.createNode());
 
-        assertNotNull(graph.getNodes());
-        assertFalse(graph.getNodes().isEmpty());
+        assertNotNull(graph.nodes());
+        assertFalse(graph.nodes().isEmpty());
 
         Set<NodeImpl> existingNodes = new TreeSet<>(nodesComparator);
-        existingNodes.addAll(graph.getNodes());
+        existingNodes.addAll(graph.nodes());
         Set<NodeImpl> createdNodes = new TreeSet<>(nodesComparator);
         createdNodes.addAll(newNodes);
 
@@ -152,32 +109,30 @@ public class GraphTest {
     @Test
     public void testBreakEdge() {
         GraphImpl graph = new GraphImpl();
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(2));
 
-        final NodeImpl node1 = nodes.get(0);
-        final NodeImpl node2 = nodes.get(1);
+        final NodeImpl node1 = graph.createNode();
+        final NodeImpl node2 = graph.createNode();
 
         EdgeImpl edge = node1.connect(node2);
         assertNotNull(edge);
 
         // NOT fails on null
-        graph.breakEdge(null);
-        graph.breakEdge(edge);
+        graph.deleteEdge(null);
+        graph.deleteEdge(edge);
 
         // Still refers the nodes ... ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        assertSame(edge.getLeft(), node1);
-        assertSame(edge.getRight(), node2);
+        assertSame(edge.left(), node1);
+        assertSame(edge.right(), node2);
 
         // ... but neither the former do this ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        assertFalse(graph.getEdges().contains(edge));
-        assertFalse(node1.getEdges().contains(edge));
-        assertFalse(node2.getEdges().contains(edge));
+        assertFalse(graph.edges().contains(edge));
+        assertFalse(node1.incidentEdges().contains(edge));
+        assertFalse(node2.incidentEdges().contains(edge));
     }
 
     @Test
     public void testDeleteNodes() {
         GraphImpl graph = new GraphImpl();
-        List<NodeImpl> nodes = new ArrayList<>(graph.createNodes(4));
         /*
          *   (0) ----- (1)
          *    |  \   /  |
@@ -185,20 +140,26 @@ public class GraphTest {
          *    |  /   \  |
          *   (3) ----- (2)
          */
-        nodes.get(0).connect(nodes.get(1));
-        nodes.get(1).connect(nodes.get(2));
-        nodes.get(2).connect(nodes.get(3));
-        nodes.get(3).connect(nodes.get(0));
-        nodes.get(1).connect(nodes.get(3));
-        nodes.get(0).connect(nodes.get(2));
-        assertEquals(6, graph.getEdges().size());
-        assertEquals(4, graph.getNodes().size());
+        final NodeImpl node0 = graph.createNode();
+        final NodeImpl node1 = graph.createNode();
+        final NodeImpl node2 = graph.createNode();
+        final NodeImpl node3 = graph.createNode();
 
-        graph.deleteNodes(singleton((NodeImpl) null));
-        assertEquals(6, graph.getEdges().size());
-        assertEquals(4, graph.getNodes().size());
+        node0.connect(node1);
+        node1.connect(node2);
+        node2.connect(node3);
+        node3.connect(node0);
+        node1.connect(node3);
+        node0.connect(node2);
 
-        graph.deleteNodes(singleton(nodes.get(2)));
+        assertEquals(6, graph.edges().size());
+        assertEquals(4, graph.nodes().size());
+
+        graph.deleteNode((NodeImpl) null);
+        assertEquals(6, graph.edges().size());
+        assertEquals(4, graph.nodes().size());
+
+        graph.deleteNode(node2);
         /*
          *   (0) ----- (1)
          *    |      /
@@ -206,8 +167,8 @@ public class GraphTest {
          *    |  /
          *   (3)
          */
-        assertEquals(3, graph.getEdges().size());
-        assertEquals(3, graph.getNodes().size());
+        assertEquals(3, graph.edges().size());
+        assertEquals(3, graph.nodes().size());
 
     }
 
