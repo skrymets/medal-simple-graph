@@ -27,7 +27,7 @@ public class GraphImpl extends AbstractGraph<NodeImpl, EdgeImpl> {
 
     @Override
     protected EdgeFactory<NodeImpl, EdgeImpl> getEdgeFactory() {
-        return (NodeImpl left, NodeImpl right, boolean directed) -> new EdgeImpl(GraphImpl.this, left, right, directed);
+        return (NodeImpl left, NodeImpl right) -> new EdgeImpl(GraphImpl.this, left, right);
     }
 
 }

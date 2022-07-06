@@ -50,23 +50,18 @@ public class GraphTest {
         final NodeImpl node1 = graph.createNode();
         final NodeImpl node2 = graph.createNode();
 
-        EdgeImpl undirectedConnection1 = graph.connect(node1, node2);
-        assertNotNull(undirectedConnection1);
-        assertFalse(undirectedConnection1.isDirected());
+        EdgeImpl edge1 = graph.connect(node1, node2);
+        assertNotNull(edge1);
 
-        EdgeImpl undirectedConnection2 = graph.connect(node1, node2, false);
-        assertFalse(undirectedConnection2.isDirected());
+        EdgeImpl edge2 = graph.connect(node1, node2);
+        EdgeImpl edge3 = graph.connect(node1, node2);
 
-        EdgeImpl directedConnection1 = graph.connect(node1, node2, true);
-        assertTrue(directedConnection1.isDirected());
 
-        assertNotEquals(undirectedConnection1, undirectedConnection2);
-        assertNotEquals(undirectedConnection2, directedConnection1);
-        assertNotEquals(undirectedConnection1, directedConnection1);
+        assertNotEquals(edge1, edge2);
+        assertNotEquals(edge2, edge3);
+        assertNotEquals(edge1, edge3);
 
-        // ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-        boolean takeFirst = new Random().nextBoolean();
-        graph.connect(takeFirst ? node1 : null, takeFirst ? null : node2);
+        graph.connect(null, null);
         fail("Should not connect undefined nodes. Must throw NullPointerException");
     }
 

@@ -24,6 +24,7 @@ import java.util.Optional;
 
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.empty;
+import static java.util.Optional.of;
 import static java.util.stream.Collectors.toList;
 
 public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> implements Edge<N, E> {
@@ -32,11 +33,9 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
 
     protected N right;
 
-    protected boolean directed;
-
     private final Graph<N, E> graph;
 
-    protected AbstractEdge(final Graph<N, E> graph, final N left, final N right, boolean directed) {
+    protected AbstractEdge(final Graph<N, E> graph, final N left, final N right) {
 
         requireNonNull(graph);
         if (left == null || right == null) {
@@ -46,7 +45,6 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
         this.graph = graph;
         this.left = left;
         this.right = right;
-        this.directed = directed;
     }
 
     @Override
@@ -70,39 +68,16 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
     }
 
     @Override
-    public boolean isDirected() {
-        return directed;
-    }
-
-    @Override
     public Graph<N, E> graph() {
         return graph;
     }
 
     @Override
-    public E setDirected() {
-        this.directed = true;
-        return (E) this;
-    }
-
-    @Override
-    public E setDirected(boolean directed) {
-        this.directed = directed;
-        return (E) this;
-    }
-
-    @Override
-    public E setUndirected() {
-        this.directed = false;
-        return (E) this;
-    }
-
-    @Override
     public Optional<N> opposite(N node) {
         if (left == node) {
-            return Optional.of(right);
+            return of(right);
         } else if (right == node) {
-            return Optional.of(left);
+            return of(left);
         } else {
             return empty();
         }
@@ -147,13 +122,6 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
         });
     }
 
-
-    @Override
-    public E duplicate() {
-        E edge = graph().connect(left, right, directed);
-        return edge;
-    }
-
     @Override
     public Split<N, E> insertMiddleNode() {
         final N middleNode = graph().createNode();
@@ -168,9 +136,9 @@ public abstract class AbstractEdge<N extends Node<N, E>, E extends Edge<N, E>> i
 
         graph().deleteEdge((E) this);
 
-        E leftEdge = graph().connect(left, middleNode, directed);
+        E leftEdge = graph().connect(left, middleNode);
 
-        E rightEdge = graph().connect(middleNode, right, directed);
+        E rightEdge = graph().connect(middleNode, right);
 
         Split<N, E> split = new SplitImpl(leftEdge, rightEdge);
 

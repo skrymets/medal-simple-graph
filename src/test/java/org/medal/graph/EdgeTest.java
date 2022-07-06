@@ -52,44 +52,6 @@ public class EdgeTest {
     }
 
     @Test
-    public void testGetDirected() {
-
-        NodeImpl node1 = graph.createNode();
-        NodeImpl node2 = graph.createNode();
-
-        EdgeImpl edge = node1.connect(node2);
-        //
-        // [node1] -----(edge)----- [node2]
-        //
-        assertFalse(edge.isDirected());
-
-    }
-
-    @Test
-    public void testSetDirected() {
-
-        NodeImpl node1 = graph.createNode();
-        NodeImpl node2 = graph.createNode();
-
-        EdgeImpl edge = node1.connectTarget(node2);
-
-        //
-        // [node1] -----(edge)----> [node2]
-        //       
-        assertTrue(edge.isDirected());
-
-        EdgeImpl retEdge = edge.setUndirected();
-
-        //
-        // [node1] -----(edge)----- [node2]
-        //
-        assertFalse(edge.isDirected());
-
-        assertSame(edge, retEdge);
-
-    }
-
-    @Test
     public void testGetOpposite() {
 
         NodeImpl node1 = graph.createNode();
@@ -100,7 +62,7 @@ public class EdgeTest {
         //    ^________(edge2to1)_________/
         //
         EdgeImpl edge1to2 = node1.connect(node2);
-        EdgeImpl edge2to1 = node2.connectTarget(node1);
+        EdgeImpl edge2to1 = node2.connect(node1);
         assertEquals(node1.incidentEdges().size(), 2);
 
         NodeImpl oppositeToNode2 = edge1to2.opposite(node2).get();
@@ -216,10 +178,10 @@ public class EdgeTest {
         NodeImpl node3 = graph.createNode();
         NodeImpl node4 = graph.createNode();
 
-        EdgeImpl edge1to2 = node1.connectTarget(node2);
-        EdgeImpl edge2to3 = node2.connectTarget(node3);
+        EdgeImpl edge1to2 = node1.connect(node2);
+        EdgeImpl edge2to3 = node2.connect(node3);
         EdgeImpl edge3to4 = node3.connect(node4);
-        EdgeImpl edge2to4 = node2.connectTarget(node4);
+        EdgeImpl edge2to4 = node2.connect(node4);
 
         /*
          * [Node1] --edge1to2-->> [Node2] --edge2to3-->> [Node3] --edge3to4-- [Node4]
@@ -249,55 +211,14 @@ public class EdgeTest {
         assertFalse(graph.nodes().contains(node3));
 
         assertTrue(graph.edges().contains(edge1to2));
-        assertTrue(edge1to2.isDirected());
         assertTrue(edge1to2.right() == collapsedNode);
 
         assertTrue(graph.edges().contains(edge3to4));
-        assertFalse(edge3to4.isDirected());
         assertTrue(edge3to4.left() == collapsedNode);
 
-        assertTrue(edge2to4.isDirected());
         assertTrue(edge2to4.left() == collapsedNode);
         assertTrue(edge2to4.right() == node4);
 
-    }
-
-    @Test
-    public void testDuplicate() {
-        final NodeImpl node1 = graph.createNode();
-        final NodeImpl node2 = graph.createNode();
-
-        final EdgeImpl edge = node1.connect(node2);
-        assertEquals(1, graph.edges().size());
-
-        final EdgeImpl duplicatedEdge = edge.duplicate();
-        assertFalse(duplicatedEdge.isDirected());
-        assertEquals(2, graph.edges().size());
-
-        final EdgeImpl directedEdge = node1.connectTarget(node2);
-        assertTrue(directedEdge.isDirected());
-
-        final EdgeImpl duplicateDirectedEdge = directedEdge.duplicate();
-        assertTrue(duplicateDirectedEdge.isDirected());
-
-        assertEquals(directedEdge.left(), duplicateDirectedEdge.left());
-        assertEquals(directedEdge.right(), duplicateDirectedEdge.right());
-
-    }
-
-    @Test
-    public void testDirected() {
-        final NodeImpl node1 = graph.createNode();
-        final NodeImpl node2 = graph.createNode();
-        final EdgeImpl edge = node1.connect(node2);
-
-        assertFalse(edge.isDirected());
-
-        edge.setDirected();
-        assertTrue(edge.isDirected());
-
-        edge.setDirected(false);
-        assertFalse(edge.isDirected());
     }
 
     @Test
